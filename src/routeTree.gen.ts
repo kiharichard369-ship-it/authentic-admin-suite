@@ -9,9 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WaterAdminRouteImport } from './routes/water-admin'
 import { Route as SuperAdminRouteImport } from './routes/super-admin'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WaterAdminStockRouteImport } from './routes/water-admin.stock'
+import { Route as WaterAdminSalesRouteImport } from './routes/water-admin.sales'
+import { Route as WaterAdminRequestsRouteImport } from './routes/water-admin.requests'
+import { Route as WaterAdminReportsRouteImport } from './routes/water-admin.reports'
+import { Route as WaterAdminExpensesRouteImport } from './routes/water-admin.expenses'
+import { Route as WaterAdminDashboardRouteImport } from './routes/water-admin.dashboard'
+import { Route as WaterAdminCashiersRouteImport } from './routes/water-admin.cashiers'
 import { Route as SuperAdminUsersRouteImport } from './routes/super-admin.users'
 import { Route as SuperAdminShopsRouteImport } from './routes/super-admin.shops'
 import { Route as SuperAdminReportsRouteImport } from './routes/super-admin.reports'
@@ -21,6 +29,11 @@ import { Route as SuperAdminDashboardRouteImport } from './routes/super-admin.da
 import { Route as SuperAdminAssetsRouteImport } from './routes/super-admin.assets'
 import { Route as SuperAdminAnalyticsRouteImport } from './routes/super-admin.analytics'
 
+const WaterAdminRoute = WaterAdminRouteImport.update({
+  id: '/water-admin',
+  path: '/water-admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SuperAdminRoute = SuperAdminRouteImport.update({
   id: '/super-admin',
   path: '/super-admin',
@@ -35,6 +48,41 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const WaterAdminStockRoute = WaterAdminStockRouteImport.update({
+  id: '/stock',
+  path: '/stock',
+  getParentRoute: () => WaterAdminRoute,
+} as any)
+const WaterAdminSalesRoute = WaterAdminSalesRouteImport.update({
+  id: '/sales',
+  path: '/sales',
+  getParentRoute: () => WaterAdminRoute,
+} as any)
+const WaterAdminRequestsRoute = WaterAdminRequestsRouteImport.update({
+  id: '/requests',
+  path: '/requests',
+  getParentRoute: () => WaterAdminRoute,
+} as any)
+const WaterAdminReportsRoute = WaterAdminReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => WaterAdminRoute,
+} as any)
+const WaterAdminExpensesRoute = WaterAdminExpensesRouteImport.update({
+  id: '/expenses',
+  path: '/expenses',
+  getParentRoute: () => WaterAdminRoute,
+} as any)
+const WaterAdminDashboardRoute = WaterAdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => WaterAdminRoute,
+} as any)
+const WaterAdminCashiersRoute = WaterAdminCashiersRouteImport.update({
+  id: '/cashiers',
+  path: '/cashiers',
+  getParentRoute: () => WaterAdminRoute,
 } as any)
 const SuperAdminUsersRoute = SuperAdminUsersRouteImport.update({
   id: '/users',
@@ -81,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/super-admin': typeof SuperAdminRouteWithChildren
+  '/water-admin': typeof WaterAdminRouteWithChildren
   '/super-admin/analytics': typeof SuperAdminAnalyticsRoute
   '/super-admin/assets': typeof SuperAdminAssetsRoute
   '/super-admin/dashboard': typeof SuperAdminDashboardRoute
@@ -89,11 +138,19 @@ export interface FileRoutesByFullPath {
   '/super-admin/reports': typeof SuperAdminReportsRoute
   '/super-admin/shops': typeof SuperAdminShopsRoute
   '/super-admin/users': typeof SuperAdminUsersRoute
+  '/water-admin/cashiers': typeof WaterAdminCashiersRoute
+  '/water-admin/dashboard': typeof WaterAdminDashboardRoute
+  '/water-admin/expenses': typeof WaterAdminExpensesRoute
+  '/water-admin/reports': typeof WaterAdminReportsRoute
+  '/water-admin/requests': typeof WaterAdminRequestsRoute
+  '/water-admin/sales': typeof WaterAdminSalesRoute
+  '/water-admin/stock': typeof WaterAdminStockRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/super-admin': typeof SuperAdminRouteWithChildren
+  '/water-admin': typeof WaterAdminRouteWithChildren
   '/super-admin/analytics': typeof SuperAdminAnalyticsRoute
   '/super-admin/assets': typeof SuperAdminAssetsRoute
   '/super-admin/dashboard': typeof SuperAdminDashboardRoute
@@ -102,12 +159,20 @@ export interface FileRoutesByTo {
   '/super-admin/reports': typeof SuperAdminReportsRoute
   '/super-admin/shops': typeof SuperAdminShopsRoute
   '/super-admin/users': typeof SuperAdminUsersRoute
+  '/water-admin/cashiers': typeof WaterAdminCashiersRoute
+  '/water-admin/dashboard': typeof WaterAdminDashboardRoute
+  '/water-admin/expenses': typeof WaterAdminExpensesRoute
+  '/water-admin/reports': typeof WaterAdminReportsRoute
+  '/water-admin/requests': typeof WaterAdminRequestsRoute
+  '/water-admin/sales': typeof WaterAdminSalesRoute
+  '/water-admin/stock': typeof WaterAdminStockRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/super-admin': typeof SuperAdminRouteWithChildren
+  '/water-admin': typeof WaterAdminRouteWithChildren
   '/super-admin/analytics': typeof SuperAdminAnalyticsRoute
   '/super-admin/assets': typeof SuperAdminAssetsRoute
   '/super-admin/dashboard': typeof SuperAdminDashboardRoute
@@ -116,6 +181,13 @@ export interface FileRoutesById {
   '/super-admin/reports': typeof SuperAdminReportsRoute
   '/super-admin/shops': typeof SuperAdminShopsRoute
   '/super-admin/users': typeof SuperAdminUsersRoute
+  '/water-admin/cashiers': typeof WaterAdminCashiersRoute
+  '/water-admin/dashboard': typeof WaterAdminDashboardRoute
+  '/water-admin/expenses': typeof WaterAdminExpensesRoute
+  '/water-admin/reports': typeof WaterAdminReportsRoute
+  '/water-admin/requests': typeof WaterAdminRequestsRoute
+  '/water-admin/sales': typeof WaterAdminSalesRoute
+  '/water-admin/stock': typeof WaterAdminStockRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -123,6 +195,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/super-admin'
+    | '/water-admin'
     | '/super-admin/analytics'
     | '/super-admin/assets'
     | '/super-admin/dashboard'
@@ -131,11 +204,19 @@ export interface FileRouteTypes {
     | '/super-admin/reports'
     | '/super-admin/shops'
     | '/super-admin/users'
+    | '/water-admin/cashiers'
+    | '/water-admin/dashboard'
+    | '/water-admin/expenses'
+    | '/water-admin/reports'
+    | '/water-admin/requests'
+    | '/water-admin/sales'
+    | '/water-admin/stock'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/super-admin'
+    | '/water-admin'
     | '/super-admin/analytics'
     | '/super-admin/assets'
     | '/super-admin/dashboard'
@@ -144,11 +225,19 @@ export interface FileRouteTypes {
     | '/super-admin/reports'
     | '/super-admin/shops'
     | '/super-admin/users'
+    | '/water-admin/cashiers'
+    | '/water-admin/dashboard'
+    | '/water-admin/expenses'
+    | '/water-admin/reports'
+    | '/water-admin/requests'
+    | '/water-admin/sales'
+    | '/water-admin/stock'
   id:
     | '__root__'
     | '/'
     | '/login'
     | '/super-admin'
+    | '/water-admin'
     | '/super-admin/analytics'
     | '/super-admin/assets'
     | '/super-admin/dashboard'
@@ -157,16 +246,31 @@ export interface FileRouteTypes {
     | '/super-admin/reports'
     | '/super-admin/shops'
     | '/super-admin/users'
+    | '/water-admin/cashiers'
+    | '/water-admin/dashboard'
+    | '/water-admin/expenses'
+    | '/water-admin/reports'
+    | '/water-admin/requests'
+    | '/water-admin/sales'
+    | '/water-admin/stock'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
   SuperAdminRoute: typeof SuperAdminRouteWithChildren
+  WaterAdminRoute: typeof WaterAdminRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/water-admin': {
+      id: '/water-admin'
+      path: '/water-admin'
+      fullPath: '/water-admin'
+      preLoaderRoute: typeof WaterAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/super-admin': {
       id: '/super-admin'
       path: '/super-admin'
@@ -187,6 +291,55 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/water-admin/stock': {
+      id: '/water-admin/stock'
+      path: '/stock'
+      fullPath: '/water-admin/stock'
+      preLoaderRoute: typeof WaterAdminStockRouteImport
+      parentRoute: typeof WaterAdminRoute
+    }
+    '/water-admin/sales': {
+      id: '/water-admin/sales'
+      path: '/sales'
+      fullPath: '/water-admin/sales'
+      preLoaderRoute: typeof WaterAdminSalesRouteImport
+      parentRoute: typeof WaterAdminRoute
+    }
+    '/water-admin/requests': {
+      id: '/water-admin/requests'
+      path: '/requests'
+      fullPath: '/water-admin/requests'
+      preLoaderRoute: typeof WaterAdminRequestsRouteImport
+      parentRoute: typeof WaterAdminRoute
+    }
+    '/water-admin/reports': {
+      id: '/water-admin/reports'
+      path: '/reports'
+      fullPath: '/water-admin/reports'
+      preLoaderRoute: typeof WaterAdminReportsRouteImport
+      parentRoute: typeof WaterAdminRoute
+    }
+    '/water-admin/expenses': {
+      id: '/water-admin/expenses'
+      path: '/expenses'
+      fullPath: '/water-admin/expenses'
+      preLoaderRoute: typeof WaterAdminExpensesRouteImport
+      parentRoute: typeof WaterAdminRoute
+    }
+    '/water-admin/dashboard': {
+      id: '/water-admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/water-admin/dashboard'
+      preLoaderRoute: typeof WaterAdminDashboardRouteImport
+      parentRoute: typeof WaterAdminRoute
+    }
+    '/water-admin/cashiers': {
+      id: '/water-admin/cashiers'
+      path: '/cashiers'
+      fullPath: '/water-admin/cashiers'
+      preLoaderRoute: typeof WaterAdminCashiersRouteImport
+      parentRoute: typeof WaterAdminRoute
     }
     '/super-admin/users': {
       id: '/super-admin/users'
@@ -273,11 +426,46 @@ const SuperAdminRouteWithChildren = SuperAdminRoute._addFileChildren(
   SuperAdminRouteChildren,
 )
 
+interface WaterAdminRouteChildren {
+  WaterAdminCashiersRoute: typeof WaterAdminCashiersRoute
+  WaterAdminDashboardRoute: typeof WaterAdminDashboardRoute
+  WaterAdminExpensesRoute: typeof WaterAdminExpensesRoute
+  WaterAdminReportsRoute: typeof WaterAdminReportsRoute
+  WaterAdminRequestsRoute: typeof WaterAdminRequestsRoute
+  WaterAdminSalesRoute: typeof WaterAdminSalesRoute
+  WaterAdminStockRoute: typeof WaterAdminStockRoute
+}
+
+const WaterAdminRouteChildren: WaterAdminRouteChildren = {
+  WaterAdminCashiersRoute: WaterAdminCashiersRoute,
+  WaterAdminDashboardRoute: WaterAdminDashboardRoute,
+  WaterAdminExpensesRoute: WaterAdminExpensesRoute,
+  WaterAdminReportsRoute: WaterAdminReportsRoute,
+  WaterAdminRequestsRoute: WaterAdminRequestsRoute,
+  WaterAdminSalesRoute: WaterAdminSalesRoute,
+  WaterAdminStockRoute: WaterAdminStockRoute,
+}
+
+const WaterAdminRouteWithChildren = WaterAdminRoute._addFileChildren(
+  WaterAdminRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
   SuperAdminRoute: SuperAdminRouteWithChildren,
+  WaterAdminRoute: WaterAdminRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
