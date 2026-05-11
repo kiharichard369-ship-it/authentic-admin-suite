@@ -12,6 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SuperAdminRouteImport } from './routes/super-admin'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SuperAdminUsersRouteImport } from './routes/super-admin.users'
+import { Route as SuperAdminShopsRouteImport } from './routes/super-admin.shops'
+import { Route as SuperAdminReportsRouteImport } from './routes/super-admin.reports'
+import { Route as SuperAdminPaymentsRouteImport } from './routes/super-admin.payments'
+import { Route as SuperAdminExpensesRouteImport } from './routes/super-admin.expenses'
+import { Route as SuperAdminDashboardRouteImport } from './routes/super-admin.dashboard'
+import { Route as SuperAdminAssetsRouteImport } from './routes/super-admin.assets'
+import { Route as SuperAdminAnalyticsRouteImport } from './routes/super-admin.analytics'
 
 const SuperAdminRoute = SuperAdminRouteImport.update({
   id: '/super-admin',
@@ -28,35 +36,133 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SuperAdminUsersRoute = SuperAdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => SuperAdminRoute,
+} as any)
+const SuperAdminShopsRoute = SuperAdminShopsRouteImport.update({
+  id: '/shops',
+  path: '/shops',
+  getParentRoute: () => SuperAdminRoute,
+} as any)
+const SuperAdminReportsRoute = SuperAdminReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => SuperAdminRoute,
+} as any)
+const SuperAdminPaymentsRoute = SuperAdminPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => SuperAdminRoute,
+} as any)
+const SuperAdminExpensesRoute = SuperAdminExpensesRouteImport.update({
+  id: '/expenses',
+  path: '/expenses',
+  getParentRoute: () => SuperAdminRoute,
+} as any)
+const SuperAdminDashboardRoute = SuperAdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => SuperAdminRoute,
+} as any)
+const SuperAdminAssetsRoute = SuperAdminAssetsRouteImport.update({
+  id: '/assets',
+  path: '/assets',
+  getParentRoute: () => SuperAdminRoute,
+} as any)
+const SuperAdminAnalyticsRoute = SuperAdminAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => SuperAdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/super-admin': typeof SuperAdminRoute
+  '/super-admin': typeof SuperAdminRouteWithChildren
+  '/super-admin/analytics': typeof SuperAdminAnalyticsRoute
+  '/super-admin/assets': typeof SuperAdminAssetsRoute
+  '/super-admin/dashboard': typeof SuperAdminDashboardRoute
+  '/super-admin/expenses': typeof SuperAdminExpensesRoute
+  '/super-admin/payments': typeof SuperAdminPaymentsRoute
+  '/super-admin/reports': typeof SuperAdminReportsRoute
+  '/super-admin/shops': typeof SuperAdminShopsRoute
+  '/super-admin/users': typeof SuperAdminUsersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/super-admin': typeof SuperAdminRoute
+  '/super-admin': typeof SuperAdminRouteWithChildren
+  '/super-admin/analytics': typeof SuperAdminAnalyticsRoute
+  '/super-admin/assets': typeof SuperAdminAssetsRoute
+  '/super-admin/dashboard': typeof SuperAdminDashboardRoute
+  '/super-admin/expenses': typeof SuperAdminExpensesRoute
+  '/super-admin/payments': typeof SuperAdminPaymentsRoute
+  '/super-admin/reports': typeof SuperAdminReportsRoute
+  '/super-admin/shops': typeof SuperAdminShopsRoute
+  '/super-admin/users': typeof SuperAdminUsersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/super-admin': typeof SuperAdminRoute
+  '/super-admin': typeof SuperAdminRouteWithChildren
+  '/super-admin/analytics': typeof SuperAdminAnalyticsRoute
+  '/super-admin/assets': typeof SuperAdminAssetsRoute
+  '/super-admin/dashboard': typeof SuperAdminDashboardRoute
+  '/super-admin/expenses': typeof SuperAdminExpensesRoute
+  '/super-admin/payments': typeof SuperAdminPaymentsRoute
+  '/super-admin/reports': typeof SuperAdminReportsRoute
+  '/super-admin/shops': typeof SuperAdminShopsRoute
+  '/super-admin/users': typeof SuperAdminUsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/super-admin'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/super-admin'
+    | '/super-admin/analytics'
+    | '/super-admin/assets'
+    | '/super-admin/dashboard'
+    | '/super-admin/expenses'
+    | '/super-admin/payments'
+    | '/super-admin/reports'
+    | '/super-admin/shops'
+    | '/super-admin/users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/super-admin'
-  id: '__root__' | '/' | '/login' | '/super-admin'
+  to:
+    | '/'
+    | '/login'
+    | '/super-admin'
+    | '/super-admin/analytics'
+    | '/super-admin/assets'
+    | '/super-admin/dashboard'
+    | '/super-admin/expenses'
+    | '/super-admin/payments'
+    | '/super-admin/reports'
+    | '/super-admin/shops'
+    | '/super-admin/users'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/super-admin'
+    | '/super-admin/analytics'
+    | '/super-admin/assets'
+    | '/super-admin/dashboard'
+    | '/super-admin/expenses'
+    | '/super-admin/payments'
+    | '/super-admin/reports'
+    | '/super-admin/shops'
+    | '/super-admin/users'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
-  SuperAdminRoute: typeof SuperAdminRoute
+  SuperAdminRoute: typeof SuperAdminRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -82,13 +188,95 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/super-admin/users': {
+      id: '/super-admin/users'
+      path: '/users'
+      fullPath: '/super-admin/users'
+      preLoaderRoute: typeof SuperAdminUsersRouteImport
+      parentRoute: typeof SuperAdminRoute
+    }
+    '/super-admin/shops': {
+      id: '/super-admin/shops'
+      path: '/shops'
+      fullPath: '/super-admin/shops'
+      preLoaderRoute: typeof SuperAdminShopsRouteImport
+      parentRoute: typeof SuperAdminRoute
+    }
+    '/super-admin/reports': {
+      id: '/super-admin/reports'
+      path: '/reports'
+      fullPath: '/super-admin/reports'
+      preLoaderRoute: typeof SuperAdminReportsRouteImport
+      parentRoute: typeof SuperAdminRoute
+    }
+    '/super-admin/payments': {
+      id: '/super-admin/payments'
+      path: '/payments'
+      fullPath: '/super-admin/payments'
+      preLoaderRoute: typeof SuperAdminPaymentsRouteImport
+      parentRoute: typeof SuperAdminRoute
+    }
+    '/super-admin/expenses': {
+      id: '/super-admin/expenses'
+      path: '/expenses'
+      fullPath: '/super-admin/expenses'
+      preLoaderRoute: typeof SuperAdminExpensesRouteImport
+      parentRoute: typeof SuperAdminRoute
+    }
+    '/super-admin/dashboard': {
+      id: '/super-admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/super-admin/dashboard'
+      preLoaderRoute: typeof SuperAdminDashboardRouteImport
+      parentRoute: typeof SuperAdminRoute
+    }
+    '/super-admin/assets': {
+      id: '/super-admin/assets'
+      path: '/assets'
+      fullPath: '/super-admin/assets'
+      preLoaderRoute: typeof SuperAdminAssetsRouteImport
+      parentRoute: typeof SuperAdminRoute
+    }
+    '/super-admin/analytics': {
+      id: '/super-admin/analytics'
+      path: '/analytics'
+      fullPath: '/super-admin/analytics'
+      preLoaderRoute: typeof SuperAdminAnalyticsRouteImport
+      parentRoute: typeof SuperAdminRoute
+    }
   }
 }
+
+interface SuperAdminRouteChildren {
+  SuperAdminAnalyticsRoute: typeof SuperAdminAnalyticsRoute
+  SuperAdminAssetsRoute: typeof SuperAdminAssetsRoute
+  SuperAdminDashboardRoute: typeof SuperAdminDashboardRoute
+  SuperAdminExpensesRoute: typeof SuperAdminExpensesRoute
+  SuperAdminPaymentsRoute: typeof SuperAdminPaymentsRoute
+  SuperAdminReportsRoute: typeof SuperAdminReportsRoute
+  SuperAdminShopsRoute: typeof SuperAdminShopsRoute
+  SuperAdminUsersRoute: typeof SuperAdminUsersRoute
+}
+
+const SuperAdminRouteChildren: SuperAdminRouteChildren = {
+  SuperAdminAnalyticsRoute: SuperAdminAnalyticsRoute,
+  SuperAdminAssetsRoute: SuperAdminAssetsRoute,
+  SuperAdminDashboardRoute: SuperAdminDashboardRoute,
+  SuperAdminExpensesRoute: SuperAdminExpensesRoute,
+  SuperAdminPaymentsRoute: SuperAdminPaymentsRoute,
+  SuperAdminReportsRoute: SuperAdminReportsRoute,
+  SuperAdminShopsRoute: SuperAdminShopsRoute,
+  SuperAdminUsersRoute: SuperAdminUsersRoute,
+}
+
+const SuperAdminRouteWithChildren = SuperAdminRoute._addFileChildren(
+  SuperAdminRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
-  SuperAdminRoute: SuperAdminRoute,
+  SuperAdminRoute: SuperAdminRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
