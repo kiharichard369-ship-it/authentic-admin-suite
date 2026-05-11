@@ -30,7 +30,8 @@ function LoginPage() {
     }
     // Demo: route based on email prefix
     if (email.startsWith("super")) navigate({ to: "/super-admin/dashboard" });
-    else setError("Only the super admin role is wired up in this build.");
+    else if (email.startsWith("water")) navigate({ to: "/water-admin/dashboard" });
+    else setError("Try super@… or water@… for this demo build.");
   };
 
   return (
