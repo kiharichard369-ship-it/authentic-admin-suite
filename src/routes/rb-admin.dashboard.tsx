@@ -6,6 +6,14 @@ import { ArrowLeft, UtensilsCrossed, ChefHat, Beef, Coffee, ClipboardList, FileT
 
 export const Route = createFileRoute("/rb-admin/dashboard")({
   head: () => ({ meta: [{ title: "Restaurant & Butchery — Admin" }] }),
+  beforeLoad: () => {
+    if (typeof window === "undefined") return;
+    const raw = localStorage.getItem("maji-session-v1");
+    const s = raw ? JSON.parse(raw) : null;
+    if (!s) { window.location.href = "/login"; throw new Error("redirect"); }
+    const allowed = ["super_admin","rb_admin","rb_cashier","waiter","kitchen","butcher"];
+    if (!allowed.includes(s.role)) { window.location.href = "/login"; throw new Error("redirect"); }
+  },
   component: RbAdminLanding,
 });
 

@@ -3,21 +3,28 @@ import {
   LayoutDashboard, Receipt, Package, Users, ClipboardList,
   Wallet, FileText, Droplets, LogOut, UserCircle, RefreshCcw, ShieldCheck,
 } from "lucide-react";
+import { can, clearSession, type Role, type Permission } from "@/lib/auth";
 
-const items = [
-  { to: "/water-admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/water-admin/sales", label: "Sales", icon: Receipt },
-  { to: "/water-admin/stock", label: "Stock", icon: Package },
-  { to: "/water-admin/customers", label: "Customers", icon: UserCircle },
-  { to: "/water-admin/cashiers", label: "Cashiers", icon: Users },
-  { to: "/water-admin/requests", label: "Stock Requests", icon: ClipboardList },
-  { to: "/water-admin/refunds", label: "Refunds", icon: RefreshCcw },
-  { to: "/water-admin/expenses", label: "Expenses", icon: Wallet },
-  { to: "/water-admin/reports", label: "Reports", icon: FileText },
+type Item = { to: string; label: string; icon: React.ComponentType<{ className?: string }>; perm: Permission };
+
+const items: Item[] = [
+  { to: "/water-admin/dashboard", label: "Dashboard", icon: LayoutDashboard, perm: "water.dashboard" },
+  { to: "/water-admin/sales", label: "Sales", icon: Receipt, perm: "water.sales" },
+  { to: "/water-admin/stock", label: "Stock", icon: Package, perm: "water.stock" },
+  { to: "/water-admin/customers", label: "Customers", icon: UserCircle, perm: "water.customers" },
+  { to: "/water-admin/cashiers", label: "Cashiers", icon: Users, perm: "water.cashiers" },
+  { to: "/water-admin/requests", label: "Stock Requests", icon: ClipboardList, perm: "water.requests" },
+  { to: "/water-admin/refunds", label: "Refunds", icon: RefreshCcw, perm: "water.refunds" },
+  { to: "/water-admin/expenses", label: "Expenses", icon: Wallet, perm: "water.expenses" },
+  { to: "/water-admin/reports", label: "Reports", icon: FileText, perm: "water.reports" },
 ];
 
-export function WaterAdminSidebar() {
+export function WaterAdminSidebar({ role }: { role: Role }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const session = { role, email: "", name: "" };
+  const visible = items.filter((i) => can(session, i.perm));
+  const isSuper = role === "super_admin";
+
   return (
     <aside className="hidden md:flex w-64 shrink-0 flex-col bg-sidebar text-sidebar-foreground">
       <div className="px-6 py-6 border-b border-sidebar-border">
@@ -32,7 +39,7 @@ export function WaterAdminSidebar() {
         </Link>
       </div>
       <nav className="flex-1 px-3 py-4 space-y-1">
-        {items.map(({ to, label, icon: Icon }) => {
+        {visible.map(({ to, label, icon: Icon }) => {
           const active = path.startsWith(to);
           return (
             <Link
@@ -51,14 +58,17 @@ export function WaterAdminSidebar() {
         })}
       </nav>
       <div className="px-3 py-4 border-t border-sidebar-border space-y-1">
-        <Link
-          to="/super-admin/dashboard"
-          className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent"
-        >
-          <ShieldCheck className="h-4 w-4" /> Super Admin view
-        </Link>
+        {isSuper && (
+          <Link
+            to="/super-admin/dashboard"
+            className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent"
+          >
+            <ShieldCheck className="h-4 w-4" /> Super Admin view
+          </Link>
+        )}
         <Link
           to="/login"
+          onClick={() => clearSession()}
           className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent"
         >
           <LogOut className="h-4 w-4" /> Sign out
