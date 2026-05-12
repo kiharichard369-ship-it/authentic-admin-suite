@@ -1,15 +1,17 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Receipt, Package, Users, ClipboardList,
-  Wallet, FileText, Droplets, LogOut,
+  Wallet, FileText, Droplets, LogOut, UserCircle, RefreshCcw, ShieldCheck,
 } from "lucide-react";
 
 const items = [
   { to: "/water-admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/water-admin/sales", label: "Sales", icon: Receipt },
   { to: "/water-admin/stock", label: "Stock", icon: Package },
+  { to: "/water-admin/customers", label: "Customers", icon: UserCircle },
   { to: "/water-admin/cashiers", label: "Cashiers", icon: Users },
   { to: "/water-admin/requests", label: "Stock Requests", icon: ClipboardList },
+  { to: "/water-admin/refunds", label: "Refunds", icon: RefreshCcw },
   { to: "/water-admin/expenses", label: "Expenses", icon: Wallet },
   { to: "/water-admin/reports", label: "Reports", icon: FileText },
 ];
@@ -48,7 +50,13 @@ export function WaterAdminSidebar() {
           );
         })}
       </nav>
-      <div className="px-3 py-4 border-t border-sidebar-border">
+      <div className="px-3 py-4 border-t border-sidebar-border space-y-1">
+        <Link
+          to="/super-admin/dashboard"
+          className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent"
+        >
+          <ShieldCheck className="h-4 w-4" /> Super Admin view
+        </Link>
         <Link
           to="/login"
           className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent"
