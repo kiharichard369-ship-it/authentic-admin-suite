@@ -5,6 +5,7 @@ import heroImg from "@/assets/login-hero.jpg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ROLE_HOME, ROLE_LABEL, roleFromEmail, setSession, clearSession } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -15,6 +16,17 @@ export const Route = createFileRoute("/login")({
   }),
   component: LoginPage,
 });
+
+const DEMO_ACCOUNTS: { email: string; label: string }[] = [
+  { email: "super@platform.co.ke", label: "Super Admin" },
+  { email: "water@platform.co.ke", label: "Water Retail Admin" },
+  { email: "cashier@platform.co.ke", label: "Water Cashier" },
+  { email: "driver@platform.co.ke", label: "Driver" },
+  { email: "rb@platform.co.ke", label: "R&B Admin" },
+  { email: "waiter@platform.co.ke", label: "Waiter" },
+  { email: "kitchen@platform.co.ke", label: "Kitchen" },
+  { email: "butcher@platform.co.ke", label: "Butcher" },
+];
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -28,10 +40,14 @@ function LoginPage() {
       setError("Email and password are required.");
       return;
     }
-    // Demo: route based on email prefix
-    if (email.startsWith("super")) navigate({ to: "/super-admin/dashboard" });
-    else if (email.startsWith("water")) navigate({ to: "/water-admin/dashboard" });
-    else setError("Try super@… or water@… for this demo build.");
+    const role = roleFromEmail(email);
+    if (!role) {
+      setError("Unknown account. Try one of the demo accounts below.");
+      return;
+    }
+    clearSession();
+    setSession({ role, email, name: ROLE_LABEL[role] });
+    navigate({ to: ROLE_HOME[role] });
   };
 
   return (
@@ -81,11 +97,24 @@ function LoginPage() {
             )}
 
             <Button type="submit" className="w-full">Sign in</Button>
-
-            <p className="text-xs text-muted-foreground text-center pt-4">
-              Accounts are created by your administrator. No public registration.
-            </p>
           </form>
+
+          <div className="mt-8 pt-6 border-t">
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-2">Demo accounts</div>
+            <div className="grid grid-cols-2 gap-1.5">
+              {DEMO_ACCOUNTS.map((a) => (
+                <button
+                  key={a.email}
+                  type="button"
+                  onClick={() => setEmail(a.email)}
+                  className="text-left text-xs px-2 py-1.5 rounded-md hover:bg-secondary transition-colors"
+                >
+                  <div className="font-medium">{a.label}</div>
+                  <div className="text-muted-foreground truncate">{a.email}</div>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
