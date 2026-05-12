@@ -6,6 +6,14 @@ import { ArrowLeft, Truck, Route as RouteIcon, Users, MapPin, Fuel, FileText } f
 
 export const Route = createFileRoute("/delivery-admin/dashboard")({
   head: () => ({ meta: [{ title: "Water Delivery — Admin" }] }),
+  beforeLoad: () => {
+    if (typeof window === "undefined") return;
+    const raw = localStorage.getItem("maji-session-v1");
+    const s = raw ? JSON.parse(raw) : null;
+    if (!s) { window.location.href = "/login"; throw new Error("redirect"); }
+    const allowed = ["super_admin","driver"];
+    if (!allowed.includes(s.role)) { window.location.href = "/login"; throw new Error("redirect"); }
+  },
   component: DeliveryAdminLanding,
 });
 
