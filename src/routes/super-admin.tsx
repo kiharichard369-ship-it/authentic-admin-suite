@@ -1,15 +1,31 @@
-import { createFileRoute, Outlet, Link } from "@tanstack/react-router";
+import { createFileRoute, Outlet, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Bell, Search } from "lucide-react";
 import { SuperAdminSidebar } from "@/components/super-admin/Sidebar";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { getSession, ROLE_HOME, type Session } from "@/lib/auth";
 
 export const Route = createFileRoute("/super-admin")({
   component: SuperAdminLayout,
 });
 
 function SuperAdminLayout() {
+  const navigate = useNavigate();
+  const [session, setSessionState] = useState<Session | null>(null);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const s = getSession();
+    setSessionState(s);
+    setReady(true);
+    if (!s) navigate({ to: "/login" });
+    else if (s.role !== "super_admin") navigate({ to: ROLE_HOME[s.role] });
+  }, [navigate]);
+
+  if (!ready || !session || session.role !== "super_admin") return null;
+
   return (
     <div className="min-h-screen flex bg-background">
       <SuperAdminSidebar />
@@ -37,3 +53,4 @@ function SuperAdminLayout() {
     </div>
   );
 }
+
