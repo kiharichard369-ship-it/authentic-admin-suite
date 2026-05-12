@@ -28,6 +28,8 @@ import { Route as SuperAdminExpensesRouteImport } from './routes/super-admin.exp
 import { Route as SuperAdminDashboardRouteImport } from './routes/super-admin.dashboard'
 import { Route as SuperAdminAssetsRouteImport } from './routes/super-admin.assets'
 import { Route as SuperAdminAnalyticsRouteImport } from './routes/super-admin.analytics'
+import { Route as RbAdminDashboardRouteImport } from './routes/rb-admin.dashboard'
+import { Route as DeliveryAdminDashboardRouteImport } from './routes/delivery-admin.dashboard'
 
 const WaterAdminRoute = WaterAdminRouteImport.update({
   id: '/water-admin',
@@ -124,12 +126,24 @@ const SuperAdminAnalyticsRoute = SuperAdminAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => SuperAdminRoute,
 } as any)
+const RbAdminDashboardRoute = RbAdminDashboardRouteImport.update({
+  id: '/rb-admin/dashboard',
+  path: '/rb-admin/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeliveryAdminDashboardRoute = DeliveryAdminDashboardRouteImport.update({
+  id: '/delivery-admin/dashboard',
+  path: '/delivery-admin/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/super-admin': typeof SuperAdminRouteWithChildren
   '/water-admin': typeof WaterAdminRouteWithChildren
+  '/delivery-admin/dashboard': typeof DeliveryAdminDashboardRoute
+  '/rb-admin/dashboard': typeof RbAdminDashboardRoute
   '/super-admin/analytics': typeof SuperAdminAnalyticsRoute
   '/super-admin/assets': typeof SuperAdminAssetsRoute
   '/super-admin/dashboard': typeof SuperAdminDashboardRoute
@@ -151,6 +165,8 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/super-admin': typeof SuperAdminRouteWithChildren
   '/water-admin': typeof WaterAdminRouteWithChildren
+  '/delivery-admin/dashboard': typeof DeliveryAdminDashboardRoute
+  '/rb-admin/dashboard': typeof RbAdminDashboardRoute
   '/super-admin/analytics': typeof SuperAdminAnalyticsRoute
   '/super-admin/assets': typeof SuperAdminAssetsRoute
   '/super-admin/dashboard': typeof SuperAdminDashboardRoute
@@ -173,6 +189,8 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/super-admin': typeof SuperAdminRouteWithChildren
   '/water-admin': typeof WaterAdminRouteWithChildren
+  '/delivery-admin/dashboard': typeof DeliveryAdminDashboardRoute
+  '/rb-admin/dashboard': typeof RbAdminDashboardRoute
   '/super-admin/analytics': typeof SuperAdminAnalyticsRoute
   '/super-admin/assets': typeof SuperAdminAssetsRoute
   '/super-admin/dashboard': typeof SuperAdminDashboardRoute
@@ -196,6 +214,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/super-admin'
     | '/water-admin'
+    | '/delivery-admin/dashboard'
+    | '/rb-admin/dashboard'
     | '/super-admin/analytics'
     | '/super-admin/assets'
     | '/super-admin/dashboard'
@@ -217,6 +237,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/super-admin'
     | '/water-admin'
+    | '/delivery-admin/dashboard'
+    | '/rb-admin/dashboard'
     | '/super-admin/analytics'
     | '/super-admin/assets'
     | '/super-admin/dashboard'
@@ -238,6 +260,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/super-admin'
     | '/water-admin'
+    | '/delivery-admin/dashboard'
+    | '/rb-admin/dashboard'
     | '/super-admin/analytics'
     | '/super-admin/assets'
     | '/super-admin/dashboard'
@@ -260,6 +284,8 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SuperAdminRoute: typeof SuperAdminRouteWithChildren
   WaterAdminRoute: typeof WaterAdminRouteWithChildren
+  DeliveryAdminDashboardRoute: typeof DeliveryAdminDashboardRoute
+  RbAdminDashboardRoute: typeof RbAdminDashboardRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -397,6 +423,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuperAdminAnalyticsRouteImport
       parentRoute: typeof SuperAdminRoute
     }
+    '/rb-admin/dashboard': {
+      id: '/rb-admin/dashboard'
+      path: '/rb-admin/dashboard'
+      fullPath: '/rb-admin/dashboard'
+      preLoaderRoute: typeof RbAdminDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/delivery-admin/dashboard': {
+      id: '/delivery-admin/dashboard'
+      path: '/delivery-admin/dashboard'
+      fullPath: '/delivery-admin/dashboard'
+      preLoaderRoute: typeof DeliveryAdminDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -455,7 +495,19 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SuperAdminRoute: SuperAdminRouteWithChildren,
   WaterAdminRoute: WaterAdminRouteWithChildren,
+  DeliveryAdminDashboardRoute: DeliveryAdminDashboardRoute,
+  RbAdminDashboardRoute: RbAdminDashboardRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
