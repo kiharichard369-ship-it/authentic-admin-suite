@@ -1,0 +1,54 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, UtensilsCrossed, ChefHat, Beef, Coffee, ClipboardList, FileText } from "lucide-react";
+
+export const Route = createFileRoute("/rb-admin/dashboard")({
+  head: () => ({ meta: [{ title: "Restaurant & Butchery — Admin" }] }),
+  component: RbAdminLanding,
+});
+
+const modules = [
+  { icon: Coffee, name: "Tables & orders", desc: "Live floor map, open bills, send to kitchen." },
+  { icon: ChefHat, name: "Kitchen tickets", desc: "Ticket queue, prep times, mark-ready flow." },
+  { icon: Beef, name: "Butchery counter", desc: "Cuts, weights, daily yield and waste log." },
+  { icon: ClipboardList, name: "Menu & pricing", desc: "Dishes, recipes, modifiers and combos." },
+  { icon: FileText, name: "Reports", desc: "Covers, dish mix, hourly revenue, staff tips." },
+];
+
+function RbAdminLanding() {
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="max-w-5xl mx-auto px-6 py-10">
+        <Link to="/super-admin/dashboard" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8">
+          <ArrowLeft className="h-4 w-4" /> Back to Super Admin
+        </Link>
+        <div className="flex items-center gap-3 mb-3">
+          <div className="h-12 w-12 rounded-xl bg-primary/10 text-primary grid place-items-center">
+            <UtensilsCrossed className="h-6 w-6" />
+          </div>
+          <div>
+            <h1 className="font-display text-3xl">Restaurant & Butchery</h1>
+            <p className="text-sm text-muted-foreground">Admin workspace · all modules visible to Super Admin</p>
+          </div>
+        </div>
+
+        <Badge variant="secondary" className="mb-8">Coming soon · pages scaffold below</Badge>
+
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {modules.map(({ icon: Icon, name, desc }) => (
+            <Card key={name} className="hover:border-primary transition-colors">
+              <CardContent className="p-5">
+                <Icon className="h-6 w-6 text-primary mb-3" />
+                <div className="font-medium mb-1">{name}</div>
+                <p className="text-xs text-muted-foreground">{desc}</p>
+                <Button size="sm" variant="outline" className="mt-4 w-full" disabled>Open module</Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

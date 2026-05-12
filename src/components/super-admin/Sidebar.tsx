@@ -1,10 +1,14 @@
 import { Link, useRouterState } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   LayoutDashboard, Users, Store, BarChart3, Boxes,
   CreditCard, Receipt, FileText, Droplets, LogOut,
+  ChevronDown, UtensilsCrossed, Truck, Package, ClipboardList,
+  Wallet, RefreshCcw, ChefHat, Beef, Coffee, Route as RouteIcon,
+  MapPin, Fuel, UserCircle,
 } from "lucide-react";
 
-const items = [
+const platformItems = [
   { to: "/super-admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/super-admin/users", label: "Users & Roles", icon: Users },
   { to: "/super-admin/shops", label: "Shop Branches", icon: Store },
@@ -15,8 +19,62 @@ const items = [
   { to: "/super-admin/reports", label: "Reports", icon: FileText },
 ];
 
+type ArmItem = { to: string; label: string; icon: React.ComponentType<{ className?: string }> };
+type Arm = { id: string; name: string; icon: React.ComponentType<{ className?: string }>; items: ArmItem[] };
+
+const arms: Arm[] = [
+  {
+    id: "water",
+    name: "Water Retail",
+    icon: Droplets,
+    items: [
+      { to: "/water-admin/dashboard", label: "Branch dashboard", icon: LayoutDashboard },
+      { to: "/water-admin/sales", label: "Sales & POS", icon: Receipt },
+      { to: "/water-admin/stock", label: "Stock", icon: Package },
+      { to: "/water-admin/customers", label: "Customers", icon: UserCircle },
+      { to: "/water-admin/cashiers", label: "Cashiers", icon: Users },
+      { to: "/water-admin/requests", label: "Stock requests", icon: ClipboardList },
+      { to: "/water-admin/refunds", label: "Refunds", icon: RefreshCcw },
+      { to: "/water-admin/expenses", label: "Expenses", icon: Wallet },
+      { to: "/water-admin/reports", label: "Reports", icon: FileText },
+    ],
+  },
+  {
+    id: "rb",
+    name: "Restaurant & Butchery",
+    icon: UtensilsCrossed,
+    items: [
+      { to: "/rb-admin/dashboard", label: "Service dashboard", icon: LayoutDashboard },
+      { to: "/rb-admin/dashboard", label: "Tables & orders", icon: Coffee },
+      { to: "/rb-admin/dashboard", label: "Kitchen tickets", icon: ChefHat },
+      { to: "/rb-admin/dashboard", label: "Butchery counter", icon: Beef },
+      { to: "/rb-admin/dashboard", label: "Menu & pricing", icon: ClipboardList },
+      { to: "/rb-admin/dashboard", label: "Reports", icon: FileText },
+    ],
+  },
+  {
+    id: "delivery",
+    name: "Water Delivery",
+    icon: Truck,
+    items: [
+      { to: "/delivery-admin/dashboard", label: "Fleet dashboard", icon: LayoutDashboard },
+      { to: "/delivery-admin/dashboard", label: "Active routes", icon: RouteIcon },
+      { to: "/delivery-admin/dashboard", label: "Drivers", icon: Users },
+      { to: "/delivery-admin/dashboard", label: "Drop points", icon: MapPin },
+      { to: "/delivery-admin/dashboard", label: "Fuel & expenses", icon: Fuel },
+      { to: "/delivery-admin/dashboard", label: "Reports", icon: FileText },
+    ],
+  },
+];
+
 export function SuperAdminSidebar() {
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const [open, setOpen] = useState<Record<string, boolean>>(() => ({
+    water: path.startsWith("/water-admin"),
+    rb: path.startsWith("/rb-admin"),
+    delivery: path.startsWith("/delivery-admin"),
+  }));
+
   return (
     <aside className="hidden md:flex w-64 shrink-0 flex-col bg-sidebar text-sidebar-foreground">
       <div className="px-6 py-6 border-b border-sidebar-border">
@@ -30,8 +88,12 @@ export function SuperAdminSidebar() {
           </div>
         </Link>
       </div>
-      <nav className="flex-1 px-3 py-4 space-y-1">
-        {items.map(({ to, label, icon: Icon }) => {
+
+      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        <div className="px-3 pb-1 text-[10px] uppercase tracking-wider text-sidebar-foreground/50">
+          Platform
+        </div>
+        {platformItems.map(({ to, label, icon: Icon }) => {
           const active = path.startsWith(to);
           return (
             <Link
@@ -48,7 +110,50 @@ export function SuperAdminSidebar() {
             </Link>
           );
         })}
+
+        <div className="px-3 pt-4 pb-1 text-[10px] uppercase tracking-wider text-sidebar-foreground/50">
+          Business Arms
+        </div>
+        {arms.map((arm) => {
+          const isOpen = open[arm.id];
+          const Icon = arm.icon;
+          return (
+            <div key={arm.id} className="space-y-1">
+              <button
+                type="button"
+                onClick={() => setOpen((s) => ({ ...s, [arm.id]: !s[arm.id] }))}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+              >
+                <Icon className="h-4 w-4" />
+                <span className="flex-1 text-left">{arm.name}</span>
+                <ChevronDown className={`h-3.5 w-3.5 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+              </button>
+              {isOpen && (
+                <div className="ml-4 pl-3 border-l border-sidebar-border space-y-0.5">
+                  {arm.items.map(({ to, label, icon: SubIcon }, i) => {
+                    const active = path === to;
+                    return (
+                      <Link
+                        key={`${arm.id}-${i}-${label}`}
+                        to={to}
+                        className={`flex items-center gap-2 px-2 py-1.5 rounded-md text-xs transition-colors ${
+                          active
+                            ? "bg-sidebar-primary/15 text-sidebar-primary-foreground font-medium"
+                            : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                        }`}
+                      >
+                        <SubIcon className="h-3.5 w-3.5" />
+                        {label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </nav>
+
       <div className="px-3 py-4 border-t border-sidebar-border">
         <Link
           to="/login"

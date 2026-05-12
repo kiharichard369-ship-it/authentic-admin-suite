@@ -17,8 +17,10 @@ import { Route as WaterAdminStockRouteImport } from './routes/water-admin.stock'
 import { Route as WaterAdminSalesRouteImport } from './routes/water-admin.sales'
 import { Route as WaterAdminRequestsRouteImport } from './routes/water-admin.requests'
 import { Route as WaterAdminReportsRouteImport } from './routes/water-admin.reports'
+import { Route as WaterAdminRefundsRouteImport } from './routes/water-admin.refunds'
 import { Route as WaterAdminExpensesRouteImport } from './routes/water-admin.expenses'
 import { Route as WaterAdminDashboardRouteImport } from './routes/water-admin.dashboard'
+import { Route as WaterAdminCustomersRouteImport } from './routes/water-admin.customers'
 import { Route as WaterAdminCashiersRouteImport } from './routes/water-admin.cashiers'
 import { Route as SuperAdminUsersRouteImport } from './routes/super-admin.users'
 import { Route as SuperAdminShopsRouteImport } from './routes/super-admin.shops'
@@ -28,6 +30,8 @@ import { Route as SuperAdminExpensesRouteImport } from './routes/super-admin.exp
 import { Route as SuperAdminDashboardRouteImport } from './routes/super-admin.dashboard'
 import { Route as SuperAdminAssetsRouteImport } from './routes/super-admin.assets'
 import { Route as SuperAdminAnalyticsRouteImport } from './routes/super-admin.analytics'
+import { Route as RbAdminDashboardRouteImport } from './routes/rb-admin.dashboard'
+import { Route as DeliveryAdminDashboardRouteImport } from './routes/delivery-admin.dashboard'
 
 const WaterAdminRoute = WaterAdminRouteImport.update({
   id: '/water-admin',
@@ -69,6 +73,11 @@ const WaterAdminReportsRoute = WaterAdminReportsRouteImport.update({
   path: '/reports',
   getParentRoute: () => WaterAdminRoute,
 } as any)
+const WaterAdminRefundsRoute = WaterAdminRefundsRouteImport.update({
+  id: '/refunds',
+  path: '/refunds',
+  getParentRoute: () => WaterAdminRoute,
+} as any)
 const WaterAdminExpensesRoute = WaterAdminExpensesRouteImport.update({
   id: '/expenses',
   path: '/expenses',
@@ -77,6 +86,11 @@ const WaterAdminExpensesRoute = WaterAdminExpensesRouteImport.update({
 const WaterAdminDashboardRoute = WaterAdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => WaterAdminRoute,
+} as any)
+const WaterAdminCustomersRoute = WaterAdminCustomersRouteImport.update({
+  id: '/customers',
+  path: '/customers',
   getParentRoute: () => WaterAdminRoute,
 } as any)
 const WaterAdminCashiersRoute = WaterAdminCashiersRouteImport.update({
@@ -124,12 +138,24 @@ const SuperAdminAnalyticsRoute = SuperAdminAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => SuperAdminRoute,
 } as any)
+const RbAdminDashboardRoute = RbAdminDashboardRouteImport.update({
+  id: '/rb-admin/dashboard',
+  path: '/rb-admin/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeliveryAdminDashboardRoute = DeliveryAdminDashboardRouteImport.update({
+  id: '/delivery-admin/dashboard',
+  path: '/delivery-admin/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/super-admin': typeof SuperAdminRouteWithChildren
   '/water-admin': typeof WaterAdminRouteWithChildren
+  '/delivery-admin/dashboard': typeof DeliveryAdminDashboardRoute
+  '/rb-admin/dashboard': typeof RbAdminDashboardRoute
   '/super-admin/analytics': typeof SuperAdminAnalyticsRoute
   '/super-admin/assets': typeof SuperAdminAssetsRoute
   '/super-admin/dashboard': typeof SuperAdminDashboardRoute
@@ -139,8 +165,10 @@ export interface FileRoutesByFullPath {
   '/super-admin/shops': typeof SuperAdminShopsRoute
   '/super-admin/users': typeof SuperAdminUsersRoute
   '/water-admin/cashiers': typeof WaterAdminCashiersRoute
+  '/water-admin/customers': typeof WaterAdminCustomersRoute
   '/water-admin/dashboard': typeof WaterAdminDashboardRoute
   '/water-admin/expenses': typeof WaterAdminExpensesRoute
+  '/water-admin/refunds': typeof WaterAdminRefundsRoute
   '/water-admin/reports': typeof WaterAdminReportsRoute
   '/water-admin/requests': typeof WaterAdminRequestsRoute
   '/water-admin/sales': typeof WaterAdminSalesRoute
@@ -151,6 +179,8 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/super-admin': typeof SuperAdminRouteWithChildren
   '/water-admin': typeof WaterAdminRouteWithChildren
+  '/delivery-admin/dashboard': typeof DeliveryAdminDashboardRoute
+  '/rb-admin/dashboard': typeof RbAdminDashboardRoute
   '/super-admin/analytics': typeof SuperAdminAnalyticsRoute
   '/super-admin/assets': typeof SuperAdminAssetsRoute
   '/super-admin/dashboard': typeof SuperAdminDashboardRoute
@@ -160,8 +190,10 @@ export interface FileRoutesByTo {
   '/super-admin/shops': typeof SuperAdminShopsRoute
   '/super-admin/users': typeof SuperAdminUsersRoute
   '/water-admin/cashiers': typeof WaterAdminCashiersRoute
+  '/water-admin/customers': typeof WaterAdminCustomersRoute
   '/water-admin/dashboard': typeof WaterAdminDashboardRoute
   '/water-admin/expenses': typeof WaterAdminExpensesRoute
+  '/water-admin/refunds': typeof WaterAdminRefundsRoute
   '/water-admin/reports': typeof WaterAdminReportsRoute
   '/water-admin/requests': typeof WaterAdminRequestsRoute
   '/water-admin/sales': typeof WaterAdminSalesRoute
@@ -173,6 +205,8 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/super-admin': typeof SuperAdminRouteWithChildren
   '/water-admin': typeof WaterAdminRouteWithChildren
+  '/delivery-admin/dashboard': typeof DeliveryAdminDashboardRoute
+  '/rb-admin/dashboard': typeof RbAdminDashboardRoute
   '/super-admin/analytics': typeof SuperAdminAnalyticsRoute
   '/super-admin/assets': typeof SuperAdminAssetsRoute
   '/super-admin/dashboard': typeof SuperAdminDashboardRoute
@@ -182,8 +216,10 @@ export interface FileRoutesById {
   '/super-admin/shops': typeof SuperAdminShopsRoute
   '/super-admin/users': typeof SuperAdminUsersRoute
   '/water-admin/cashiers': typeof WaterAdminCashiersRoute
+  '/water-admin/customers': typeof WaterAdminCustomersRoute
   '/water-admin/dashboard': typeof WaterAdminDashboardRoute
   '/water-admin/expenses': typeof WaterAdminExpensesRoute
+  '/water-admin/refunds': typeof WaterAdminRefundsRoute
   '/water-admin/reports': typeof WaterAdminReportsRoute
   '/water-admin/requests': typeof WaterAdminRequestsRoute
   '/water-admin/sales': typeof WaterAdminSalesRoute
@@ -196,6 +232,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/super-admin'
     | '/water-admin'
+    | '/delivery-admin/dashboard'
+    | '/rb-admin/dashboard'
     | '/super-admin/analytics'
     | '/super-admin/assets'
     | '/super-admin/dashboard'
@@ -205,8 +243,10 @@ export interface FileRouteTypes {
     | '/super-admin/shops'
     | '/super-admin/users'
     | '/water-admin/cashiers'
+    | '/water-admin/customers'
     | '/water-admin/dashboard'
     | '/water-admin/expenses'
+    | '/water-admin/refunds'
     | '/water-admin/reports'
     | '/water-admin/requests'
     | '/water-admin/sales'
@@ -217,6 +257,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/super-admin'
     | '/water-admin'
+    | '/delivery-admin/dashboard'
+    | '/rb-admin/dashboard'
     | '/super-admin/analytics'
     | '/super-admin/assets'
     | '/super-admin/dashboard'
@@ -226,8 +268,10 @@ export interface FileRouteTypes {
     | '/super-admin/shops'
     | '/super-admin/users'
     | '/water-admin/cashiers'
+    | '/water-admin/customers'
     | '/water-admin/dashboard'
     | '/water-admin/expenses'
+    | '/water-admin/refunds'
     | '/water-admin/reports'
     | '/water-admin/requests'
     | '/water-admin/sales'
@@ -238,6 +282,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/super-admin'
     | '/water-admin'
+    | '/delivery-admin/dashboard'
+    | '/rb-admin/dashboard'
     | '/super-admin/analytics'
     | '/super-admin/assets'
     | '/super-admin/dashboard'
@@ -247,8 +293,10 @@ export interface FileRouteTypes {
     | '/super-admin/shops'
     | '/super-admin/users'
     | '/water-admin/cashiers'
+    | '/water-admin/customers'
     | '/water-admin/dashboard'
     | '/water-admin/expenses'
+    | '/water-admin/refunds'
     | '/water-admin/reports'
     | '/water-admin/requests'
     | '/water-admin/sales'
@@ -260,6 +308,8 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SuperAdminRoute: typeof SuperAdminRouteWithChildren
   WaterAdminRoute: typeof WaterAdminRouteWithChildren
+  DeliveryAdminDashboardRoute: typeof DeliveryAdminDashboardRoute
+  RbAdminDashboardRoute: typeof RbAdminDashboardRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -320,6 +370,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WaterAdminReportsRouteImport
       parentRoute: typeof WaterAdminRoute
     }
+    '/water-admin/refunds': {
+      id: '/water-admin/refunds'
+      path: '/refunds'
+      fullPath: '/water-admin/refunds'
+      preLoaderRoute: typeof WaterAdminRefundsRouteImport
+      parentRoute: typeof WaterAdminRoute
+    }
     '/water-admin/expenses': {
       id: '/water-admin/expenses'
       path: '/expenses'
@@ -332,6 +389,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/water-admin/dashboard'
       preLoaderRoute: typeof WaterAdminDashboardRouteImport
+      parentRoute: typeof WaterAdminRoute
+    }
+    '/water-admin/customers': {
+      id: '/water-admin/customers'
+      path: '/customers'
+      fullPath: '/water-admin/customers'
+      preLoaderRoute: typeof WaterAdminCustomersRouteImport
       parentRoute: typeof WaterAdminRoute
     }
     '/water-admin/cashiers': {
@@ -397,6 +461,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuperAdminAnalyticsRouteImport
       parentRoute: typeof SuperAdminRoute
     }
+    '/rb-admin/dashboard': {
+      id: '/rb-admin/dashboard'
+      path: '/rb-admin/dashboard'
+      fullPath: '/rb-admin/dashboard'
+      preLoaderRoute: typeof RbAdminDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/delivery-admin/dashboard': {
+      id: '/delivery-admin/dashboard'
+      path: '/delivery-admin/dashboard'
+      fullPath: '/delivery-admin/dashboard'
+      preLoaderRoute: typeof DeliveryAdminDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -428,8 +506,10 @@ const SuperAdminRouteWithChildren = SuperAdminRoute._addFileChildren(
 
 interface WaterAdminRouteChildren {
   WaterAdminCashiersRoute: typeof WaterAdminCashiersRoute
+  WaterAdminCustomersRoute: typeof WaterAdminCustomersRoute
   WaterAdminDashboardRoute: typeof WaterAdminDashboardRoute
   WaterAdminExpensesRoute: typeof WaterAdminExpensesRoute
+  WaterAdminRefundsRoute: typeof WaterAdminRefundsRoute
   WaterAdminReportsRoute: typeof WaterAdminReportsRoute
   WaterAdminRequestsRoute: typeof WaterAdminRequestsRoute
   WaterAdminSalesRoute: typeof WaterAdminSalesRoute
@@ -438,8 +518,10 @@ interface WaterAdminRouteChildren {
 
 const WaterAdminRouteChildren: WaterAdminRouteChildren = {
   WaterAdminCashiersRoute: WaterAdminCashiersRoute,
+  WaterAdminCustomersRoute: WaterAdminCustomersRoute,
   WaterAdminDashboardRoute: WaterAdminDashboardRoute,
   WaterAdminExpensesRoute: WaterAdminExpensesRoute,
+  WaterAdminRefundsRoute: WaterAdminRefundsRoute,
   WaterAdminReportsRoute: WaterAdminReportsRoute,
   WaterAdminRequestsRoute: WaterAdminRequestsRoute,
   WaterAdminSalesRoute: WaterAdminSalesRoute,
@@ -455,6 +537,8 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SuperAdminRoute: SuperAdminRouteWithChildren,
   WaterAdminRoute: WaterAdminRouteWithChildren,
+  DeliveryAdminDashboardRoute: DeliveryAdminDashboardRoute,
+  RbAdminDashboardRoute: RbAdminDashboardRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

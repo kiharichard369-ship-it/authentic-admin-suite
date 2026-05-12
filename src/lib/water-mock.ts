@@ -68,3 +68,18 @@ export const branchExpenses = [
   { id: "be2", date: "2026-05-10", staff: "Mary Wanjiku", category: "Cleaning", description: "Detergent & supplies", amount: 850, status: "reviewed" },
   { id: "be3", date: "2026-05-09", staff: "Grace Mumbi", category: "Other", description: "Drinking water for staff", amount: 200, status: "rejected" },
 ];
+
+export const customers = [
+  { id: "cu1", name: "Riverside Apartments", phone: "+254 720 113 008", type: "Estate", visits: 142, spent: 184200, lastVisit: "2026-05-11", balance: 0 },
+  { id: "cu2", name: "Kileleshwa Salon", phone: "+254 711 901 442", type: "Business", visits: 88, spent: 64800, lastVisit: "2026-05-11", balance: 1500 },
+  { id: "cu3", name: "Mr. Otieno", phone: "+254 733 220 481", type: "Walk-in", visits: 36, spent: 14200, lastVisit: "2026-05-10", balance: 0 },
+  { id: "cu4", name: "St. Catherine School", phone: "+254 722 005 117", type: "Institution", visits: 24, spent: 96400, lastVisit: "2026-05-09", balance: 4200 },
+  { id: "cu5", name: "Mrs. Wambui", phone: "+254 711 008 240", type: "Walk-in", visits: 19, spent: 8650, lastVisit: "2026-05-08", balance: 0 },
+];
+
+export const refunds = [
+  { id: "RF-021", txn: "T-1039", date: "2026-05-11 11:05", customer: "Walk-in", cashier: "Grace Mumbi", reason: "Damaged seal on 5L bottle", amount: 450, status: "approved" },
+  { id: "RF-020", txn: "T-1024", date: "2026-05-10 16:42", customer: "Mr. Otieno", cashier: "Esther Wairimu", reason: "Wrong size dispensed", amount: 150, status: "pending" },
+  { id: "RF-019", txn: "T-1011", date: "2026-05-09 09:18", customer: "Kileleshwa Salon", cashier: "Grace Mumbi", reason: "Duplicate charge", amount: 600, status: "approved" },
+  { id: "RF-018", txn: "T-0998", date: "2026-05-07 14:05", customer: "Walk-in", cashier: "Brian Kamau", reason: "Customer changed mind", amount: 90, status: "rejected" },
+];
