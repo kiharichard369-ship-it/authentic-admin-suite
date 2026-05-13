@@ -38,6 +38,11 @@ import { Route as RbAdminMenuRouteImport } from './routes/rb-admin.menu'
 import { Route as RbAdminKitchenRouteImport } from './routes/rb-admin.kitchen'
 import { Route as RbAdminDashboardRouteImport } from './routes/rb-admin.dashboard'
 import { Route as RbAdminButcheryRouteImport } from './routes/rb-admin.butchery'
+import { Route as DeliveryAdminRoutesRouteImport } from './routes/delivery-admin.routes'
+import { Route as DeliveryAdminReportsRouteImport } from './routes/delivery-admin.reports'
+import { Route as DeliveryAdminFuelRouteImport } from './routes/delivery-admin.fuel'
+import { Route as DeliveryAdminDropsRouteImport } from './routes/delivery-admin.drops'
+import { Route as DeliveryAdminDriversRouteImport } from './routes/delivery-admin.drivers'
 import { Route as DeliveryAdminDashboardRouteImport } from './routes/delivery-admin.dashboard'
 
 const WaterAdminRoute = WaterAdminRouteImport.update({
@@ -185,6 +190,31 @@ const RbAdminButcheryRoute = RbAdminButcheryRouteImport.update({
   path: '/butchery',
   getParentRoute: () => RbAdminRoute,
 } as any)
+const DeliveryAdminRoutesRoute = DeliveryAdminRoutesRouteImport.update({
+  id: '/routes',
+  path: '/routes',
+  getParentRoute: () => DeliveryAdminRoute,
+} as any)
+const DeliveryAdminReportsRoute = DeliveryAdminReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => DeliveryAdminRoute,
+} as any)
+const DeliveryAdminFuelRoute = DeliveryAdminFuelRouteImport.update({
+  id: '/fuel',
+  path: '/fuel',
+  getParentRoute: () => DeliveryAdminRoute,
+} as any)
+const DeliveryAdminDropsRoute = DeliveryAdminDropsRouteImport.update({
+  id: '/drops',
+  path: '/drops',
+  getParentRoute: () => DeliveryAdminRoute,
+} as any)
+const DeliveryAdminDriversRoute = DeliveryAdminDriversRouteImport.update({
+  id: '/drivers',
+  path: '/drivers',
+  getParentRoute: () => DeliveryAdminRoute,
+} as any)
 const DeliveryAdminDashboardRoute = DeliveryAdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -199,6 +229,11 @@ export interface FileRoutesByFullPath {
   '/super-admin': typeof SuperAdminRouteWithChildren
   '/water-admin': typeof WaterAdminRouteWithChildren
   '/delivery-admin/dashboard': typeof DeliveryAdminDashboardRoute
+  '/delivery-admin/drivers': typeof DeliveryAdminDriversRoute
+  '/delivery-admin/drops': typeof DeliveryAdminDropsRoute
+  '/delivery-admin/fuel': typeof DeliveryAdminFuelRoute
+  '/delivery-admin/reports': typeof DeliveryAdminReportsRoute
+  '/delivery-admin/routes': typeof DeliveryAdminRoutesRoute
   '/rb-admin/butchery': typeof RbAdminButcheryRoute
   '/rb-admin/dashboard': typeof RbAdminDashboardRoute
   '/rb-admin/kitchen': typeof RbAdminKitchenRoute
@@ -231,6 +266,11 @@ export interface FileRoutesByTo {
   '/super-admin': typeof SuperAdminRouteWithChildren
   '/water-admin': typeof WaterAdminRouteWithChildren
   '/delivery-admin/dashboard': typeof DeliveryAdminDashboardRoute
+  '/delivery-admin/drivers': typeof DeliveryAdminDriversRoute
+  '/delivery-admin/drops': typeof DeliveryAdminDropsRoute
+  '/delivery-admin/fuel': typeof DeliveryAdminFuelRoute
+  '/delivery-admin/reports': typeof DeliveryAdminReportsRoute
+  '/delivery-admin/routes': typeof DeliveryAdminRoutesRoute
   '/rb-admin/butchery': typeof RbAdminButcheryRoute
   '/rb-admin/dashboard': typeof RbAdminDashboardRoute
   '/rb-admin/kitchen': typeof RbAdminKitchenRoute
@@ -264,6 +304,11 @@ export interface FileRoutesById {
   '/super-admin': typeof SuperAdminRouteWithChildren
   '/water-admin': typeof WaterAdminRouteWithChildren
   '/delivery-admin/dashboard': typeof DeliveryAdminDashboardRoute
+  '/delivery-admin/drivers': typeof DeliveryAdminDriversRoute
+  '/delivery-admin/drops': typeof DeliveryAdminDropsRoute
+  '/delivery-admin/fuel': typeof DeliveryAdminFuelRoute
+  '/delivery-admin/reports': typeof DeliveryAdminReportsRoute
+  '/delivery-admin/routes': typeof DeliveryAdminRoutesRoute
   '/rb-admin/butchery': typeof RbAdminButcheryRoute
   '/rb-admin/dashboard': typeof RbAdminDashboardRoute
   '/rb-admin/kitchen': typeof RbAdminKitchenRoute
@@ -298,6 +343,11 @@ export interface FileRouteTypes {
     | '/super-admin'
     | '/water-admin'
     | '/delivery-admin/dashboard'
+    | '/delivery-admin/drivers'
+    | '/delivery-admin/drops'
+    | '/delivery-admin/fuel'
+    | '/delivery-admin/reports'
+    | '/delivery-admin/routes'
     | '/rb-admin/butchery'
     | '/rb-admin/dashboard'
     | '/rb-admin/kitchen'
@@ -330,6 +380,11 @@ export interface FileRouteTypes {
     | '/super-admin'
     | '/water-admin'
     | '/delivery-admin/dashboard'
+    | '/delivery-admin/drivers'
+    | '/delivery-admin/drops'
+    | '/delivery-admin/fuel'
+    | '/delivery-admin/reports'
+    | '/delivery-admin/routes'
     | '/rb-admin/butchery'
     | '/rb-admin/dashboard'
     | '/rb-admin/kitchen'
@@ -362,6 +417,11 @@ export interface FileRouteTypes {
     | '/super-admin'
     | '/water-admin'
     | '/delivery-admin/dashboard'
+    | '/delivery-admin/drivers'
+    | '/delivery-admin/drops'
+    | '/delivery-admin/fuel'
+    | '/delivery-admin/reports'
+    | '/delivery-admin/routes'
     | '/rb-admin/butchery'
     | '/rb-admin/dashboard'
     | '/rb-admin/kitchen'
@@ -601,6 +661,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RbAdminButcheryRouteImport
       parentRoute: typeof RbAdminRoute
     }
+    '/delivery-admin/routes': {
+      id: '/delivery-admin/routes'
+      path: '/routes'
+      fullPath: '/delivery-admin/routes'
+      preLoaderRoute: typeof DeliveryAdminRoutesRouteImport
+      parentRoute: typeof DeliveryAdminRoute
+    }
+    '/delivery-admin/reports': {
+      id: '/delivery-admin/reports'
+      path: '/reports'
+      fullPath: '/delivery-admin/reports'
+      preLoaderRoute: typeof DeliveryAdminReportsRouteImport
+      parentRoute: typeof DeliveryAdminRoute
+    }
+    '/delivery-admin/fuel': {
+      id: '/delivery-admin/fuel'
+      path: '/fuel'
+      fullPath: '/delivery-admin/fuel'
+      preLoaderRoute: typeof DeliveryAdminFuelRouteImport
+      parentRoute: typeof DeliveryAdminRoute
+    }
+    '/delivery-admin/drops': {
+      id: '/delivery-admin/drops'
+      path: '/drops'
+      fullPath: '/delivery-admin/drops'
+      preLoaderRoute: typeof DeliveryAdminDropsRouteImport
+      parentRoute: typeof DeliveryAdminRoute
+    }
+    '/delivery-admin/drivers': {
+      id: '/delivery-admin/drivers'
+      path: '/drivers'
+      fullPath: '/delivery-admin/drivers'
+      preLoaderRoute: typeof DeliveryAdminDriversRouteImport
+      parentRoute: typeof DeliveryAdminRoute
+    }
     '/delivery-admin/dashboard': {
       id: '/delivery-admin/dashboard'
       path: '/dashboard'
@@ -613,10 +708,20 @@ declare module '@tanstack/react-router' {
 
 interface DeliveryAdminRouteChildren {
   DeliveryAdminDashboardRoute: typeof DeliveryAdminDashboardRoute
+  DeliveryAdminDriversRoute: typeof DeliveryAdminDriversRoute
+  DeliveryAdminDropsRoute: typeof DeliveryAdminDropsRoute
+  DeliveryAdminFuelRoute: typeof DeliveryAdminFuelRoute
+  DeliveryAdminReportsRoute: typeof DeliveryAdminReportsRoute
+  DeliveryAdminRoutesRoute: typeof DeliveryAdminRoutesRoute
 }
 
 const DeliveryAdminRouteChildren: DeliveryAdminRouteChildren = {
   DeliveryAdminDashboardRoute: DeliveryAdminDashboardRoute,
+  DeliveryAdminDriversRoute: DeliveryAdminDriversRoute,
+  DeliveryAdminDropsRoute: DeliveryAdminDropsRoute,
+  DeliveryAdminFuelRoute: DeliveryAdminFuelRoute,
+  DeliveryAdminReportsRoute: DeliveryAdminReportsRoute,
+  DeliveryAdminRoutesRoute: DeliveryAdminRoutesRoute,
 }
 
 const DeliveryAdminRouteWithChildren = DeliveryAdminRoute._addFileChildren(
