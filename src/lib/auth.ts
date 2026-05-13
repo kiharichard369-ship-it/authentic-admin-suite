@@ -38,11 +38,11 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
   ],
   water_cashier: ["water.dashboard","water.sales","water.customers","water.refunds"],
   rb_admin: ["rb.dashboard","rb.tables","rb.kitchen","rb.butchery","rb.menu","rb.reports"],
-  rb_cashier: ["rb.dashboard","rb.tables"],
+  rb_cashier: ["rb.dashboard","rb.tables","rb.menu"],
   waiter: ["rb.dashboard","rb.tables"],
   kitchen: ["rb.dashboard","rb.kitchen"],
   butcher: ["rb.dashboard","rb.butchery"],
-  driver: ["delivery.dashboard","delivery.routes","delivery.drops"],
+  driver: ["delivery.dashboard","delivery.routes","delivery.drops","delivery.fuel"],
 };
 
 export const ROLE_HOME: Record<Role, string> = {

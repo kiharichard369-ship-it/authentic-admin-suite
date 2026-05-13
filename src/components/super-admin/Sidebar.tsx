@@ -45,11 +45,11 @@ const arms: Arm[] = [
     icon: UtensilsCrossed,
     items: [
       { to: "/rb-admin/dashboard", label: "Service dashboard", icon: LayoutDashboard },
-      { to: "/rb-admin/dashboard", label: "Tables & orders", icon: Coffee },
-      { to: "/rb-admin/dashboard", label: "Kitchen tickets", icon: ChefHat },
-      { to: "/rb-admin/dashboard", label: "Butchery counter", icon: Beef },
-      { to: "/rb-admin/dashboard", label: "Menu & pricing", icon: ClipboardList },
-      { to: "/rb-admin/dashboard", label: "Reports", icon: FileText },
+      { to: "/rb-admin/tables", label: "Tables & orders", icon: Coffee },
+      { to: "/rb-admin/kitchen", label: "Kitchen tickets", icon: ChefHat },
+      { to: "/rb-admin/butchery", label: "Butchery counter", icon: Beef },
+      { to: "/rb-admin/menu", label: "Menu & pricing", icon: ClipboardList },
+      { to: "/rb-admin/reports", label: "Reports", icon: FileText },
     ],
   },
   {
@@ -58,11 +58,11 @@ const arms: Arm[] = [
     icon: Truck,
     items: [
       { to: "/delivery-admin/dashboard", label: "Fleet dashboard", icon: LayoutDashboard },
-      { to: "/delivery-admin/dashboard", label: "Active routes", icon: RouteIcon },
-      { to: "/delivery-admin/dashboard", label: "Drivers", icon: Users },
-      { to: "/delivery-admin/dashboard", label: "Drop points", icon: MapPin },
-      { to: "/delivery-admin/dashboard", label: "Fuel & expenses", icon: Fuel },
-      { to: "/delivery-admin/dashboard", label: "Reports", icon: FileText },
+      { to: "/delivery-admin/routes", label: "Active routes", icon: RouteIcon },
+      { to: "/delivery-admin/drivers", label: "Drivers", icon: Users },
+      { to: "/delivery-admin/drops", label: "Drop points", icon: MapPin },
+      { to: "/delivery-admin/fuel", label: "Fuel & expenses", icon: Fuel },
+      { to: "/delivery-admin/reports", label: "Reports", icon: FileText },
     ],
   },
 ];
