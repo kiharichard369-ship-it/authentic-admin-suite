@@ -18,19 +18,17 @@ export const Route = createFileRoute("/login")({
 });
 
 const DEMO_ACCOUNTS: { email: string; label: string }[] = [
-  { email: "super@platform.co.ke", label: "Super Admin" },
-  { email: "water@platform.co.ke", label: "Water Retail Admin" },
-  { email: "cashier@platform.co.ke", label: "Water Cashier" },
-  { email: "driver@platform.co.ke", label: "Driver" },
-  { email: "rb@platform.co.ke", label: "R&B Admin" },
-  { email: "waiter@platform.co.ke", label: "Waiter" },
-  { email: "kitchen@platform.co.ke", label: "Kitchen" },
-  { email: "butcher@platform.co.ke", label: "Butcher" },
+  { email: "super@mirie.co.ke", label: "Super Admin" },
+  { email: "water@mirie.co.ke", label: "Water Retail Admin" },
+  { email: "cashier@mirie.co.ke", label: "Water Cashier" },
+  { email: "rb@mirie.co.ke", label: "R&B Manager" },
+  { email: "rbcashier@mirie.co.ke", label: "R&B Cashier" },
+  { email: "driver@mirie.co.ke", label: "Driver" },
 ];
 
 function LoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("super@platform.co.ke");
+  const [email, setEmail] = useState("super@mirie.co.ke");
   const [password, setPassword] = useState("demo");
   const [error, setError] = useState("");
 

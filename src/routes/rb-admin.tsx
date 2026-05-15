@@ -18,7 +18,7 @@ function RbLayout() {
   useEffect(() => {
     const s = getSession();
     setS(s); setReady(true);
-    const allowed = s && ["super_admin","rb_admin","rb_cashier","waiter","kitchen","butcher"].includes(s.role);
+    const allowed = s && ["super_admin","rb_manager","rb_cashier"].includes(s.role);
     if (!allowed) navigate({ to: "/login" });
   }, [navigate]);
 

@@ -4,8 +4,8 @@ import {
   LayoutDashboard, Users, Store, BarChart3, Boxes,
   CreditCard, Receipt, FileText, Droplets, LogOut,
   ChevronDown, UtensilsCrossed, Truck, Package, ClipboardList,
-  Wallet, RefreshCcw, ChefHat, Beef, Coffee, Route as RouteIcon,
-  MapPin, Fuel, UserCircle,
+  Wallet, RefreshCcw, Coins, AlertCircle, Route as RouteIcon,
+  MapPin, Fuel, UserCircle, TrendingUp,
 } from "lucide-react";
 
 const platformItems = [
@@ -29,26 +29,27 @@ const arms: Arm[] = [
     icon: Droplets,
     items: [
       { to: "/water-admin/dashboard", label: "Branch dashboard", icon: LayoutDashboard },
-      { to: "/water-admin/sales", label: "Sales & POS", icon: Receipt },
-      { to: "/water-admin/stock", label: "Stock", icon: Package },
+      { to: "/water-admin/pos", label: "POS", icon: Receipt },
+      { to: "/water-admin/stock", label: "Stock & pricing", icon: Package },
       { to: "/water-admin/customers", label: "Customers", icon: UserCircle },
       { to: "/water-admin/cashiers", label: "Cashiers", icon: Users },
       { to: "/water-admin/requests", label: "Stock requests", icon: ClipboardList },
       { to: "/water-admin/refunds", label: "Refunds", icon: RefreshCcw },
       { to: "/water-admin/expenses", label: "Expenses", icon: Wallet },
+      { to: "/water-admin/revenue", label: "Daily revenue", icon: TrendingUp },
       { to: "/water-admin/reports", label: "Reports", icon: FileText },
     ],
   },
   {
     id: "rb",
-    name: "Restaurant & Butchery",
+    name: "R&B (Take-away)",
     icon: UtensilsCrossed,
     items: [
-      { to: "/rb-admin/dashboard", label: "Service dashboard", icon: LayoutDashboard },
-      { to: "/rb-admin/tables", label: "Tables & orders", icon: Coffee },
-      { to: "/rb-admin/kitchen", label: "Kitchen tickets", icon: ChefHat },
-      { to: "/rb-admin/butchery", label: "Butchery counter", icon: Beef },
-      { to: "/rb-admin/menu", label: "Menu & pricing", icon: ClipboardList },
+      { to: "/rb-admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { to: "/rb-admin/pos", label: "Take-away POS", icon: Receipt },
+      { to: "/rb-admin/stock", label: "Stock (Raw / Cooked)", icon: Package },
+      { to: "/rb-admin/cashiers", label: "Cashiers", icon: Users },
+      { to: "/rb-admin/revenue", label: "Daily revenue", icon: TrendingUp },
       { to: "/rb-admin/reports", label: "Reports", icon: FileText },
     ],
   },
@@ -58,10 +59,13 @@ const arms: Arm[] = [
     icon: Truck,
     items: [
       { to: "/delivery-admin/dashboard", label: "Fleet dashboard", icon: LayoutDashboard },
-      { to: "/delivery-admin/routes", label: "Active routes", icon: RouteIcon },
+      { to: "/delivery-admin/dispatch", label: "Dispatch tracking", icon: RouteIcon },
+      { to: "/delivery-admin/gps", label: "GPS live map", icon: MapPin },
       { to: "/delivery-admin/drivers", label: "Drivers", icon: Users },
-      { to: "/delivery-admin/drops", label: "Drop points", icon: MapPin },
+      { to: "/delivery-admin/debts", label: "Debt module", icon: AlertCircle },
+      { to: "/delivery-admin/credits", label: "Credit / carry-forward", icon: Coins },
       { to: "/delivery-admin/fuel", label: "Fuel & expenses", icon: Fuel },
+      { to: "/delivery-admin/revenue", label: "Daily revenue", icon: TrendingUp },
       { to: "/delivery-admin/reports", label: "Reports", icon: FileText },
     ],
   },
@@ -83,7 +87,7 @@ export function SuperAdminSidebar() {
             <Droplets className="h-5 w-5" />
           </div>
           <div>
-            <div className="font-display text-lg leading-none">Maji & Co.</div>
+            <div className="font-display text-lg leading-none">Mirie Platform</div>
             <div className="text-xs text-sidebar-foreground/60 mt-0.5">Super Admin</div>
           </div>
         </Link>
@@ -96,15 +100,11 @@ export function SuperAdminSidebar() {
         {platformItems.map(({ to, label, icon: Icon }) => {
           const active = path.startsWith(to);
           return (
-            <Link
-              key={to}
-              to={to}
+            <Link key={to} to={to}
               className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
-                active
-                  ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium"
-                  : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-              }`}
-            >
+                active ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium"
+                       : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+              }`}>
               <Icon className="h-4 w-4" />
               {label}
             </Link>
@@ -119,11 +119,9 @@ export function SuperAdminSidebar() {
           const Icon = arm.icon;
           return (
             <div key={arm.id} className="space-y-1">
-              <button
-                type="button"
+              <button type="button"
                 onClick={() => setOpen((s) => ({ ...s, [arm.id]: !s[arm.id] }))}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-              >
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
                 <Icon className="h-4 w-4" />
                 <span className="flex-1 text-left">{arm.name}</span>
                 <ChevronDown className={`h-3.5 w-3.5 transition-transform ${isOpen ? "rotate-180" : ""}`} />
@@ -133,15 +131,11 @@ export function SuperAdminSidebar() {
                   {arm.items.map(({ to, label, icon: SubIcon }, i) => {
                     const active = path === to;
                     return (
-                      <Link
-                        key={`${arm.id}-${i}-${label}`}
-                        to={to}
+                      <Link key={`${arm.id}-${i}`} to={to}
                         className={`flex items-center gap-2 px-2 py-1.5 rounded-md text-xs transition-colors ${
-                          active
-                            ? "bg-sidebar-primary/15 text-sidebar-primary-foreground font-medium"
-                            : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                        }`}
-                      >
+                          active ? "bg-sidebar-primary/15 text-sidebar-primary-foreground font-medium"
+                                 : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                        }`}>
                         <SubIcon className="h-3.5 w-3.5" />
                         {label}
                       </Link>
@@ -155,10 +149,7 @@ export function SuperAdminSidebar() {
       </nav>
 
       <div className="px-3 py-4 border-t border-sidebar-border">
-        <Link
-          to="/login"
-          className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent"
-        >
+        <Link to="/login" className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent">
           <LogOut className="h-4 w-4" /> Sign out
         </Link>
       </div>
