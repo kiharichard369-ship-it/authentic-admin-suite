@@ -16,7 +16,6 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as DeliveryAdminRouteImport } from './routes/delivery-admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WaterAdminStockRouteImport } from './routes/water-admin.stock'
-import { Route as WaterAdminSalesRouteImport } from './routes/water-admin.sales'
 import { Route as WaterAdminRequestsRouteImport } from './routes/water-admin.requests'
 import { Route as WaterAdminReportsRouteImport } from './routes/water-admin.reports'
 import { Route as WaterAdminRefundsRouteImport } from './routes/water-admin.refunds'
@@ -32,16 +31,10 @@ import { Route as SuperAdminExpensesRouteImport } from './routes/super-admin.exp
 import { Route as SuperAdminDashboardRouteImport } from './routes/super-admin.dashboard'
 import { Route as SuperAdminAssetsRouteImport } from './routes/super-admin.assets'
 import { Route as SuperAdminAnalyticsRouteImport } from './routes/super-admin.analytics'
-import { Route as RbAdminTablesRouteImport } from './routes/rb-admin.tables'
 import { Route as RbAdminReportsRouteImport } from './routes/rb-admin.reports'
-import { Route as RbAdminMenuRouteImport } from './routes/rb-admin.menu'
-import { Route as RbAdminKitchenRouteImport } from './routes/rb-admin.kitchen'
 import { Route as RbAdminDashboardRouteImport } from './routes/rb-admin.dashboard'
-import { Route as RbAdminButcheryRouteImport } from './routes/rb-admin.butchery'
-import { Route as DeliveryAdminRoutesRouteImport } from './routes/delivery-admin.routes'
 import { Route as DeliveryAdminReportsRouteImport } from './routes/delivery-admin.reports'
 import { Route as DeliveryAdminFuelRouteImport } from './routes/delivery-admin.fuel'
-import { Route as DeliveryAdminDropsRouteImport } from './routes/delivery-admin.drops'
 import { Route as DeliveryAdminDriversRouteImport } from './routes/delivery-admin.drivers'
 import { Route as DeliveryAdminDashboardRouteImport } from './routes/delivery-admin.dashboard'
 
@@ -78,11 +71,6 @@ const IndexRoute = IndexRouteImport.update({
 const WaterAdminStockRoute = WaterAdminStockRouteImport.update({
   id: '/stock',
   path: '/stock',
-  getParentRoute: () => WaterAdminRoute,
-} as any)
-const WaterAdminSalesRoute = WaterAdminSalesRouteImport.update({
-  id: '/sales',
-  path: '/sales',
   getParentRoute: () => WaterAdminRoute,
 } as any)
 const WaterAdminRequestsRoute = WaterAdminRequestsRouteImport.update({
@@ -160,40 +148,15 @@ const SuperAdminAnalyticsRoute = SuperAdminAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => SuperAdminRoute,
 } as any)
-const RbAdminTablesRoute = RbAdminTablesRouteImport.update({
-  id: '/tables',
-  path: '/tables',
-  getParentRoute: () => RbAdminRoute,
-} as any)
 const RbAdminReportsRoute = RbAdminReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
-  getParentRoute: () => RbAdminRoute,
-} as any)
-const RbAdminMenuRoute = RbAdminMenuRouteImport.update({
-  id: '/menu',
-  path: '/menu',
-  getParentRoute: () => RbAdminRoute,
-} as any)
-const RbAdminKitchenRoute = RbAdminKitchenRouteImport.update({
-  id: '/kitchen',
-  path: '/kitchen',
   getParentRoute: () => RbAdminRoute,
 } as any)
 const RbAdminDashboardRoute = RbAdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => RbAdminRoute,
-} as any)
-const RbAdminButcheryRoute = RbAdminButcheryRouteImport.update({
-  id: '/butchery',
-  path: '/butchery',
-  getParentRoute: () => RbAdminRoute,
-} as any)
-const DeliveryAdminRoutesRoute = DeliveryAdminRoutesRouteImport.update({
-  id: '/routes',
-  path: '/routes',
-  getParentRoute: () => DeliveryAdminRoute,
 } as any)
 const DeliveryAdminReportsRoute = DeliveryAdminReportsRouteImport.update({
   id: '/reports',
@@ -203,11 +166,6 @@ const DeliveryAdminReportsRoute = DeliveryAdminReportsRouteImport.update({
 const DeliveryAdminFuelRoute = DeliveryAdminFuelRouteImport.update({
   id: '/fuel',
   path: '/fuel',
-  getParentRoute: () => DeliveryAdminRoute,
-} as any)
-const DeliveryAdminDropsRoute = DeliveryAdminDropsRouteImport.update({
-  id: '/drops',
-  path: '/drops',
   getParentRoute: () => DeliveryAdminRoute,
 } as any)
 const DeliveryAdminDriversRoute = DeliveryAdminDriversRouteImport.update({
@@ -230,16 +188,10 @@ export interface FileRoutesByFullPath {
   '/water-admin': typeof WaterAdminRouteWithChildren
   '/delivery-admin/dashboard': typeof DeliveryAdminDashboardRoute
   '/delivery-admin/drivers': typeof DeliveryAdminDriversRoute
-  '/delivery-admin/drops': typeof DeliveryAdminDropsRoute
   '/delivery-admin/fuel': typeof DeliveryAdminFuelRoute
   '/delivery-admin/reports': typeof DeliveryAdminReportsRoute
-  '/delivery-admin/routes': typeof DeliveryAdminRoutesRoute
-  '/rb-admin/butchery': typeof RbAdminButcheryRoute
   '/rb-admin/dashboard': typeof RbAdminDashboardRoute
-  '/rb-admin/kitchen': typeof RbAdminKitchenRoute
-  '/rb-admin/menu': typeof RbAdminMenuRoute
   '/rb-admin/reports': typeof RbAdminReportsRoute
-  '/rb-admin/tables': typeof RbAdminTablesRoute
   '/super-admin/analytics': typeof SuperAdminAnalyticsRoute
   '/super-admin/assets': typeof SuperAdminAssetsRoute
   '/super-admin/dashboard': typeof SuperAdminDashboardRoute
@@ -255,7 +207,6 @@ export interface FileRoutesByFullPath {
   '/water-admin/refunds': typeof WaterAdminRefundsRoute
   '/water-admin/reports': typeof WaterAdminReportsRoute
   '/water-admin/requests': typeof WaterAdminRequestsRoute
-  '/water-admin/sales': typeof WaterAdminSalesRoute
   '/water-admin/stock': typeof WaterAdminStockRoute
 }
 export interface FileRoutesByTo {
@@ -267,16 +218,10 @@ export interface FileRoutesByTo {
   '/water-admin': typeof WaterAdminRouteWithChildren
   '/delivery-admin/dashboard': typeof DeliveryAdminDashboardRoute
   '/delivery-admin/drivers': typeof DeliveryAdminDriversRoute
-  '/delivery-admin/drops': typeof DeliveryAdminDropsRoute
   '/delivery-admin/fuel': typeof DeliveryAdminFuelRoute
   '/delivery-admin/reports': typeof DeliveryAdminReportsRoute
-  '/delivery-admin/routes': typeof DeliveryAdminRoutesRoute
-  '/rb-admin/butchery': typeof RbAdminButcheryRoute
   '/rb-admin/dashboard': typeof RbAdminDashboardRoute
-  '/rb-admin/kitchen': typeof RbAdminKitchenRoute
-  '/rb-admin/menu': typeof RbAdminMenuRoute
   '/rb-admin/reports': typeof RbAdminReportsRoute
-  '/rb-admin/tables': typeof RbAdminTablesRoute
   '/super-admin/analytics': typeof SuperAdminAnalyticsRoute
   '/super-admin/assets': typeof SuperAdminAssetsRoute
   '/super-admin/dashboard': typeof SuperAdminDashboardRoute
@@ -292,7 +237,6 @@ export interface FileRoutesByTo {
   '/water-admin/refunds': typeof WaterAdminRefundsRoute
   '/water-admin/reports': typeof WaterAdminReportsRoute
   '/water-admin/requests': typeof WaterAdminRequestsRoute
-  '/water-admin/sales': typeof WaterAdminSalesRoute
   '/water-admin/stock': typeof WaterAdminStockRoute
 }
 export interface FileRoutesById {
@@ -305,16 +249,10 @@ export interface FileRoutesById {
   '/water-admin': typeof WaterAdminRouteWithChildren
   '/delivery-admin/dashboard': typeof DeliveryAdminDashboardRoute
   '/delivery-admin/drivers': typeof DeliveryAdminDriversRoute
-  '/delivery-admin/drops': typeof DeliveryAdminDropsRoute
   '/delivery-admin/fuel': typeof DeliveryAdminFuelRoute
   '/delivery-admin/reports': typeof DeliveryAdminReportsRoute
-  '/delivery-admin/routes': typeof DeliveryAdminRoutesRoute
-  '/rb-admin/butchery': typeof RbAdminButcheryRoute
   '/rb-admin/dashboard': typeof RbAdminDashboardRoute
-  '/rb-admin/kitchen': typeof RbAdminKitchenRoute
-  '/rb-admin/menu': typeof RbAdminMenuRoute
   '/rb-admin/reports': typeof RbAdminReportsRoute
-  '/rb-admin/tables': typeof RbAdminTablesRoute
   '/super-admin/analytics': typeof SuperAdminAnalyticsRoute
   '/super-admin/assets': typeof SuperAdminAssetsRoute
   '/super-admin/dashboard': typeof SuperAdminDashboardRoute
@@ -330,7 +268,6 @@ export interface FileRoutesById {
   '/water-admin/refunds': typeof WaterAdminRefundsRoute
   '/water-admin/reports': typeof WaterAdminReportsRoute
   '/water-admin/requests': typeof WaterAdminRequestsRoute
-  '/water-admin/sales': typeof WaterAdminSalesRoute
   '/water-admin/stock': typeof WaterAdminStockRoute
 }
 export interface FileRouteTypes {
@@ -344,16 +281,10 @@ export interface FileRouteTypes {
     | '/water-admin'
     | '/delivery-admin/dashboard'
     | '/delivery-admin/drivers'
-    | '/delivery-admin/drops'
     | '/delivery-admin/fuel'
     | '/delivery-admin/reports'
-    | '/delivery-admin/routes'
-    | '/rb-admin/butchery'
     | '/rb-admin/dashboard'
-    | '/rb-admin/kitchen'
-    | '/rb-admin/menu'
     | '/rb-admin/reports'
-    | '/rb-admin/tables'
     | '/super-admin/analytics'
     | '/super-admin/assets'
     | '/super-admin/dashboard'
@@ -369,7 +300,6 @@ export interface FileRouteTypes {
     | '/water-admin/refunds'
     | '/water-admin/reports'
     | '/water-admin/requests'
-    | '/water-admin/sales'
     | '/water-admin/stock'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -381,16 +311,10 @@ export interface FileRouteTypes {
     | '/water-admin'
     | '/delivery-admin/dashboard'
     | '/delivery-admin/drivers'
-    | '/delivery-admin/drops'
     | '/delivery-admin/fuel'
     | '/delivery-admin/reports'
-    | '/delivery-admin/routes'
-    | '/rb-admin/butchery'
     | '/rb-admin/dashboard'
-    | '/rb-admin/kitchen'
-    | '/rb-admin/menu'
     | '/rb-admin/reports'
-    | '/rb-admin/tables'
     | '/super-admin/analytics'
     | '/super-admin/assets'
     | '/super-admin/dashboard'
@@ -406,7 +330,6 @@ export interface FileRouteTypes {
     | '/water-admin/refunds'
     | '/water-admin/reports'
     | '/water-admin/requests'
-    | '/water-admin/sales'
     | '/water-admin/stock'
   id:
     | '__root__'
@@ -418,16 +341,10 @@ export interface FileRouteTypes {
     | '/water-admin'
     | '/delivery-admin/dashboard'
     | '/delivery-admin/drivers'
-    | '/delivery-admin/drops'
     | '/delivery-admin/fuel'
     | '/delivery-admin/reports'
-    | '/delivery-admin/routes'
-    | '/rb-admin/butchery'
     | '/rb-admin/dashboard'
-    | '/rb-admin/kitchen'
-    | '/rb-admin/menu'
     | '/rb-admin/reports'
-    | '/rb-admin/tables'
     | '/super-admin/analytics'
     | '/super-admin/assets'
     | '/super-admin/dashboard'
@@ -443,7 +360,6 @@ export interface FileRouteTypes {
     | '/water-admin/refunds'
     | '/water-admin/reports'
     | '/water-admin/requests'
-    | '/water-admin/sales'
     | '/water-admin/stock'
   fileRoutesById: FileRoutesById
 }
@@ -505,13 +421,6 @@ declare module '@tanstack/react-router' {
       path: '/stock'
       fullPath: '/water-admin/stock'
       preLoaderRoute: typeof WaterAdminStockRouteImport
-      parentRoute: typeof WaterAdminRoute
-    }
-    '/water-admin/sales': {
-      id: '/water-admin/sales'
-      path: '/sales'
-      fullPath: '/water-admin/sales'
-      preLoaderRoute: typeof WaterAdminSalesRouteImport
       parentRoute: typeof WaterAdminRoute
     }
     '/water-admin/requests': {
@@ -619,32 +528,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuperAdminAnalyticsRouteImport
       parentRoute: typeof SuperAdminRoute
     }
-    '/rb-admin/tables': {
-      id: '/rb-admin/tables'
-      path: '/tables'
-      fullPath: '/rb-admin/tables'
-      preLoaderRoute: typeof RbAdminTablesRouteImport
-      parentRoute: typeof RbAdminRoute
-    }
     '/rb-admin/reports': {
       id: '/rb-admin/reports'
       path: '/reports'
       fullPath: '/rb-admin/reports'
       preLoaderRoute: typeof RbAdminReportsRouteImport
-      parentRoute: typeof RbAdminRoute
-    }
-    '/rb-admin/menu': {
-      id: '/rb-admin/menu'
-      path: '/menu'
-      fullPath: '/rb-admin/menu'
-      preLoaderRoute: typeof RbAdminMenuRouteImport
-      parentRoute: typeof RbAdminRoute
-    }
-    '/rb-admin/kitchen': {
-      id: '/rb-admin/kitchen'
-      path: '/kitchen'
-      fullPath: '/rb-admin/kitchen'
-      preLoaderRoute: typeof RbAdminKitchenRouteImport
       parentRoute: typeof RbAdminRoute
     }
     '/rb-admin/dashboard': {
@@ -653,20 +541,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/rb-admin/dashboard'
       preLoaderRoute: typeof RbAdminDashboardRouteImport
       parentRoute: typeof RbAdminRoute
-    }
-    '/rb-admin/butchery': {
-      id: '/rb-admin/butchery'
-      path: '/butchery'
-      fullPath: '/rb-admin/butchery'
-      preLoaderRoute: typeof RbAdminButcheryRouteImport
-      parentRoute: typeof RbAdminRoute
-    }
-    '/delivery-admin/routes': {
-      id: '/delivery-admin/routes'
-      path: '/routes'
-      fullPath: '/delivery-admin/routes'
-      preLoaderRoute: typeof DeliveryAdminRoutesRouteImport
-      parentRoute: typeof DeliveryAdminRoute
     }
     '/delivery-admin/reports': {
       id: '/delivery-admin/reports'
@@ -680,13 +554,6 @@ declare module '@tanstack/react-router' {
       path: '/fuel'
       fullPath: '/delivery-admin/fuel'
       preLoaderRoute: typeof DeliveryAdminFuelRouteImport
-      parentRoute: typeof DeliveryAdminRoute
-    }
-    '/delivery-admin/drops': {
-      id: '/delivery-admin/drops'
-      path: '/drops'
-      fullPath: '/delivery-admin/drops'
-      preLoaderRoute: typeof DeliveryAdminDropsRouteImport
       parentRoute: typeof DeliveryAdminRoute
     }
     '/delivery-admin/drivers': {
@@ -709,19 +576,15 @@ declare module '@tanstack/react-router' {
 interface DeliveryAdminRouteChildren {
   DeliveryAdminDashboardRoute: typeof DeliveryAdminDashboardRoute
   DeliveryAdminDriversRoute: typeof DeliveryAdminDriversRoute
-  DeliveryAdminDropsRoute: typeof DeliveryAdminDropsRoute
   DeliveryAdminFuelRoute: typeof DeliveryAdminFuelRoute
   DeliveryAdminReportsRoute: typeof DeliveryAdminReportsRoute
-  DeliveryAdminRoutesRoute: typeof DeliveryAdminRoutesRoute
 }
 
 const DeliveryAdminRouteChildren: DeliveryAdminRouteChildren = {
   DeliveryAdminDashboardRoute: DeliveryAdminDashboardRoute,
   DeliveryAdminDriversRoute: DeliveryAdminDriversRoute,
-  DeliveryAdminDropsRoute: DeliveryAdminDropsRoute,
   DeliveryAdminFuelRoute: DeliveryAdminFuelRoute,
   DeliveryAdminReportsRoute: DeliveryAdminReportsRoute,
-  DeliveryAdminRoutesRoute: DeliveryAdminRoutesRoute,
 }
 
 const DeliveryAdminRouteWithChildren = DeliveryAdminRoute._addFileChildren(
@@ -729,21 +592,13 @@ const DeliveryAdminRouteWithChildren = DeliveryAdminRoute._addFileChildren(
 )
 
 interface RbAdminRouteChildren {
-  RbAdminButcheryRoute: typeof RbAdminButcheryRoute
   RbAdminDashboardRoute: typeof RbAdminDashboardRoute
-  RbAdminKitchenRoute: typeof RbAdminKitchenRoute
-  RbAdminMenuRoute: typeof RbAdminMenuRoute
   RbAdminReportsRoute: typeof RbAdminReportsRoute
-  RbAdminTablesRoute: typeof RbAdminTablesRoute
 }
 
 const RbAdminRouteChildren: RbAdminRouteChildren = {
-  RbAdminButcheryRoute: RbAdminButcheryRoute,
   RbAdminDashboardRoute: RbAdminDashboardRoute,
-  RbAdminKitchenRoute: RbAdminKitchenRoute,
-  RbAdminMenuRoute: RbAdminMenuRoute,
   RbAdminReportsRoute: RbAdminReportsRoute,
-  RbAdminTablesRoute: RbAdminTablesRoute,
 }
 
 const RbAdminRouteWithChildren =
@@ -783,7 +638,6 @@ interface WaterAdminRouteChildren {
   WaterAdminRefundsRoute: typeof WaterAdminRefundsRoute
   WaterAdminReportsRoute: typeof WaterAdminReportsRoute
   WaterAdminRequestsRoute: typeof WaterAdminRequestsRoute
-  WaterAdminSalesRoute: typeof WaterAdminSalesRoute
   WaterAdminStockRoute: typeof WaterAdminStockRoute
 }
 
@@ -795,7 +649,6 @@ const WaterAdminRouteChildren: WaterAdminRouteChildren = {
   WaterAdminRefundsRoute: WaterAdminRefundsRoute,
   WaterAdminReportsRoute: WaterAdminReportsRoute,
   WaterAdminRequestsRoute: WaterAdminRequestsRoute,
-  WaterAdminSalesRoute: WaterAdminSalesRoute,
   WaterAdminStockRoute: WaterAdminStockRoute,
 }
 
@@ -814,3 +667,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
