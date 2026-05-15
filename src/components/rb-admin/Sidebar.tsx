@@ -1,15 +1,15 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Coffee, ChefHat, Beef, ClipboardList, FileText, UtensilsCrossed, LogOut, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, Receipt, Package, Users, FileText, UtensilsCrossed, LogOut, ShieldCheck, TrendingUp } from "lucide-react";
 import { can, clearSession, type Role, type Permission } from "@/lib/auth";
 
 type Item = { to: string; label: string; icon: React.ComponentType<{ className?: string }>; perm: Permission };
 
 const items: Item[] = [
   { to: "/rb-admin/dashboard", label: "Dashboard", icon: LayoutDashboard, perm: "rb.dashboard" },
-  { to: "/rb-admin/tables", label: "Tables & orders", icon: Coffee, perm: "rb.tables" },
-  { to: "/rb-admin/kitchen", label: "Kitchen tickets", icon: ChefHat, perm: "rb.kitchen" },
-  { to: "/rb-admin/butchery", label: "Butchery counter", icon: Beef, perm: "rb.butchery" },
-  { to: "/rb-admin/menu", label: "Menu & pricing", icon: ClipboardList, perm: "rb.menu" },
+  { to: "/rb-admin/pos", label: "Take-away POS", icon: Receipt, perm: "rb.pos" },
+  { to: "/rb-admin/stock", label: "Stock (Raw / Cooked)", icon: Package, perm: "rb.stock" },
+  { to: "/rb-admin/cashiers", label: "Cashiers", icon: Users, perm: "rb.cashiers" },
+  { to: "/rb-admin/revenue", label: "Daily Revenue", icon: TrendingUp, perm: "rb.revenue" },
   { to: "/rb-admin/reports", label: "Reports", icon: FileText, perm: "rb.reports" },
 ];
 
@@ -27,8 +27,8 @@ export function RbAdminSidebar({ role }: { role: Role }) {
             <UtensilsCrossed className="h-5 w-5" />
           </div>
           <div>
-            <div className="font-display text-lg leading-none">Restaurant & Butchery</div>
-            <div className="text-xs text-sidebar-foreground/60 mt-0.5">Service workspace</div>
+            <div className="font-display text-lg leading-none">R&B Take-away</div>
+            <div className="text-xs text-sidebar-foreground/60 mt-0.5">Manager workspace</div>
           </div>
         </Link>
       </div>

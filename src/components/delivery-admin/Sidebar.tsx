@@ -1,15 +1,18 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Route as RouteIcon, Users, MapPin, Fuel, FileText, Truck, LogOut, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, Truck as TruckIcon, Users, Fuel, FileText, Truck, LogOut, ShieldCheck, MapPin, AlertCircle, Coins, TrendingUp } from "lucide-react";
 import { can, clearSession, type Role, type Permission } from "@/lib/auth";
 
 type Item = { to: string; label: string; icon: React.ComponentType<{ className?: string }>; perm: Permission };
 
 const items: Item[] = [
   { to: "/delivery-admin/dashboard", label: "Dashboard", icon: LayoutDashboard, perm: "delivery.dashboard" },
-  { to: "/delivery-admin/routes", label: "Active routes", icon: RouteIcon, perm: "delivery.routes" },
+  { to: "/delivery-admin/dispatch", label: "Dispatch tracking", icon: TruckIcon, perm: "delivery.dispatch" },
+  { to: "/delivery-admin/gps", label: "GPS live map", icon: MapPin, perm: "delivery.gps" },
   { to: "/delivery-admin/drivers", label: "Drivers", icon: Users, perm: "delivery.drivers" },
-  { to: "/delivery-admin/drops", label: "Drop points", icon: MapPin, perm: "delivery.drops" },
+  { to: "/delivery-admin/debts", label: "Debt module", icon: AlertCircle, perm: "delivery.debts" },
+  { to: "/delivery-admin/credits", label: "Credit / carry-forward", icon: Coins, perm: "delivery.credits" },
   { to: "/delivery-admin/fuel", label: "Fuel & expenses", icon: Fuel, perm: "delivery.fuel" },
+  { to: "/delivery-admin/revenue", label: "Daily Revenue", icon: TrendingUp, perm: "delivery.revenue" },
   { to: "/delivery-admin/reports", label: "Reports", icon: FileText, perm: "delivery.reports" },
 ];
 
@@ -32,7 +35,7 @@ export function DeliveryAdminSidebar({ role }: { role: Role }) {
           </div>
         </Link>
       </div>
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         {visible.map(({ to, label, icon: Icon }) => {
           const active = path.startsWith(to);
           return (

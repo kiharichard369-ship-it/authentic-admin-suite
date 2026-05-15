@@ -29,7 +29,7 @@ function Dashboard() {
         actions={
           <>
             <Link to="/water-admin/requests"><Button variant="outline"><ClipboardList className="h-4 w-4 mr-1" /> New stock request</Button></Link>
-            <Link to="/water-admin/sales"><Button><Plus className="h-4 w-4 mr-1" /> New sale</Button></Link>
+            <Link to="/water-admin/pos"><Button><Plus className="h-4 w-4 mr-1" /> Open POS</Button></Link>
           </>
         }
       />
@@ -89,7 +89,7 @@ function Dashboard() {
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Recent transactions</CardTitle>
-            <Link to="/water-admin/sales" className="text-xs text-primary hover:underline">View all →</Link>
+            <Link to="/water-admin/revenue" className="text-xs text-primary hover:underline">View revenue →</Link>
           </CardHeader>
           <CardContent className="divide-y">
             {transactions.slice(0, 6).map((t) => (
