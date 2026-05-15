@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/super-admin/PageHeader";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { TrendingUp, Droplet, Truck, MapPin, Fuel } from "lucide-react";
-import { fleet, deliveryKpis, litresByDay, routes, drivers } from "@/lib/delivery-mock";
+import { TrendingUp, Droplet, Truck, Fuel, AlertCircle, MapPin } from "lucide-react";
+import { fleet, deliveryKpis, litresByDay, dispatches, drivers } from "@/lib/delivery-mock";
 
 export const Route = createFileRoute("/delivery-admin/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Water Delivery" }] }),
@@ -15,20 +15,21 @@ export const Route = createFileRoute("/delivery-admin/dashboard")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function Dash() {
+  const active = dispatches.filter((d) => d.status !== "returned");
   return (
     <div>
       <PageHeader title={`Habari, ${fleet.manager.split(" ")[0]}`} subtitle={`${fleet.name} · ${fleet.base}`}
         actions={<>
-          <Link to="/delivery-admin/routes"><Button variant="outline"><Truck className="h-4 w-4 mr-1"/> Active routes</Button></Link>
-          <Link to="/delivery-admin/drops"><Button><MapPin className="h-4 w-4 mr-1"/> New drop</Button></Link>
+          <Link to="/delivery-admin/dispatch"><Button variant="outline"><Truck className="h-4 w-4 mr-1"/> Dispatch tracking</Button></Link>
+          <Link to="/delivery-admin/gps"><Button><MapPin className="h-4 w-4 mr-1"/> GPS map</Button></Link>
         </>}
       />
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
-        <Stat icon={TrendingUp} label="Revenue today" value={fmt(deliveryKpis.todayRevenue)} hint={`${deliveryKpis.completedDrops} drops`} />
-        <Stat icon={Droplet} label="Litres delivered" value={deliveryKpis.litresDelivered.toLocaleString()+" L"} hint="Across all routes" />
-        <Stat icon={Truck} label="Active routes" value={String(deliveryKpis.activeRoutes)} hint={`${deliveryKpis.pendingDrops} pending drops`} />
-        <Stat icon={Fuel} label="Fuel today" value={fmt(deliveryKpis.fuelToday)} hint="Diesel + repairs" highlight />
+        <Stat icon={TrendingUp} label="Revenue today" value={fmt(deliveryKpis.todayRevenue)} hint={`M-Pesa ${fmt(deliveryKpis.mpesaToday)}`} />
+        <Stat icon={Droplet} label="Litres delivered" value={deliveryKpis.litresDelivered.toLocaleString()+" L"} hint={`${deliveryKpis.activeDispatches} dispatches active`} />
+        <Stat icon={AlertCircle} label="Outstanding debt" value={fmt(deliveryKpis.pendingDebt)} hint="Unpaid deliveries" highlight />
+        <Stat icon={Fuel} label="Fuel today" value={fmt(deliveryKpis.fuelToday)} hint="Diesel + repairs" />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3 mb-8">
@@ -49,13 +50,13 @@ function Dash() {
         <Card>
           <CardHeader><CardTitle>Drivers on duty</CardTitle></CardHeader>
           <CardContent className="space-y-3">
-            {drivers.filter(d=>d.status!=="off").map(d => (
+            {drivers.filter((d) => d.status !== "off").map((d) => (
               <div key={d.id} className="flex items-center justify-between text-sm border-b pb-2 last:border-0">
                 <div>
                   <div className="font-medium">{d.name}</div>
                   <div className="text-xs text-muted-foreground">{d.vehicle}</div>
                 </div>
-                <Badge variant={d.status === "on_route" ? "default" : "secondary"}>{d.status.replace("_"," ")}</Badge>
+                <Badge variant={d.status === "on_route" ? "default" : "secondary"}>{d.status.replace("_", " ")}</Badge>
               </div>
             ))}
           </CardContent>
@@ -63,15 +64,15 @@ function Dash() {
       </div>
 
       <Card>
-        <CardHeader className="flex-row items-center justify-between"><CardTitle>Active routes</CardTitle><Link to="/delivery-admin/routes" className="text-xs text-primary hover:underline">View all →</Link></CardHeader>
+        <CardHeader className="flex-row items-center justify-between"><CardTitle>Active dispatches</CardTitle><Link to="/delivery-admin/dispatch" className="text-xs text-primary hover:underline">View all →</Link></CardHeader>
         <CardContent className="divide-y">
-          {routes.filter(r=>r.status!=="completed").map(r => (
-            <div key={r.id} className="flex items-center gap-4 py-3 text-sm">
-              <span className="w-20 font-medium">{r.id}</span>
-              <span className="flex-1">{r.driver} · {r.vehicle}</span>
-              <span className="text-muted-foreground">{r.completed}/{r.drops} drops</span>
-              <span className="tabular-nums">{r.litres} L</span>
-              <Badge variant="outline">ETA {r.eta}</Badge>
+          {active.map((d) => (
+            <div key={d.id} className="flex items-center gap-4 py-3 text-sm">
+              <span className="w-24 font-medium">{d.id}</span>
+              <span className="flex-1 truncate">{d.driver} · {d.customer}</span>
+              <span className="text-muted-foreground tabular-nums">{d.litres} L</span>
+              <Badge variant="outline">Out {d.dispatchedAt}</Badge>
+              <Badge variant={d.paid ? "default" : "destructive"}>{d.paid ? "Paid" : "Unpaid"}</Badge>
             </div>
           ))}
         </CardContent>

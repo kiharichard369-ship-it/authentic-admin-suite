@@ -4,41 +4,41 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/super-admin/PageHeader";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
-import { TrendingUp, Users, Coffee, ChefHat, Beef, ClipboardList } from "lucide-react";
-import { venue, rbKpis, hourlyRevenue, tickets, tables } from "@/lib/rb-mock";
+import { TrendingUp, Receipt, Package, Beef, Flame } from "lucide-react";
+import { venue, rbKpis, hourlyRevenue, recentOrders, cashiers } from "@/lib/rb-mock";
 
 export const Route = createFileRoute("/rb-admin/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — Restaurant & Butchery" }] }),
+  head: () => ({ meta: [{ title: "Dashboard — R&B Take-away" }] }),
   component: Dash,
 });
 
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function Dash() {
-  const occupied = tables.filter(t => t.status === "occupied").length;
+  const activeCashiers = cashiers.filter(c => c.active).length;
   return (
     <div>
       <PageHeader
         title={`Karibu, ${venue.manager.split(" ")[0]}`}
-        subtitle={`${venue.name} · ${venue.location}`}
+        subtitle={`${venue.name} · ${venue.location} · Take-away only`}
         actions={
           <>
-            <Link to="/rb-admin/tables"><Button variant="outline"><Coffee className="h-4 w-4 mr-1"/> Open tables</Button></Link>
-            <Link to="/rb-admin/kitchen"><Button><ChefHat className="h-4 w-4 mr-1"/> Kitchen view</Button></Link>
+            <Link to="/rb-admin/stock"><Button variant="outline"><Package className="h-4 w-4 mr-1"/> Stock</Button></Link>
+            <Link to="/rb-admin/pos"><Button><Receipt className="h-4 w-4 mr-1"/> Open POS</Button></Link>
           </>
         }
       />
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
-        <Stat icon={TrendingUp} label="Revenue today" value={fmt(rbKpis.todayRevenue)} hint={`${rbKpis.covers} covers`} />
-        <Stat icon={Users} label="Tables occupied" value={`${occupied}/${tables.length}`} hint={`${rbKpis.openTables} open bills`} />
-        <Stat icon={ChefHat} label="In kitchen" value={String(rbKpis.ticketsInKitchen)} hint="Active tickets" />
-        <Stat icon={Beef} label="Butchery" value={fmt(rbKpis.butcheryRevenue)} hint="Counter sales today" highlight />
+        <Stat icon={TrendingUp} label="Revenue today" value={fmt(rbKpis.todayRevenue)} hint={`${rbKpis.ordersToday} orders · avg ${fmt(rbKpis.avgTicket)}`} />
+        <Stat icon={Beef} label="RAW sold" value={fmt(rbKpis.rawSold)} hint="Uncooked chicken" />
+        <Stat icon={Flame} label="COOKED sold" value={fmt(rbKpis.cookedSold)} hint="Ready take-away" highlight />
+        <Stat icon={Receipt} label="Cashiers active" value={`${activeCashiers}/${cashiers.length}`} hint="Max 6 per shift" />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3 mb-8">
         <Card className="lg:col-span-2">
-          <CardHeader className="flex-row items-center justify-between"><CardTitle>Hourly revenue</CardTitle><Badge variant="outline">Today</Badge></CardHeader>
+          <CardHeader className="flex-row items-center justify-between"><CardTitle>Hourly revenue (RAW vs COOKED)</CardTitle><Badge variant="outline">Today</Badge></CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={hourlyRevenue}>
@@ -47,23 +47,26 @@ function Dash() {
                 <YAxis stroke="var(--color-muted-foreground)" fontSize={12} />
                 <Tooltip contentStyle={{ background: "var(--color-card)", border: "1px solid var(--color-border)", borderRadius: 8 }} />
                 <Legend />
-                <Bar dataKey="restaurant" stackId="a" fill="var(--color-chart-1)" radius={[0,0,0,0]} />
-                <Bar dataKey="butchery" stackId="a" fill="var(--color-chart-2)" radius={[6,6,0,0]} />
+                <Bar dataKey="raw" stackId="a" fill="var(--color-chart-2)" />
+                <Bar dataKey="cooked" stackId="a" fill="var(--color-chart-1)" radius={[6,6,0,0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader><CardTitle className="flex items-center gap-2"><ClipboardList className="h-4 w-4"/> Live kitchen tickets</CardTitle></CardHeader>
+          <CardHeader><CardTitle>Recent orders</CardTitle></CardHeader>
           <CardContent className="space-y-3">
-            {tickets.slice(0,5).map(t => (
-              <div key={t.id} className="flex items-center justify-between text-sm border-b pb-2 last:border-0">
-                <div>
-                  <div className="font-medium">{t.id} · Table {t.table}</div>
-                  <div className="text-xs text-muted-foreground truncate max-w-[180px]">{t.items.join(", ")}</div>
+            {recentOrders.map(o => (
+              <div key={o.id} className="flex items-center justify-between text-sm border-b pb-2 last:border-0">
+                <div className="min-w-0">
+                  <div className="font-medium">{o.id} · {o.time}</div>
+                  <div className="text-xs text-muted-foreground truncate max-w-[180px]">{o.items}</div>
                 </div>
-                <Badge variant={t.status === "ready" ? "default" : t.status === "preparing" ? "secondary" : "outline"}>{t.elapsed}</Badge>
+                <div className="text-right">
+                  <Badge variant={o.category === "RAW" ? "secondary" : "default"} className="text-[10px]">{o.category}</Badge>
+                  <div className="tabular-nums text-xs mt-1">{fmt(o.total)}</div>
+                </div>
               </div>
             ))}
           </CardContent>
