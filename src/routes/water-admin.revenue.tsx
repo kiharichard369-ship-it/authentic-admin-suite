@@ -16,7 +16,7 @@ function RevenuePage() {
   // Mock split: assume 65% M-Pesa / 35% cash for the day.
   const mpesa = Math.round(waterKpis.todayRevenue * 0.65);
   const cash = waterKpis.todayRevenue - mpesa;
-  const stockValue = products.reduce((a, b) => a + b.price * b.stock, 0);
+  const stockValue = products.reduce((a, b) => a + (b.price ?? 0) * b.stock, 0);
   const startingStock = Math.round(stockValue * 1.4);
   const finishingStock = stockValue;
 

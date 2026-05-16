@@ -1,4 +1,5 @@
-// Mock data for the Water Retail Admin (single-branch view: Kileleshwa)
+// Water Retail mock data — aligned with v2 stock catalogue (Section 4).
+// Five tile categories: REFILL | NEW | CAPS | PET | JERRICANS.
 
 export const branch = {
   name: "Kileleshwa Branch",
@@ -27,27 +28,69 @@ export const hourlySales = [
   { hour: "13", litres: 290, revenue: 1820 },
   { hour: "14", litres: 360, revenue: 2280 },
   { hour: "15", litres: 470, revenue: 2980 },
-  { hour: "16", litres: 380, revenue: 2410 },
+  { hour: "16", latest: 380, revenue: 2410 } as any,
 ];
 
-export const products = [
-  { id: "p1", sku: "20L-REF", name: "20L Refill", price: 150, stock: 142, reorder: 60, unit: "bottles" },
-  { id: "p2", sku: "20L-NEW", name: "20L New Bottle (with deposit)", price: 850, stock: 18, reorder: 10, unit: "bottles" },
-  { id: "p3", sku: "10L-REF", name: "10L Refill", price: 90, stock: 64, reorder: 40, unit: "bottles" },
-  { id: "p4", sku: "5L-PKG", name: "5L Packaged", price: 150, stock: 8, reorder: 24, unit: "bottles" },
-  { id: "p5", sku: "1L-PKG", name: "1L Packaged (case of 12)", price: 600, stock: 6, reorder: 12, unit: "cases" },
-  { id: "p6", sku: "DSP-CAP", name: "Dispenser Caps", price: 30, stock: 210, reorder: 100, unit: "pieces" },
+export type WaterCategory = "REFILL" | "NEW" | "CAPS" | "PET" | "JERRICAN";
+
+export type WaterProduct = {
+  id: string;
+  sku: string;
+  name: string;
+  category: WaterCategory;
+  price: number | null; // null = TBC
+  stock: number;
+  reorder: number;
+  unit: string;
+};
+
+// Prices from v2 Section 4 catalogue.
+export const products: WaterProduct[] = [
+  // REFILL
+  { id: "r-500", sku: "REF-500ML", name: "500 ml Refill", category: "REFILL", price: 5, stock: 220, reorder: 80, unit: "bottle" },
+  { id: "r-1", sku: "REF-1L", name: "1 L Refill", category: "REFILL", price: 10, stock: 160, reorder: 60, unit: "bottle" },
+  { id: "r-1.5", sku: "REF-1.5L", name: "1.5 L Refill", category: "REFILL", price: 15, stock: 120, reorder: 50, unit: "bottle" },
+  { id: "r-2", sku: "REF-2L", name: "2 L Refill", category: "REFILL", price: 20, stock: 96, reorder: 40, unit: "bottle" },
+  { id: "r-3", sku: "REF-3L", name: "3 L Refill", category: "REFILL", price: 30, stock: 72, reorder: 30, unit: "bottle" },
+  { id: "r-5", sku: "REF-5L", name: "5 L Refill", category: "REFILL", price: 40, stock: 64, reorder: 30, unit: "bottle" },
+  { id: "r-10", sku: "REF-10L", name: "10 L Refill", category: "REFILL", price: 80, stock: 48, reorder: 24, unit: "bottle" },
+  { id: "r-20", sku: "REF-20L", name: "20 L Refill", category: "REFILL", price: 150, stock: 142, reorder: 60, unit: "bottle" },
+  // NEW BOTTLES
+  { id: "n-500", sku: "NEW-500ML", name: "500 ml New Bottle", category: "NEW", price: 30, stock: 80, reorder: 40, unit: "bottle" },
+  { id: "n-1", sku: "NEW-1L", name: "1 L New Bottle", category: "NEW", price: 50, stock: 60, reorder: 30, unit: "bottle" },
+  { id: "n-1.5", sku: "NEW-1.5L", name: "1.5 L New Bottle", category: "NEW", price: 50, stock: 44, reorder: 24, unit: "bottle" },
+  { id: "n-5", sku: "NEW-5L", name: "5 L New Bottle", category: "NEW", price: 150, stock: 20, reorder: 12, unit: "bottle" },
+  { id: "n-10", sku: "NEW-10L", name: "10 L New Bottle", category: "NEW", price: 280, stock: 14, reorder: 10, unit: "bottle" },
+  { id: "n-20", sku: "NEW-20L", name: "20 L New Bottle", category: "NEW", price: 450, stock: 18, reorder: 10, unit: "bottle" },
+  // CAPS
+  { id: "cap", sku: "CAP", name: "Caps", category: "CAPS", price: 20, stock: 210, reorder: 100, unit: "each" },
+  // PET BOTTLES
+  { id: "pet-1", sku: "PET-1L", name: "PET Bottle 1 L", category: "PET", price: 40, stock: 90, reorder: 40, unit: "bottle" },
+  { id: "pet-1.5", sku: "PET-1.5L", name: "PET Bottle 1.5 L", category: "PET", price: 30, stock: 110, reorder: 50, unit: "bottle" },
+  { id: "pet-5", sku: "PET-5L", name: "PET Bottle 5 L", category: "PET", price: 110, stock: 32, reorder: 20, unit: "bottle" },
+  { id: "pet-10", sku: "PET-10L", name: "PET Bottle 10 L", category: "PET", price: 200, stock: 18, reorder: 12, unit: "bottle" },
+  { id: "pet-20", sku: "PET-20L", name: "PET Bottle 20 L", category: "PET", price: 300, stock: 24, reorder: 12, unit: "bottle" },
+  // JERRICANS — prices TBC per spec
+  { id: "jer-5", sku: "JER-5L", name: "Jerrican 5 L", category: "JERRICAN", price: null, stock: 22, reorder: 12, unit: "each" },
+  { id: "jer-10", sku: "JER-10L", name: "Jerrican 10 L", category: "JERRICAN", price: null, stock: 18, reorder: 10, unit: "each" },
+  { id: "jer-20", sku: "JER-20L", name: "Jerrican 20 L", category: "JERRICAN", price: null, stock: 12, reorder: 8, unit: "each" },
+];
+
+export const WATER_CATEGORIES: { id: WaterCategory; label: string }[] = [
+  { id: "REFILL", label: "Refill" },
+  { id: "NEW", label: "New Bottles" },
+  { id: "CAPS", label: "Caps" },
+  { id: "PET", label: "PET Bottles" },
+  { id: "JERRICAN", label: "Jerricans" },
 ];
 
 export const transactions = [
   { id: "T-1042", time: "11:48", cashier: "Grace Mumbi", items: "20L Refill ×4", amount: 600, method: "M-Pesa", status: "paid" },
-  { id: "T-1041", time: "11:36", cashier: "Grace Mumbi", items: "10L Refill ×2, Cap ×1", amount: 210, method: "Cash", status: "paid" },
-  { id: "T-1040", time: "11:20", cashier: "Esther Wairimu", items: "20L New ×1", amount: 850, method: "M-Pesa", status: "paid" },
-  { id: "T-1039", time: "11:05", cashier: "Grace Mumbi", items: "5L Packaged ×3", amount: 450, method: "Cash", status: "refunded" },
+  { id: "T-1041", time: "11:36", cashier: "Grace Mumbi", items: "10L Refill ×2, Cap ×1", amount: 180, method: "Cash", status: "paid" },
+  { id: "T-1040", time: "11:20", cashier: "Esther Wairimu", items: "20L New ×1", amount: 450, method: "M-Pesa", status: "paid" },
+  { id: "T-1039", time: "11:05", cashier: "Grace Mumbi", items: "5L PET ×3", amount: 330, method: "Cash", status: "refunded" },
   { id: "T-1038", time: "10:51", cashier: "Esther Wairimu", items: "20L Refill ×6", amount: 900, method: "M-Pesa", status: "paid" },
-  { id: "T-1037", time: "10:34", cashier: "Grace Mumbi", items: "1L Case ×1", amount: 600, method: "Cash", status: "paid" },
-  { id: "T-1036", time: "10:12", cashier: "Esther Wairimu", items: "20L Refill ×3", amount: 450, method: "M-Pesa", status: "paid" },
-  { id: "T-1035", time: "09:58", cashier: "Grace Mumbi", items: "10L Refill ×4", amount: 360, method: "Cash", status: "paid" },
+  { id: "T-1037", time: "10:34", cashier: "Grace Mumbi", items: "PET 1.5L ×4", amount: 120, method: "Cash", status: "paid" },
 ];
 
 export const cashiers = [
@@ -57,10 +100,10 @@ export const cashiers = [
 ];
 
 export const stockRequests = [
-  { id: "SR-118", date: "2026-05-11", items: "20L Refill ×80, 5L ×40", status: "pending", note: "5L running low before weekend" },
+  { id: "SR-118", date: "2026-05-11", items: "20L Refill ×80, 5L Refill ×40", status: "pending", note: "5L running low before weekend" },
   { id: "SR-117", date: "2026-05-10", items: "Caps ×200", status: "approved", note: "" },
   { id: "SR-116", date: "2026-05-09", items: "20L New ×24", status: "delivered", note: "Received 14:20" },
-  { id: "SR-115", date: "2026-05-07", items: "1L Case ×20", status: "rejected", note: "Use existing stock first" },
+  { id: "SR-115", date: "2026-05-07", items: "PET 1L ×20", status: "rejected", note: "Use existing stock first" },
 ];
 
 export const branchExpenses = [
@@ -74,12 +117,12 @@ export const customers = [
   { id: "cu2", name: "Kileleshwa Salon", phone: "+254 711 901 442", type: "Business", visits: 88, spent: 64800, lastVisit: "2026-05-11", balance: 1500 },
   { id: "cu3", name: "Mr. Otieno", phone: "+254 733 220 481", type: "Walk-in", visits: 36, spent: 14200, lastVisit: "2026-05-10", balance: 0 },
   { id: "cu4", name: "St. Catherine School", phone: "+254 722 005 117", type: "Institution", visits: 24, spent: 96400, lastVisit: "2026-05-09", balance: 4200 },
-  { id: "cu5", name: "Mrs. Wambui", phone: "+254 711 008 240", type: "Walk-in", visits: 19, spent: 8650, lastVisit: "2026-05-08", balance: 0 },
+  { id: "cu5", name: "Mrs. Wambui", phone: "+254 711 008 240", type: "Walk-in", visits: 19, spent: 8650, lastVisit: "2026-05-08", balance: 250 },
 ];
 
 export const refunds = [
-  { id: "RF-021", txn: "T-1039", date: "2026-05-11 11:05", customer: "Walk-in", cashier: "Grace Mumbi", reason: "Damaged seal on 5L bottle", amount: 450, status: "approved" },
+  { id: "RF-021", txn: "T-1039", date: "2026-05-11 11:05", customer: "Walk-in", cashier: "Grace Mumbi", reason: "Damaged seal on 5L bottle", amount: 330, status: "approved" },
   { id: "RF-020", txn: "T-1024", date: "2026-05-10 16:42", customer: "Mr. Otieno", cashier: "Esther Wairimu", reason: "Wrong size dispensed", amount: 150, status: "pending" },
   { id: "RF-019", txn: "T-1011", date: "2026-05-09 09:18", customer: "Kileleshwa Salon", cashier: "Grace Mumbi", reason: "Duplicate charge", amount: 600, status: "approved" },
-  { id: "RF-018", txn: "T-0998", date: "2026-05-07 14:05", customer: "Walk-in", cashier: "Brian Kamau", reason: "Customer changed mind", amount: 90, status: "rejected" },
+  { id: "RF-018", txn: "T-0998", date: "2026-05-07 14:05", customer: "Walk-in", cashier: "Brian Kamau", reason: "Customer changed mind", amount: 80, status: "rejected" },
 ];

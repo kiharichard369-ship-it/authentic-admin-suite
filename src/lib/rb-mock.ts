@@ -1,5 +1,5 @@
-// Mock data for Restaurant & Butchery (TAKE-AWAY ONLY) per v2 prompts.
-// Roles: rb_manager (1) + rb_cashier (1-6). Stock split into RAW and COOKED.
+// R&B (Take-away) mock — aligned with v2 stock catalogue (Section 5).
+// Roles: rb_manager (1) + rb_cashier (1-6). Categories: RAW | COOKED | PROCESSED.
 
 export const venue = {
   name: "Maji Grill & Butchery",
@@ -31,28 +31,53 @@ export const hourlyRevenue = [
   { hour: "19", raw: 1900, cooked: 12800 },
 ];
 
-// Stock catalogue — RAW chicken (sold by weight / piece, uncooked)
-export const rawStock = [
-  { id: "raw-1", name: "Whole chicken (live)", unit: "bird", price: 850, stock: 38, soldToday: 12 },
-  { id: "raw-2", name: "Whole chicken (dressed)", unit: "kg", price: 620, stock: 24.5, soldToday: 8.4 },
-  { id: "raw-3", name: "Chicken breast", unit: "kg", price: 780, stock: 9.2, soldToday: 4.1 },
-  { id: "raw-4", name: "Chicken thighs", unit: "kg", price: 640, stock: 11.4, soldToday: 5.6 },
-  { id: "raw-5", name: "Chicken wings", unit: "kg", price: 580, stock: 6.0, soldToday: 3.0 },
-  { id: "raw-6", name: "Chicken liver", unit: "kg", price: 420, stock: 3.2, soldToday: 1.1 },
-  { id: "raw-7", name: "Chicken gizzards", unit: "kg", price: 460, stock: 2.4, soldToday: 0.8 },
+export type RbCategory = "RAW" | "COOKED" | "PROCESSED";
+export type RbItem = { id: string; name: string; category: RbCategory; sub: string; unit: string; price: number; stock: number; soldToday: number };
+
+// RAW chicken (from v2 catalogue)
+export const rawStock: RbItem[] = [
+  { id: "raw-1", name: "Full Chicken (Capon) — Raw", category: "RAW", sub: "Capon", unit: "bird", price: 600, stock: 14, soldToday: 6 },
+  { id: "raw-2", name: "Half Chicken — Raw", category: "RAW", sub: "Capon", unit: "portion", price: 300, stock: 22, soldToday: 9 },
+  { id: "raw-3", name: "Quarter Cut — Raw", category: "RAW", sub: "Capon", unit: "portion", price: 150, stock: 30, soldToday: 14 },
+  { id: "raw-4", name: "Full Chicken — Marinated", category: "RAW", sub: "Marinated", unit: "bird", price: 650, stock: 8, soldToday: 4 },
+  { id: "raw-5", name: "Half Chicken — Marinated", category: "RAW", sub: "Marinated", unit: "portion", price: 350, stock: 12, soldToday: 7 },
+  { id: "raw-6", name: "Quarter Cut — Marinated", category: "RAW", sub: "Marinated", unit: "portion", price: 200, stock: 18, soldToday: 10 },
+  { id: "raw-7", name: "Kienyeji Full", category: "RAW", sub: "Kienyeji", unit: "bird", price: 1000, stock: 5, soldToday: 2 },
+  { id: "raw-8", name: "Kienyeji Half", category: "RAW", sub: "Kienyeji", unit: "portion", price: 500, stock: 6, soldToday: 3 },
 ];
 
-// Stock catalogue — COOKED items (ready take-away)
-export const cookedStock = [
-  { id: "ck-1", name: "Roast chicken (1/4)", unit: "portion", price: 350, stock: 24, soldToday: 38 },
-  { id: "ck-2", name: "Roast chicken (1/2)", unit: "portion", price: 650, stock: 16, soldToday: 21 },
-  { id: "ck-3", name: "Whole roast chicken", unit: "bird", price: 1200, stock: 6, soldToday: 9 },
-  { id: "ck-4", name: "Fried chicken (4pc)", unit: "portion", price: 480, stock: 18, soldToday: 22 },
-  { id: "ck-5", name: "Chicken wings (8pc)", unit: "portion", price: 520, stock: 12, soldToday: 17 },
-  { id: "ck-6", name: "Chips (large)", unit: "portion", price: 200, stock: 40, soldToday: 64 },
-  { id: "ck-7", name: "Ugali", unit: "portion", price: 80, stock: 50, soldToday: 41 },
-  { id: "ck-8", name: "Kachumbari", unit: "portion", price: 60, stock: 30, soldToday: 28 },
-  { id: "ck-9", name: "Soda 500ml", unit: "bottle", price: 100, stock: 48, soldToday: 36 },
+// COOKED & offcuts
+export const cookedStock: RbItem[] = [
+  { id: "ck-1", name: "Full Chicken (Capon) — Cooked", category: "COOKED", sub: "Capon", unit: "bird", price: 650, stock: 6, soldToday: 9 },
+  { id: "ck-2", name: "Half Chicken — Cooked", category: "COOKED", sub: "Capon", unit: "portion", price: 350, stock: 14, soldToday: 21 },
+  { id: "ck-3", name: "Quarter Cut — Cooked", category: "COOKED", sub: "Capon", unit: "portion", price: 180, stock: 22, soldToday: 38 },
+  { id: "ck-4", name: "Gizzards", category: "COOKED", sub: "Offcuts", unit: "kg", price: 550, stock: 3.2, soldToday: 1.6 },
+  { id: "ck-5", name: "Chicken Liver", category: "COOKED", sub: "Offcuts", unit: "kg", price: 400, stock: 2.4, soldToday: 1.1 },
+  { id: "ck-6", name: "Chicken Wings", category: "COOKED", sub: "Cuts", unit: "kg", price: 750, stock: 4.0, soldToday: 2.4 },
+  { id: "ck-7", name: "Thighs on Bone", category: "COOKED", sub: "Cuts", unit: "kg", price: 850, stock: 5.0, soldToday: 2.8 },
+  { id: "ck-8", name: "Drumsticks", category: "COOKED", sub: "Cuts", unit: "kg", price: 750, stock: 3.6, soldToday: 1.9 },
+  { id: "ck-9", name: "Boneless Chicken Breast", category: "COOKED", sub: "Cuts", unit: "kg", price: 750, stock: 2.8, soldToday: 1.4 },
+  { id: "ck-10", name: "Breast on Bone", category: "COOKED", sub: "Cuts", unit: "kg", price: 600, stock: 3.2, soldToday: 1.7 },
+];
+
+// Processed, fries & other
+export const processedStock: RbItem[] = [
+  { id: "pr-1", name: "Smokies 5-piece pack — Raw", category: "PROCESSED", sub: "Smokies", unit: "pack", price: 160, stock: 24, soldToday: 12 },
+  { id: "pr-2", name: "Smokies — Cooked", category: "PROCESSED", sub: "Smokies", unit: "each", price: 40, stock: 60, soldToday: 48 },
+  { id: "pr-3", name: "Beef Sausages 6-piece pack — Raw", category: "PROCESSED", sub: "Sausages", unit: "pack", price: 240, stock: 18, soldToday: 6 },
+  { id: "pr-4", name: "Beef Sausages — Cooked", category: "PROCESSED", sub: "Sausages", unit: "each", price: 50, stock: 48, soldToday: 36 },
+  { id: "pr-5", name: "Pet Food", category: "PROCESSED", sub: "Pet", unit: "kg", price: 170, stock: 8.0, soldToday: 1.4 },
+  { id: "pr-6", name: "Fries Small", category: "PROCESSED", sub: "Fries", unit: "portion", price: 70, stock: 40, soldToday: 32 },
+  { id: "pr-7", name: "Fries Medium", category: "PROCESSED", sub: "Fries", unit: "portion", price: 100, stock: 35, soldToday: 28 },
+  { id: "pr-8", name: "Fries Large", category: "PROCESSED", sub: "Fries", unit: "portion", price: 150, stock: 25, soldToday: 18 },
+];
+
+export const allStock: RbItem[] = [...rawStock, ...cookedStock, ...processedStock];
+
+export const RB_CATEGORIES: { id: RbCategory; label: string }[] = [
+  { id: "COOKED", label: "Cooked" },
+  { id: "RAW", label: "Raw" },
+  { id: "PROCESSED", label: "Processed" },
 ];
 
 export const cashiers = [
@@ -64,11 +89,11 @@ export const cashiers = [
 ];
 
 export const recentOrders = [
-  { id: "RB-1042", time: "14:08", cashier: "Mary Wanjiku", items: "Roast 1/2, Chips, Soda", category: "COOKED", total: 850, paid: "M-Pesa" },
-  { id: "RB-1041", time: "14:01", cashier: "Brian Otieno", items: "Dressed chicken 1.4kg", category: "RAW", total: 868, paid: "Cash" },
-  { id: "RB-1040", time: "13:54", cashier: "Mary Wanjiku", items: "Wings 8pc, Ugali ×2", category: "COOKED", total: 680, paid: "M-Pesa" },
-  { id: "RB-1039", time: "13:47", cashier: "Faith Achieng", items: "Fried chicken 4pc", category: "COOKED", total: 480, paid: "Cash" },
-  { id: "RB-1038", time: "13:39", cashier: "Brian Otieno", items: "Whole roast", category: "COOKED", total: 1200, paid: "M-Pesa" },
+  { id: "RB-1042", time: "14:08", cashier: "Mary Wanjiku", items: "Half Cooked, Fries L, Soda", category: "COOKED", total: 600, paid: "M-Pesa" },
+  { id: "RB-1041", time: "14:01", cashier: "Brian Otieno", items: "Marinated Full (raw)", category: "RAW", total: 650, paid: "Cash" },
+  { id: "RB-1040", time: "13:54", cashier: "Mary Wanjiku", items: "Wings 1kg + Fries M", category: "COOKED", total: 850, paid: "M-Pesa" },
+  { id: "RB-1039", time: "13:47", cashier: "Faith Achieng", items: "Smokies cooked ×4", category: "PROCESSED", total: 160, paid: "Cash" },
+  { id: "RB-1038", time: "13:39", cashier: "Brian Otieno", items: "Kienyeji Half", category: "RAW", total: 500, paid: "M-Pesa" },
 ];
 
 export const dailyRevenue = {
