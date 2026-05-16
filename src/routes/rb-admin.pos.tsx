@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/super-admin/PageHeader";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Plus, Minus, Trash2, Receipt as ReceiptIcon, Beef, Flame } from "lucide-react";
-import { rawStock, cookedStock, discounts } from "@/lib/rb-mock";
+import { Plus, Minus, Trash2, Receipt as ReceiptIcon, Beef, Flame, Package } from "lucide-react";
+import { rawStock, cookedStock, processedStock, discounts, type RbCategory, type RbItem } from "@/lib/rb-mock";
 
 export const Route = createFileRoute("/rb-admin/pos")({
   head: () => ({ meta: [{ title: "Take-away POS — R&B" }] }),
@@ -15,20 +15,27 @@ export const Route = createFileRoute("/rb-admin/pos")({
 
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
-type CartLine = { id: string; name: string; price: number; qty: number; category: "RAW" | "COOKED" };
+type CartLine = { id: string; name: string; price: number; qty: number; category: RbCategory };
+
+const TABS: { id: RbCategory; label: string; icon: typeof Beef; items: RbItem[] }[] = [
+  { id: "COOKED", label: "COOKED", icon: Flame, items: cookedStock },
+  { id: "RAW", label: "RAW", icon: Beef, items: rawStock },
+  { id: "PROCESSED", label: "PROCESSED", icon: Package, items: processedStock },
+];
 
 function PosPage() {
   const [cart, setCart] = useState<CartLine[]>([]);
   const [discountId, setDiscountId] = useState<string>("");
-  const [tab, setTab] = useState<"RAW" | "COOKED">("COOKED");
+  const [tab, setTab] = useState<RbCategory>("COOKED");
 
-  const add = (id: string, name: string, price: number, category: "RAW" | "COOKED") => {
+  const add = (p: RbItem) => {
     setCart((c) => {
-      const ex = c.find((l) => l.id === id);
-      return ex ? c.map((l) => l.id === id ? { ...l, qty: l.qty + 1 } : l) : [...c, { id, name, price, qty: 1, category }];
+      const ex = c.find((l) => l.id === p.id);
+      return ex ? c.map((l) => l.id === p.id ? { ...l, qty: l.qty + 1 } : l) : [...c, { id: p.id, name: p.name, price: p.price, qty: 1, category: p.category }];
     });
   };
   const dec = (id: string) => setCart((c) => c.flatMap((l) => l.id === id ? (l.qty > 1 ? [{ ...l, qty: l.qty - 1 }] : []) : [l]));
+  const inc = (id: string) => setCart((c) => c.map((l) => l.id === id ? { ...l, qty: l.qty + 1 } : l));
   const remove = (id: string) => setCart((c) => c.filter((l) => l.id !== id));
 
   const subtotal = useMemo(() => cart.reduce((a, l) => a + l.price * l.qty, 0), [cart]);
@@ -38,21 +45,37 @@ function PosPage() {
 
   return (
     <div>
-      <PageHeader title="Take-away POS" subtitle="Click product tiles to build the order. Cashiers cannot edit prices." />
+      <PageHeader title="Take-away POS" subtitle="Click product tiles. Cashiers cannot edit prices." />
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <Tabs value={tab} onValueChange={(v) => setTab(v as "RAW" | "COOKED")}>
-            <TabsList>
-              <TabsTrigger value="COOKED" className="gap-2"><Flame className="h-4 w-4" /> COOKED</TabsTrigger>
-              <TabsTrigger value="RAW" className="gap-2"><Beef className="h-4 w-4" /> RAW</TabsTrigger>
+          <Tabs value={tab} onValueChange={(v) => setTab(v as RbCategory)}>
+            <TabsList className="flex-wrap h-auto">
+              {TABS.map(({ id, label, icon: Icon }) => (
+                <TabsTrigger key={id} value={id} className="gap-2"><Icon className="h-4 w-4" /> {label}</TabsTrigger>
+              ))}
             </TabsList>
-            <TabsContent value="COOKED">
-              <Grid items={cookedStock} category="COOKED" onAdd={add} />
-            </TabsContent>
-            <TabsContent value="RAW">
-              <Grid items={rawStock} category="RAW" onAdd={add} />
-            </TabsContent>
+            {TABS.map(({ id, items }) => (
+              <TabsContent key={id} value={id}>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
+                  {items.map((p) => {
+                    const oos = p.stock <= 0;
+                    return (
+                      <button key={p.id} disabled={oos} onClick={() => add(p)}
+                        className="text-left bg-card border rounded-lg p-3 hover:border-primary hover:shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="text-sm font-medium leading-tight">{p.name}</div>
+                          <Badge variant={p.category === "RAW" ? "secondary" : p.category === "PROCESSED" ? "outline" : "default"} className="text-[9px]">{p.category}</Badge>
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-1">per {p.unit} · {p.sub}</div>
+                        <div className="font-display text-lg mt-2 tabular-nums">{fmt(p.price)}</div>
+                        <div className="text-[10px] text-muted-foreground mt-1">{p.stock} {p.unit} in stock</div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </TabsContent>
+            ))}
           </Tabs>
         </div>
 
@@ -66,13 +89,13 @@ function PosPage() {
               {cart.length === 0 && <div className="text-sm text-muted-foreground p-4 text-center">Empty cart — tap a tile</div>}
               {cart.map((l) => (
                 <div key={l.id} className="flex items-center gap-2 p-2 text-sm">
-                  <Badge variant={l.category === "RAW" ? "secondary" : "default"} className="text-[9px]">{l.category}</Badge>
+                  <Badge variant={l.category === "RAW" ? "secondary" : l.category === "PROCESSED" ? "outline" : "default"} className="text-[9px]">{l.category}</Badge>
                   <div className="flex-1 min-w-0">
                     <div className="truncate">{l.name}</div>
                     <div className="text-xs text-muted-foreground tabular-nums">{fmt(l.price)} × {l.qty}</div>
                   </div>
                   <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => dec(l.id)}><Minus className="h-3 w-3" /></Button>
-                  <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => add(l.id, l.name, l.price, l.category)}><Plus className="h-3 w-3" /></Button>
+                  <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => inc(l.id)}><Plus className="h-3 w-3" /></Button>
                   <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive" onClick={() => remove(l.id)}><Trash2 className="h-3 w-3" /></Button>
                 </div>
               ))}
@@ -100,25 +123,10 @@ function PosPage() {
               <Button variant="outline" disabled={cart.length === 0}>Cash</Button>
               <Button disabled={cart.length === 0}>M-Pesa STK</Button>
             </div>
-            <p className="text-[10px] text-muted-foreground">Sale auto-records: date, time, items, qty, total, cashier. Two receipts auto-generated (CUSTOMER + BUSINESS).</p>
+            <p className="text-[10px] text-muted-foreground">Sale auto-records: date, time, items, qty, total, cashier. Two receipts auto-generated (CUSTOMER + BUSINESS) with RAW/COOKED/PROCESSED badge per line.</p>
           </CardContent>
         </Card>
       </div>
-    </div>
-  );
-}
-
-function Grid({ items, category, onAdd }: { items: { id: string; name: string; price: number; unit: string }[]; category: "RAW" | "COOKED"; onAdd: (id: string, name: string, price: number, c: "RAW" | "COOKED") => void }) {
-  return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
-      {items.map((p) => (
-        <button key={p.id} onClick={() => onAdd(p.id, p.name, p.price, category)}
-          className="text-left bg-card border rounded-lg p-3 hover:border-primary hover:shadow-sm transition-all">
-          <div className="text-sm font-medium leading-tight">{p.name}</div>
-          <div className="text-xs text-muted-foreground mt-1">per {p.unit}</div>
-          <div className="font-display text-lg mt-2 tabular-nums">{fmt(p.price)}</div>
-        </button>
-      ))}
     </div>
   );
 }
