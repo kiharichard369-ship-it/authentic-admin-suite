@@ -15,6 +15,7 @@ const platformItems = [
   { to: "/super-admin/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/super-admin/assets", label: "Assets", icon: Boxes },
   { to: "/super-admin/payments", label: "Payment Config", icon: CreditCard },
+  { to: "/super-admin/debts", label: "Debts & Credits", icon: AlertCircle },
   { to: "/super-admin/expenses", label: "Expenses", icon: Receipt },
   { to: "/super-admin/reports", label: "Reports", icon: FileText },
 ];
