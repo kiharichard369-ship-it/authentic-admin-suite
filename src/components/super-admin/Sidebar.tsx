@@ -12,6 +12,7 @@ const platformItems = [
   { to: "/super-admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/super-admin/users", label: "Users & Roles", icon: Users },
   { to: "/super-admin/shops", label: "Shop Branches", icon: Store },
+  { to: "/super-admin/customers", label: "Customers", icon: UserCircle },
   { to: "/super-admin/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/super-admin/assets", label: "Assets", icon: Boxes },
   { to: "/super-admin/payments", label: "Payment Config", icon: CreditCard },
