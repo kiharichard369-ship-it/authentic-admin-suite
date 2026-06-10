@@ -20,17 +20,16 @@ const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const revenueSeries = days.map((d, i) => ({
   day: d,
   Water: 30000 + i * 2400 + (i % 2) * 4000,
-  Restaurant: 22000 + i * 1800,
   Delivery: 12000 + i * 900,
 }));
 
 const topProducts = [
   { name: "5L Bottled Water", sold: 412, revenue: 82400 },
-  { name: "Beef (kg)", sold: 188, revenue: 75200 },
-  { name: "Nyama Choma Plate", sold: 142, revenue: 71000 },
+  { name: "20L Refill", sold: 188, revenue: 28200 },
   { name: "1L Bottled Water", sold: 380, revenue: 22800 },
-  { name: "Mutton (kg)", sold: 88, revenue: 44000 },
-  { name: "Ugali & Sukuma", sold: 156, revenue: 23400 },
+  { name: "10L Refill", sold: 156, revenue: 12480 },
+  { name: "PET Bottle 1.5L", sold: 142, revenue: 4260 },
+  { name: "Caps", sold: 88, revenue: 1760 },
 ];
 
 function Analytics() {
