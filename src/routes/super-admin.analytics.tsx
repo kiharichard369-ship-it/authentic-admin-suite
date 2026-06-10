@@ -77,8 +77,7 @@ function Analytics() {
                     <Tooltip contentStyle={{ background: "var(--color-card)", border: "1px solid var(--color-border)" }} />
                     <Legend />
                     <Line type="monotone" dataKey="Water" stroke="var(--color-chart-1)" strokeWidth={2} />
-                    <Line type="monotone" dataKey="Restaurant" stroke="var(--color-chart-2)" strokeWidth={2} />
-                    <Line type="monotone" dataKey="Delivery" stroke="var(--color-chart-3)" strokeWidth={2} />
+                    <Line type="monotone" dataKey="Delivery" stroke="var(--color-chart-2)" strokeWidth={2} />
                   </LineChart>
                 </ResponsiveContainer>
               </CardContent>
