@@ -36,8 +36,8 @@ function Analytics() {
   return (
     <div>
       <PageHeader
-        title="Cross-business analytics"
-        subtitle="Compare performance across Water Retail, Restaurant & Butchery, and Delivery."
+        title="Cross-vendor analytics"
+        subtitle="Compare Water Retail and Delivery performance across all vendors on the platform."
         actions={
           <>
             <Select defaultValue="30d">
