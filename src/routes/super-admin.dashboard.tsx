@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/super-admin/PageHeader";
 import {
   TrendingUp, Receipt, Users as UsersIcon, AlertCircle,
-  Droplets, UtensilsCrossed, Truck, Plus,
+  Droplets, Truck, Plus,
 } from "lucide-react";
 import { businesses, recentActivity, pendingApprovals, activeUsers } from "@/lib/mock-data";
 
