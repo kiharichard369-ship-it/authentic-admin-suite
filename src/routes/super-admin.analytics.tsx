@@ -117,7 +117,7 @@ function Analytics() {
             </Card>
 
             <Card>
-              <CardHeader><CardTitle>Top products & dishes</CardTitle></CardHeader>
+              <CardHeader><CardTitle>Top products</CardTitle></CardHeader>
               <CardContent className="divide-y">
                 {topProducts.map((p, i) => (
                   <div key={p.name} className="flex justify-between items-center py-2.5 text-sm">
