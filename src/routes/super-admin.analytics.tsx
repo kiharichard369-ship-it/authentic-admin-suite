@@ -110,8 +110,7 @@ function Analytics() {
                     <YAxis stroke="var(--color-muted-foreground)" fontSize={12} />
                     <Tooltip contentStyle={{ background: "var(--color-card)", border: "1px solid var(--color-border)" }} />
                     <Bar dataKey="Water" stackId="a" fill="var(--color-chart-1)" />
-                    <Bar dataKey="Restaurant" stackId="a" fill="var(--color-chart-2)" />
-                    <Bar dataKey="Delivery" stackId="a" fill="var(--color-chart-3)" />
+                    <Bar dataKey="Delivery" stackId="a" fill="var(--color-chart-2)" />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
