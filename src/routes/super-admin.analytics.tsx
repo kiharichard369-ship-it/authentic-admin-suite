@@ -133,11 +133,11 @@ function Analytics() {
           </div>
         </TabsContent>
 
-        {["water", "rb", "delivery"].map((t) => (
+        {["water", "delivery"].map((t) => (
           <TabsContent key={t} value={t}>
             <Card>
               <CardContent className="p-12 text-center text-muted-foreground">
-                Per-business analytics view (litres sold, covers, kg sold by meat type, kitchen turnaround) — same charts scoped to this arm.
+                Per-arm analytics view (litres sold, deliveries, customer cohorts) — same charts scoped to this arm.
               </CardContent>
             </Card>
           </TabsContent>
