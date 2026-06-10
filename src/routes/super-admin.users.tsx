@@ -62,7 +62,6 @@ function UsersPage() {
             <SelectContent>
               <SelectItem value="all">All businesses</SelectItem>
               <SelectItem value="Water Retail">Water Retail</SelectItem>
-              <SelectItem value="Restaurant & Butchery">Restaurant & Butchery</SelectItem>
               <SelectItem value="Water Delivery">Water Delivery</SelectItem>
             </SelectContent>
           </Select>
@@ -152,7 +151,6 @@ function CreateUserSheet() {
             <SelectTrigger><SelectValue placeholder="Select business" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="water">Water Retail</SelectItem>
-              <SelectItem value="rb">Restaurant & Butchery</SelectItem>
               <SelectItem value="delivery">Water Delivery</SelectItem>
             </SelectContent>
           </Select>
