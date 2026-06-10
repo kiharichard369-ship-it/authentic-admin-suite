@@ -24,7 +24,7 @@ function Dashboard() {
     <div>
       <PageHeader
         title="Good morning, Super Admin"
-        subtitle="Today across all three businesses, in real time."
+        subtitle="Today across every vendor on the platform, in real time."
         actions={
           <>
             <Button variant="outline"><Plus className="h-4 w-4 mr-1" /> New shop</Button>
@@ -34,19 +34,17 @@ function Dashboard() {
       />
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
-        <Stat icon={TrendingUp} label="Revenue today" value={fmt(totalRevenue)} hint="All businesses" />
+        <Stat icon={TrendingUp} label="Revenue today" value={fmt(totalRevenue)} hint="All vendors" />
         <Stat icon={Receipt} label="Transactions" value={String(totalTxns)} hint="Across all arms" />
         <Stat icon={UsersIcon} label="Active now" value={String(activeUsers)} hint="Users online" />
         <Stat icon={AlertCircle} label="Pending approvals" value={String(pendingApprovals)} hint="Stock & refunds" highlight />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3 mb-8">
+      <div className="grid gap-4 lg:grid-cols-2 mb-8">
         <BusinessTile to="/super-admin/analytics" icon={Droplets} name="Water Retail"
-          revenue={businesses[0].today} sub="2 active shops · 1 in transit" />
-        <BusinessTile to="/super-admin/analytics" icon={UtensilsCrossed} name="Restaurant & Butchery"
-          revenue={businesses[1].today} sub="89 covers · 12 tables in service" />
+          revenue={businesses[0].today} sub="Vendor-wide retail sales today" />
         <BusinessTile to="/super-admin/analytics" icon={Truck} name="Water Delivery"
-          revenue={businesses[2].today} sub="1 lorry in transit · 14,400L delivered" />
+          revenue={businesses[1].today} sub="Lorries in transit · litres delivered" />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
