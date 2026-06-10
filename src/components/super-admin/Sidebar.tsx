@@ -3,13 +3,14 @@ import { useState } from "react";
 import {
   LayoutDashboard, Users, Store, BarChart3, Boxes,
   CreditCard, Receipt, FileText, Droplets, LogOut,
-  ChevronDown, UtensilsCrossed, Truck, Package, ClipboardList,
+  ChevronDown, Truck, Package, ClipboardList,
   Wallet, RefreshCcw, Coins, AlertCircle, Route as RouteIcon,
-  MapPin, Fuel, UserCircle, TrendingUp,
+  MapPin, Fuel, UserCircle, TrendingUp, Building2,
 } from "lucide-react";
 
 const platformItems = [
   { to: "/super-admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/super-admin/vendors", label: "Vendors", icon: Building2 },
   { to: "/super-admin/users", label: "Users & Roles", icon: Users },
   { to: "/super-admin/shops", label: "Shop Branches", icon: Store },
   { to: "/super-admin/customers", label: "Customers", icon: UserCircle },
@@ -43,19 +44,6 @@ const arms: Arm[] = [
     ],
   },
   {
-    id: "rb",
-    name: "R&B (Take-away)",
-    icon: UtensilsCrossed,
-    items: [
-      { to: "/rb-admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-      { to: "/rb-admin/pos", label: "Take-away POS", icon: Receipt },
-      { to: "/rb-admin/stock", label: "Stock (Raw / Cooked)", icon: Package },
-      { to: "/rb-admin/cashiers", label: "Cashiers", icon: Users },
-      { to: "/rb-admin/revenue", label: "Daily revenue", icon: TrendingUp },
-      { to: "/rb-admin/reports", label: "Reports", icon: FileText },
-    ],
-  },
-  {
     id: "delivery",
     name: "Water Delivery",
     icon: Truck,
@@ -77,7 +65,6 @@ export function SuperAdminSidebar() {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState<Record<string, boolean>>(() => ({
     water: path.startsWith("/water-admin"),
-    rb: path.startsWith("/rb-admin"),
     delivery: path.startsWith("/delivery-admin"),
   }));
 
@@ -114,7 +101,7 @@ export function SuperAdminSidebar() {
         })}
 
         <div className="px-3 pt-4 pb-1 text-[10px] uppercase tracking-wider text-sidebar-foreground/50">
-          Business Arms
+          Vendor workspace (preview)
         </div>
         {arms.map((arm) => {
           const isOpen = open[arm.id];

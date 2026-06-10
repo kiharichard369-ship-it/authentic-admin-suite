@@ -24,6 +24,7 @@ import { Route as WaterAdminExpensesRouteImport } from './routes/water-admin.exp
 import { Route as WaterAdminDashboardRouteImport } from './routes/water-admin.dashboard'
 import { Route as WaterAdminCustomersRouteImport } from './routes/water-admin.customers'
 import { Route as WaterAdminCashiersRouteImport } from './routes/water-admin.cashiers'
+import { Route as SuperAdminVendorsRouteImport } from './routes/super-admin.vendors'
 import { Route as SuperAdminUsersRouteImport } from './routes/super-admin.users'
 import { Route as SuperAdminShopsRouteImport } from './routes/super-admin.shops'
 import { Route as SuperAdminReportsRouteImport } from './routes/super-admin.reports'
@@ -118,6 +119,11 @@ const WaterAdminCashiersRoute = WaterAdminCashiersRouteImport.update({
   id: '/cashiers',
   path: '/cashiers',
   getParentRoute: () => WaterAdminRoute,
+} as any)
+const SuperAdminVendorsRoute = SuperAdminVendorsRouteImport.update({
+  id: '/vendors',
+  path: '/vendors',
+  getParentRoute: () => SuperAdminRoute,
 } as any)
 const SuperAdminUsersRoute = SuperAdminUsersRouteImport.update({
   id: '/users',
@@ -240,6 +246,7 @@ export interface FileRoutesByFullPath {
   '/super-admin/reports': typeof SuperAdminReportsRoute
   '/super-admin/shops': typeof SuperAdminShopsRoute
   '/super-admin/users': typeof SuperAdminUsersRoute
+  '/super-admin/vendors': typeof SuperAdminVendorsRoute
   '/water-admin/cashiers': typeof WaterAdminCashiersRoute
   '/water-admin/customers': typeof WaterAdminCustomersRoute
   '/water-admin/dashboard': typeof WaterAdminDashboardRoute
@@ -276,6 +283,7 @@ export interface FileRoutesByTo {
   '/super-admin/reports': typeof SuperAdminReportsRoute
   '/super-admin/shops': typeof SuperAdminShopsRoute
   '/super-admin/users': typeof SuperAdminUsersRoute
+  '/super-admin/vendors': typeof SuperAdminVendorsRoute
   '/water-admin/cashiers': typeof WaterAdminCashiersRoute
   '/water-admin/customers': typeof WaterAdminCustomersRoute
   '/water-admin/dashboard': typeof WaterAdminDashboardRoute
@@ -313,6 +321,7 @@ export interface FileRoutesById {
   '/super-admin/reports': typeof SuperAdminReportsRoute
   '/super-admin/shops': typeof SuperAdminShopsRoute
   '/super-admin/users': typeof SuperAdminUsersRoute
+  '/super-admin/vendors': typeof SuperAdminVendorsRoute
   '/water-admin/cashiers': typeof WaterAdminCashiersRoute
   '/water-admin/customers': typeof WaterAdminCustomersRoute
   '/water-admin/dashboard': typeof WaterAdminDashboardRoute
@@ -351,6 +360,7 @@ export interface FileRouteTypes {
     | '/super-admin/reports'
     | '/super-admin/shops'
     | '/super-admin/users'
+    | '/super-admin/vendors'
     | '/water-admin/cashiers'
     | '/water-admin/customers'
     | '/water-admin/dashboard'
@@ -387,6 +397,7 @@ export interface FileRouteTypes {
     | '/super-admin/reports'
     | '/super-admin/shops'
     | '/super-admin/users'
+    | '/super-admin/vendors'
     | '/water-admin/cashiers'
     | '/water-admin/customers'
     | '/water-admin/dashboard'
@@ -423,6 +434,7 @@ export interface FileRouteTypes {
     | '/super-admin/reports'
     | '/super-admin/shops'
     | '/super-admin/users'
+    | '/super-admin/vendors'
     | '/water-admin/cashiers'
     | '/water-admin/customers'
     | '/water-admin/dashboard'
@@ -549,6 +561,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/water-admin/cashiers'
       preLoaderRoute: typeof WaterAdminCashiersRouteImport
       parentRoute: typeof WaterAdminRoute
+    }
+    '/super-admin/vendors': {
+      id: '/super-admin/vendors'
+      path: '/vendors'
+      fullPath: '/super-admin/vendors'
+      preLoaderRoute: typeof SuperAdminVendorsRouteImport
+      parentRoute: typeof SuperAdminRoute
     }
     '/super-admin/users': {
       id: '/super-admin/users'
@@ -725,6 +744,7 @@ interface SuperAdminRouteChildren {
   SuperAdminReportsRoute: typeof SuperAdminReportsRoute
   SuperAdminShopsRoute: typeof SuperAdminShopsRoute
   SuperAdminUsersRoute: typeof SuperAdminUsersRoute
+  SuperAdminVendorsRoute: typeof SuperAdminVendorsRoute
 }
 
 const SuperAdminRouteChildren: SuperAdminRouteChildren = {
@@ -738,6 +758,7 @@ const SuperAdminRouteChildren: SuperAdminRouteChildren = {
   SuperAdminReportsRoute: SuperAdminReportsRoute,
   SuperAdminShopsRoute: SuperAdminShopsRoute,
   SuperAdminUsersRoute: SuperAdminUsersRoute,
+  SuperAdminVendorsRoute: SuperAdminVendorsRoute,
 }
 
 const SuperAdminRouteWithChildren = SuperAdminRoute._addFileChildren(
