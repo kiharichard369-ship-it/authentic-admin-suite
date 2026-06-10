@@ -59,9 +59,8 @@ function Analytics() {
 
       <Tabs defaultValue="all">
         <TabsList className="mb-6">
-          <TabsTrigger value="all">All businesses</TabsTrigger>
+          <TabsTrigger value="all">All arms</TabsTrigger>
           <TabsTrigger value="water">Water Retail</TabsTrigger>
-          <TabsTrigger value="rb">Restaurant & Butchery</TabsTrigger>
           <TabsTrigger value="delivery">Delivery</TabsTrigger>
         </TabsList>
 
