@@ -20,25 +20,24 @@ const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const revenueSeries = days.map((d, i) => ({
   day: d,
   Water: 30000 + i * 2400 + (i % 2) * 4000,
-  Restaurant: 22000 + i * 1800,
   Delivery: 12000 + i * 900,
 }));
 
 const topProducts = [
   { name: "5L Bottled Water", sold: 412, revenue: 82400 },
-  { name: "Beef (kg)", sold: 188, revenue: 75200 },
-  { name: "Nyama Choma Plate", sold: 142, revenue: 71000 },
+  { name: "20L Refill", sold: 188, revenue: 28200 },
   { name: "1L Bottled Water", sold: 380, revenue: 22800 },
-  { name: "Mutton (kg)", sold: 88, revenue: 44000 },
-  { name: "Ugali & Sukuma", sold: 156, revenue: 23400 },
+  { name: "10L Refill", sold: 156, revenue: 12480 },
+  { name: "PET Bottle 1.5L", sold: 142, revenue: 4260 },
+  { name: "Caps", sold: 88, revenue: 1760 },
 ];
 
 function Analytics() {
   return (
     <div>
       <PageHeader
-        title="Cross-business analytics"
-        subtitle="Compare performance across Water Retail, Restaurant & Butchery, and Delivery."
+        title="Cross-vendor analytics"
+        subtitle="Compare Water Retail and Delivery performance across all vendors on the platform."
         actions={
           <>
             <Select defaultValue="30d">
@@ -60,9 +59,8 @@ function Analytics() {
 
       <Tabs defaultValue="all">
         <TabsList className="mb-6">
-          <TabsTrigger value="all">All businesses</TabsTrigger>
+          <TabsTrigger value="all">All arms</TabsTrigger>
           <TabsTrigger value="water">Water Retail</TabsTrigger>
-          <TabsTrigger value="rb">Restaurant & Butchery</TabsTrigger>
           <TabsTrigger value="delivery">Delivery</TabsTrigger>
         </TabsList>
 
@@ -79,8 +77,7 @@ function Analytics() {
                     <Tooltip contentStyle={{ background: "var(--color-card)", border: "1px solid var(--color-border)" }} />
                     <Legend />
                     <Line type="monotone" dataKey="Water" stroke="var(--color-chart-1)" strokeWidth={2} />
-                    <Line type="monotone" dataKey="Restaurant" stroke="var(--color-chart-2)" strokeWidth={2} />
-                    <Line type="monotone" dataKey="Delivery" stroke="var(--color-chart-3)" strokeWidth={2} />
+                    <Line type="monotone" dataKey="Delivery" stroke="var(--color-chart-2)" strokeWidth={2} />
                   </LineChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -113,15 +110,14 @@ function Analytics() {
                     <YAxis stroke="var(--color-muted-foreground)" fontSize={12} />
                     <Tooltip contentStyle={{ background: "var(--color-card)", border: "1px solid var(--color-border)" }} />
                     <Bar dataKey="Water" stackId="a" fill="var(--color-chart-1)" />
-                    <Bar dataKey="Restaurant" stackId="a" fill="var(--color-chart-2)" />
-                    <Bar dataKey="Delivery" stackId="a" fill="var(--color-chart-3)" />
+                    <Bar dataKey="Delivery" stackId="a" fill="var(--color-chart-2)" />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
 
             <Card>
-              <CardHeader><CardTitle>Top products & dishes</CardTitle></CardHeader>
+              <CardHeader><CardTitle>Top products</CardTitle></CardHeader>
               <CardContent className="divide-y">
                 {topProducts.map((p, i) => (
                   <div key={p.name} className="flex justify-between items-center py-2.5 text-sm">
@@ -137,11 +133,11 @@ function Analytics() {
           </div>
         </TabsContent>
 
-        {["water", "rb", "delivery"].map((t) => (
+        {["water", "delivery"].map((t) => (
           <TabsContent key={t} value={t}>
             <Card>
               <CardContent className="p-12 text-center text-muted-foreground">
-                Per-business analytics view (litres sold, covers, kg sold by meat type, kitchen turnaround) — same charts scoped to this arm.
+                Per-arm analytics view (litres sold, deliveries, customer cohorts) — same charts scoped to this arm.
               </CardContent>
             </Card>
           </TabsContent>

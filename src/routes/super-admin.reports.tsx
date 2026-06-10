@@ -13,14 +13,13 @@ export const Route = createFileRoute("/super-admin/reports")({
 });
 
 const reportTypes = [
-  { v: "daily", l: "Daily sales summary (all businesses)" },
+  { v: "daily", l: "Daily sales summary (all vendors)" },
+  { v: "vendor-revenue", l: "Revenue & MRR by vendor" },
   { v: "water-bottle", l: "Water Retail: sales by bottle size and shop" },
-  { v: "water-delivery", l: "Water Retail: delivery log (driver, litres, stops)" },
-  { v: "rest-orders", l: "Restaurant: order history with kitchen times" },
-  { v: "butch-stock", l: "Butchery: stock arrivals and sales by meat type" },
+  { v: "water-delivery", l: "Delivery log (driver, litres, stops)" },
   { v: "driver-exp", l: "Driver expense report by shop and category" },
   { v: "user-activity", l: "User activity log (logins, role changes)" },
-  { v: "refunds", l: "Refund report (all businesses)" },
+  { v: "refunds", l: "Refund report (all vendors)" },
 ];
 
 function Reports() {

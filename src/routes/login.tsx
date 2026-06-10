@@ -5,25 +5,26 @@ import heroImg from "@/assets/login-hero.jpg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ROLE_HOME, ROLE_LABEL, roleFromEmail, setSession, clearSession } from "@/lib/auth";
+import { ROLE_HOME, ROLE_LABEL, parseDemoEmail, setSession, clearSession } from "@/lib/auth";
+import { getVendorBySlug } from "@/lib/vendors";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Sign in — Maji & Co. Platform" },
-      { name: "description", content: "Sign in to the multi-business management platform." },
+      { title: "Sign in — Mirie Platform" },
+      { name: "description", content: "Multi-tenant SaaS for water retail and delivery operators." },
     ],
   }),
   component: LoginPage,
 });
 
 const DEMO_ACCOUNTS: { email: string; label: string }[] = [
-  { email: "super@mirie.co.ke", label: "Super Admin" },
-  { email: "water@mirie.co.ke", label: "Water Retail Admin" },
-  { email: "cashier@mirie.co.ke", label: "Water Cashier" },
-  { email: "rb@mirie.co.ke", label: "R&B Manager" },
-  { email: "rbcashier@mirie.co.ke", label: "R&B Cashier" },
-  { email: "driver@mirie.co.ke", label: "Driver" },
+  { email: "super@mirie.co.ke",         label: "Super Admin (platform)" },
+  { email: "vendor@acme.mirie.co.ke",   label: "Vendor Admin · Acme" },
+  { email: "water@acme.mirie.co.ke",    label: "Water Admin · Acme" },
+  { email: "cashier@acme.mirie.co.ke",  label: "Water Cashier · Acme" },
+  { email: "driver@acme.mirie.co.ke",   label: "Driver · Acme" },
+  { email: "vendor@blue.mirie.co.ke",   label: "Vendor Admin · Blue Springs" },
 ];
 
 function LoginPage() {
@@ -31,21 +32,36 @@ function LoginPage() {
   const [email, setEmail] = useState("super@mirie.co.ke");
   const [password, setPassword] = useState("demo");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
-      setError("Email and password are required.");
-      return;
+    setError("");
+    if (!email || !password) { setError("Email and password are required."); return; }
+    const parsed = parseDemoEmail(email);
+    if (!parsed) { setError("Unknown account. Try one of the demo accounts below."); return; }
+
+    setLoading(true);
+    try {
+      let vendorId: string | null = null;
+      let vendorName: string | null = null;
+      if (parsed.vendorSlug) {
+        const v = await getVendorBySlug(parsed.vendorSlug);
+        vendorId = v?.id ?? null;
+        vendorName = v?.name ?? parsed.vendorSlug;
+      }
+      clearSession();
+      setSession({
+        role: parsed.role,
+        email,
+        name: ROLE_LABEL[parsed.role],
+        vendorId,
+        vendorName,
+      });
+      navigate({ to: ROLE_HOME[parsed.role] });
+    } finally {
+      setLoading(false);
     }
-    const role = roleFromEmail(email);
-    if (!role) {
-      setError("Unknown account. Try one of the demo accounts below.");
-      return;
-    }
-    clearSession();
-    setSession({ role, email, name: ROLE_LABEL[role] });
-    navigate({ to: ROLE_HOME[role] });
   };
 
   return (
@@ -57,44 +73,36 @@ function LoginPage() {
               <Droplets className="h-5 w-5" />
             </div>
             <div>
-              <div className="font-display text-xl leading-none">Maji & Co.</div>
-              <div className="text-xs text-muted-foreground mt-0.5">Business Platform</div>
+              <div className="font-display text-xl leading-none">Mirie</div>
+              <div className="text-xs text-muted-foreground mt-0.5">SaaS for water operators</div>
             </div>
           </div>
 
           <h1 className="text-3xl mb-2">Welcome back</h1>
           <p className="text-sm text-muted-foreground mb-8">
-            Sign in to manage your shops, kitchen and deliveries.
+            Sign in to run your shop, drivers and customer accounts in one place.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input
-                id="email" type="email" value={email}
-                onChange={(e) => setEmail(e.target.value)} autoComplete="email"
-              />
+              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
-                <button type="button" className="text-xs text-primary hover:underline">
-                  Forgot password?
-                </button>
+                <button type="button" className="text-xs text-primary hover:underline">Forgot password?</button>
               </div>
-              <Input
-                id="password" type="password" value={password}
-                onChange={(e) => setPassword(e.target.value)} autoComplete="current-password"
-              />
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" />
             </div>
 
             {error && (
-              <div className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-md">
-                {error}
-              </div>
+              <div className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-md">{error}</div>
             )}
 
-            <Button type="submit" className="w-full">Sign in</Button>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Signing in…" : "Sign in"}
+            </Button>
           </form>
 
           <div className="mt-8 pt-6 border-t">
@@ -112,19 +120,20 @@ function LoginPage() {
                 </button>
               ))}
             </div>
+            <p className="mt-4 text-[11px] text-muted-foreground">
+              New vendors are provisioned by the platform Super Admin from{" "}
+              <span className="font-medium">Vendors</span>.
+            </p>
           </div>
         </div>
       </div>
 
       <div className="hidden lg:block relative overflow-hidden">
-        <img
-          src={heroImg} alt="" width={1280} height={1600}
-          className="absolute inset-0 h-full w-full object-cover"
-        />
+        <img src={heroImg} alt="" width={1280} height={1600} className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-tr from-primary/40 via-transparent to-accent/20" />
         <div className="absolute bottom-10 left-10 right-10 text-primary-foreground">
           <p className="font-display text-3xl leading-tight max-w-md">
-            One umbrella for water retail, the kitchen and every delivery on the road.
+            One platform for every water retailer and every delivery on the road.
           </p>
         </div>
       </div>
