@@ -23,14 +23,10 @@ export const Route = createFileRoute("/super-admin/users")({
 
 const ROLE_LABELS: Record<string, string> = {
   super_admin: "Super Admin",
+  vendor_admin: "Vendor Admin",
   water_admin: "Water Admin",
   water_cashier: "Water Cashier",
   driver: "Driver",
-  rb_admin: "R&B Admin",
-  rb_cashier: "R&B Cashier",
-  waiter: "Waiter",
-  kitchen: "Kitchen",
-  butcher: "Butcher",
 };
 
 function UsersPage() {
