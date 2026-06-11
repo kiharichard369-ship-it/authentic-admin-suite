@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeader } from "@/components/super-admin/PageHeader";
-import { AlertCircle, Coins, Truck, Droplets } from "lucide-react";
+import { AlertCircle, Truck, Droplets } from "lucide-react";
 import { debts } from "@/lib/delivery-mock";
 import { customers as waterCustomers } from "@/lib/water-mock";
 
