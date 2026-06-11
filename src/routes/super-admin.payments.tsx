@@ -18,7 +18,6 @@ export const Route = createFileRoute("/super-admin/payments")({
 
 const businessConfigs = [
   { id: "water", name: "Water Retail", shortcode: "174379" },
-  { id: "rb", name: "Restaurant & Butchery", shortcode: "174380" },
   { id: "delivery", name: "Water Delivery", shortcode: "174381", noPayments: true },
 ];
 
