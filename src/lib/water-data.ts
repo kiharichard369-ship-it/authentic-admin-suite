@@ -200,3 +200,62 @@ export async function recordSale(input: SaleInput): Promise<{ transactionId: str
 
   return { transactionId: tx.id, overpayment };
 }
+
+// ----------------------------------------------------------------------------
+// Read-only helpers for branch, KPIs, cashiers, transactions, refunds, etc.
+// Mirror water-mock exports so routes can swap their import path 1:1.
+// ----------------------------------------------------------------------------
+import * as wmock from "./water-mock";
+
+async function fromTable<T>(table: string, mapper: (row: any) => T, fallback: T[]): Promise<T[]> {
+  if (!hasSupabase || !supabase) return fallback;
+  const { data, error } = await supabase.from(table).select("*");
+  if (error) throw error;
+  return (data ?? []).map(mapper);
+}
+
+export const fetchBranch = async () => {
+  if (!hasSupabase || !supabase) return wmock.branch;
+  const { data, error } = await supabase.from("water_branch").select("*").limit(1).maybeSingle();
+  if (error) throw error;
+  return data ?? wmock.branch;
+};
+
+export const fetchWaterKpis = async () => {
+  if (!hasSupabase || !supabase) return wmock.waterKpis;
+  const { data, error } = await supabase.from("water_kpis").select("*").limit(1).maybeSingle();
+  if (error) throw error;
+  return data ?? wmock.waterKpis;
+};
+
+export const fetchHourlySales = async () =>
+  fromTable("water_hourly_sales", (r) => ({ hour: r.hour, litres: Number(r.litres), revenue: Number(r.revenue) }), wmock.hourlySales as any);
+
+export const fetchTransactions = async () =>
+  fromTable("water_transactions_view", (r) => ({
+    id: r.id, time: r.time, cashier: r.cashier, items: r.items,
+    amount: Number(r.amount), method: r.method, status: r.status,
+  }), wmock.transactions);
+
+export const fetchCashiers = async () =>
+  fromTable("water_cashiers", (r) => ({
+    id: r.id, name: r.name, phone: r.phone, shift: r.shift, status: r.status,
+    todaySales: Number(r.today_sales), txns: r.txns,
+  }), wmock.cashiers);
+
+export const fetchStockRequests = async () =>
+  fromTable("water_stock_requests", (r) => ({
+    id: r.id, date: r.date, items: r.items, status: r.status, note: r.note ?? "",
+  }), wmock.stockRequests);
+
+export const fetchBranchExpenses = async () =>
+  fromTable("water_branch_expenses", (r) => ({
+    id: r.id, date: r.date, staff: r.staff, category: r.category,
+    description: r.description, amount: Number(r.amount), status: r.status,
+  }), wmock.branchExpenses);
+
+export const fetchRefunds = async () =>
+  fromTable("water_refunds", (r) => ({
+    id: r.id, txn: r.txn, date: r.date, customer: r.customer, cashier: r.cashier,
+    reason: r.reason, amount: Number(r.amount), status: r.status,
+  }), wmock.refunds);
