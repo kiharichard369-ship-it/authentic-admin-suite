@@ -7,7 +7,9 @@ import {
   TrendingUp, Receipt, Users as UsersIcon, AlertCircle,
   Droplets, Truck, Plus,
 } from "lucide-react";
-import { businesses, recentActivity, pendingApprovals, activeUsers } from "@/lib/mock-data";
+import { businesses as mockBusinesses, recentActivity as mockActivity, pendingApprovals, activeUsers } from "@/lib/mock-data";
+import { fetchBusinesses, fetchRecentActivity } from "@/lib/platform-data";
+import { useLive } from "@/lib/use-live";
 
 export const Route = createFileRoute("/super-admin/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Super Admin" }] }),
