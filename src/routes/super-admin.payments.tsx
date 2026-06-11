@@ -40,7 +40,7 @@ function Payments() {
           <Card>
             <CardContent className="divide-y">
               {[
-                { who: "Super Admin", when: "2026-05-08 14:22", what: "Updated Restaurant Passkey" },
+                { who: "Super Admin", when: "2026-05-08 14:22", what: "Updated Water Retail Passkey" },
                 { who: "Super Admin", when: "2026-04-30 09:15", what: "Switched Water Retail to Production" },
                 { who: "Super Admin", when: "2026-04-12 11:05", what: "Created Delivery sandbox config" },
               ].map((r, i) => (
