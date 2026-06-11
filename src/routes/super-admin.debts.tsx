@@ -42,7 +42,7 @@ function DebtsOverview() {
         <TabsList className="mb-6">
           <TabsTrigger value="delivery">Water Delivery</TabsTrigger>
           <TabsTrigger value="retail">Water Retail</TabsTrigger>
-          <TabsTrigger value="rb">R&amp;B</TabsTrigger>
+          
         </TabsList>
 
         <TabsContent value="delivery" className="space-y-4">
