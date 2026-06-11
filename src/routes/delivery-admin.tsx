@@ -14,7 +14,7 @@ import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/delivery-admin")({ component: DeliveryLayout });
 
 function DeliveryLayout() {
-  const fleet = useLive(["delivery","fleet"] as const, fetchFleet, _mock_fleet as any);
+  const fleet = useLive(["delivery","fleet"] as const, fetchFleet, _mock_fleet);
   const navigate = useNavigate();
   const [session, setS] = useState<Session | null>(null);
   const [ready, setReady] = useState(false);

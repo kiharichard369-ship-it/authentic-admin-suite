@@ -23,7 +23,7 @@ const STATUS: Record<string, string> = {
 };
 
 function RefundsPage() {
-  const refunds = useLive(["water","refunds"] as const, fetchRefunds, _mock_refunds as any);
+  const refunds = useLive(["water","refunds"] as const, fetchRefunds, _mock_refunds);
   const total = refunds.filter((r) => r.status === "approved").reduce((a, r) => a + r.amount, 0);
   const pending = refunds.filter((r) => r.status === "pending");
 

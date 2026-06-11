@@ -17,8 +17,8 @@ export const Route = createFileRoute("/water-admin/revenue")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function RevenuePage() {
-  const waterKpis = useLive(["water","waterKpis"] as const, fetchWaterKpis, _mock_waterKpis as any);
-  const branch = useLive(["water","branch"] as const, fetchBranch, _mock_branch as any);
+  const waterKpis = useLive(["water","waterKpis"] as const, fetchWaterKpis, _mock_waterKpis);
+  const branch = useLive(["water","branch"] as const, fetchBranch, _mock_branch);
   // Mock split: assume 65% M-Pesa / 35% cash for the day.
   const mpesa = Math.round(waterKpis.todayRevenue * 0.65);
   const cash = waterKpis.todayRevenue - mpesa;

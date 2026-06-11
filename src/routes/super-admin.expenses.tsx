@@ -17,7 +17,7 @@ export const Route = createFileRoute("/super-admin/expenses")({
 });
 
 function Expenses() {
-  const expenses = useLive(["platform","expenses"] as const, fetchPlatformExpenses, _mock_expenses as any);
+  const expenses = useLive(["platform","expenses"] as const, fetchPlatformExpenses, _mock_expenses);
   const total = expenses.filter((e) => e.status !== "rejected").reduce((s, e) => s + e.amount, 0);
   const fuel = expenses.filter((e) => e.category === "Fuel" && e.status !== "rejected").reduce((s, e) => s + e.amount, 0);
   const repairs = expenses.filter((e) => e.category === "Repairs" && e.status !== "rejected").reduce((s, e) => s + e.amount, 0);

@@ -14,7 +14,7 @@ export const Route = createFileRoute("/delivery-admin/gps")({
 });
 
 function GpsPage() {
-  const gpsVehicles = useLive(["delivery","gpsVehicles"] as const, fetchGpsVehicles, _mock_gpsVehicles as any);
+  const gpsVehicles = useLive(["delivery","gpsVehicles"] as const, fetchGpsVehicles, _mock_gpsVehicles);
   return (
     <div>
       <PageHeader

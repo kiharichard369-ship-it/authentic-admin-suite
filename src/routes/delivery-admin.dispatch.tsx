@@ -16,7 +16,7 @@ export const Route = createFileRoute("/delivery-admin/dispatch")({
 });
 
 function DispatchPage() {
-  const dispatches = useLive(["delivery","dispatches"] as const, fetchDispatches, _mock_dispatches as any);
+  const dispatches = useLive(["delivery","dispatches"] as const, fetchDispatches, _mock_dispatches);
   return (
     <div>
       <PageHeader

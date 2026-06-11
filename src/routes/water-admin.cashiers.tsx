@@ -19,7 +19,7 @@ const fmt = (n: number) => "KES " + n.toLocaleString();
 const initials = (n: string) => n.split(" ").map((s) => s[0]).slice(0, 2).join("");
 
 function CashiersPage() {
-  const cashiers = useLive(["water","cashiers"] as const, fetchCashiers, _mock_cashiers as any);
+  const cashiers = useLive(["water","cashiers"] as const, fetchCashiers, _mock_cashiers);
   return (
     <div>
       <PageHeader

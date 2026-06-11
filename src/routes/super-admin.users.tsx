@@ -33,7 +33,7 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 function UsersPage() {
-  const users = useLive(["platform","users"] as const, fetchUsers, _mock_users as any);
+  const users = useLive(["platform","users"] as const, fetchUsers, _mock_users);
   const [q, setQ] = useState("");
   const [bizFilter, setBizFilter] = useState("all");
   const [roleFilter, setRoleFilter] = useState("all");

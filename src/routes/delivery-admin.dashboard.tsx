@@ -18,11 +18,11 @@ export const Route = createFileRoute("/delivery-admin/dashboard")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function Dash() {
-  const fleet = useLive(["delivery","fleet"] as const, fetchFleet, _mock_fleet as any);
-  const deliveryKpis = useLive(["delivery","deliveryKpis"] as const, fetchDeliveryKpis, _mock_deliveryKpis as any);
-  const litresByDay = useLive(["delivery","litresByDay"] as const, fetchLitresByDay, _mock_litresByDay as any);
-  const dispatches = useLive(["delivery","dispatches"] as const, fetchDispatches, _mock_dispatches as any);
-  const drivers = useLive(["delivery","drivers"] as const, fetchDrivers, _mock_drivers as any);
+  const fleet = useLive(["delivery","fleet"] as const, fetchFleet, _mock_fleet);
+  const deliveryKpis = useLive(["delivery","deliveryKpis"] as const, fetchDeliveryKpis, _mock_deliveryKpis);
+  const litresByDay = useLive(["delivery","litresByDay"] as const, fetchLitresByDay, _mock_litresByDay);
+  const dispatches = useLive(["delivery","dispatches"] as const, fetchDispatches, _mock_dispatches);
+  const drivers = useLive(["delivery","drivers"] as const, fetchDrivers, _mock_drivers);
   const active = dispatches.filter((d) => d.status !== "returned");
   return (
     <div>

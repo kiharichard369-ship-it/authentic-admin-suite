@@ -20,7 +20,7 @@ export const Route = createFileRoute("/super-admin/debts")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function DebtsOverview() {
-  const debts = useLive(["delivery","debts"] as const, fetchDebts, _mock_debts as any);
+  const debts = useLive(["delivery","debts"] as const, fetchDebts, _mock_debts);
   const deliveryOutstanding = debts
     .filter((d) => d.status !== "paid")
     .reduce((a, b) => a + b.amount, 0);

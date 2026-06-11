@@ -16,7 +16,7 @@ export const Route = createFileRoute("/super-admin/assets")({
 });
 
 function Assets() {
-  const assets = useLive(["platform","assets"] as const, fetchAssets, _mock_assets as any);
+  const assets = useLive(["platform","assets"] as const, fetchAssets, _mock_assets);
   return (
     <div>
       <PageHeader

@@ -20,7 +20,7 @@ export const Route = createFileRoute("/super-admin/shops")({
 });
 
 function Shops() {
-  const shops = useLive(["platform","shops"] as const, fetchShops, _mock_shops as any);
+  const shops = useLive(["platform","shops"] as const, fetchShops, _mock_shops);
   return (
     <div>
       <PageHeader

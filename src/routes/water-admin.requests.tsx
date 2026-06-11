@@ -23,7 +23,7 @@ const tone: Record<string, "default" | "secondary" | "destructive" | "outline"> 
 };
 
 function RequestsPage() {
-  const stockRequests = useLive(["water","stockRequests"] as const, fetchStockRequests, _mock_stockRequests as any);
+  const stockRequests = useLive(["water","stockRequests"] as const, fetchStockRequests, _mock_stockRequests);
   return (
     <div>
       <PageHeader

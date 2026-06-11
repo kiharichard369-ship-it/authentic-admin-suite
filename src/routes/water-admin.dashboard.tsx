@@ -23,11 +23,11 @@ export const Route = createFileRoute("/water-admin/dashboard")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function Dashboard() {
-  const branch = useLive(["water","branch"] as const, fetchBranch, _mock_branch as any);
-  const waterKpis = useLive(["water","waterKpis"] as const, fetchWaterKpis, _mock_waterKpis as any);
-  const hourlySales = useLive(["water","hourlySales"] as const, fetchHourlySales, _mock_hourlySales as any);
-  const transactions = useLive(["water","transactions"] as const, fetchTransactions, _mock_transactions as any);
-  const cashiers = useLive(["water","cashiers"] as const, fetchCashiers, _mock_cashiers as any);
+  const branch = useLive(["water","branch"] as const, fetchBranch, _mock_branch);
+  const waterKpis = useLive(["water","waterKpis"] as const, fetchWaterKpis, _mock_waterKpis);
+  const hourlySales = useLive(["water","hourlySales"] as const, fetchHourlySales, _mock_hourlySales);
+  const transactions = useLive(["water","transactions"] as const, fetchTransactions, _mock_transactions);
+  const cashiers = useLive(["water","cashiers"] as const, fetchCashiers, _mock_cashiers);
   const lowStock = products.filter((p) => p.stock <= p.reorder);
 
   return (

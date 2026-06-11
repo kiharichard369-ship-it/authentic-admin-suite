@@ -18,7 +18,7 @@ export const Route = createFileRoute("/delivery-admin/credits")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function CreditsPage() {
-  const credits = useLive(["delivery","credits"] as const, fetchCredits, _mock_credits as any);
+  const credits = useLive(["delivery","credits"] as const, fetchCredits, _mock_credits);
   const total = credits.reduce((a, b) => a + b.balance, 0);
   return (
     <div>

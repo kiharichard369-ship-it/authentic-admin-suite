@@ -16,7 +16,7 @@ export const Route = createFileRoute("/delivery-admin/revenue")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function RevenuePage() {
-  const dailyRevenue = useLive(["delivery","dailyRevenue"] as const, fetchDailyRevenue, _mock_dailyRevenue as any);
+  const dailyRevenue = useLive(["delivery","dailyRevenue"] as const, fetchDailyRevenue, _mock_dailyRevenue);
   return (
     <div>
       <PageHeader

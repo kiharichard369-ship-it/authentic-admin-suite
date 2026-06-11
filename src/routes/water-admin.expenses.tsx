@@ -23,7 +23,7 @@ const tone: Record<string, "default" | "secondary" | "destructive" | "outline"> 
 };
 
 function ExpensesPage() {
-  const branchExpenses = useLive(["water","branchExpenses"] as const, fetchBranchExpenses, _mock_branchExpenses as any);
+  const branchExpenses = useLive(["water","branchExpenses"] as const, fetchBranchExpenses, _mock_branchExpenses);
   const total = branchExpenses.filter((e) => e.status !== "rejected").reduce((a, b) => a + b.amount, 0);
 
   return (

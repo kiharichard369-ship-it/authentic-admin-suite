@@ -36,7 +36,7 @@ const topProducts = [
 ];
 
 function Analytics() {
-  const businesses = useLive(["platform","businesses"] as const, fetchBusinesses, _mock_businesses as any);
+  const businesses = useLive(["platform","businesses"] as const, fetchBusinesses, _mock_businesses);
   return (
     <div>
       <PageHeader

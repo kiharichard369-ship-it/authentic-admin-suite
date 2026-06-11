@@ -17,8 +17,8 @@ export const Route = createFileRoute("/delivery-admin/reports")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function ReportsPage() {
-  const litresByDay = useLive(["delivery","litresByDay"] as const, fetchLitresByDay, _mock_litresByDay as any);
-  const deliveryKpis = useLive(["delivery","deliveryKpis"] as const, fetchDeliveryKpis, _mock_deliveryKpis as any);
+  const litresByDay = useLive(["delivery","litresByDay"] as const, fetchLitresByDay, _mock_litresByDay);
+  const deliveryKpis = useLive(["delivery","deliveryKpis"] as const, fetchDeliveryKpis, _mock_deliveryKpis);
   const reports = [
     { name: "Litres delivered", desc: "Daily / weekly volume per route" },
     { name: "Route P&L", desc: "Revenue minus fuel & driver cost per route" },

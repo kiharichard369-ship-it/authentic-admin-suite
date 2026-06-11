@@ -18,7 +18,7 @@ export const Route = createFileRoute("/delivery-admin/debts")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function DebtsPage() {
-  const debts = useLive(["delivery","debts"] as const, fetchDebts, _mock_debts as any);
+  const debts = useLive(["delivery","debts"] as const, fetchDebts, _mock_debts);
   const outstanding = debts.filter((d) => d.status !== "paid").reduce((a, b) => a + b.amount, 0);
   const unpaidCount = debts.filter((d) => d.status === "unpaid").length;
   return (

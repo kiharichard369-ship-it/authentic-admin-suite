@@ -27,8 +27,8 @@ const reports = [
 ];
 
 function ReportsPage() {
-  const hourlySales = useLive(["water","hourlySales"] as const, fetchHourlySales, _mock_hourlySales as any);
-  const waterKpis = useLive(["water","waterKpis"] as const, fetchWaterKpis, _mock_waterKpis as any);
+  const hourlySales = useLive(["water","hourlySales"] as const, fetchHourlySales, _mock_hourlySales);
+  const waterKpis = useLive(["water","waterKpis"] as const, fetchWaterKpis, _mock_waterKpis);
   const [range, setRange] = useState("today");
   const [active, setActive] = useState(reports[0].id);
 

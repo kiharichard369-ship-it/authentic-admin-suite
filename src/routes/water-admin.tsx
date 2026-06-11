@@ -16,7 +16,7 @@ export const Route = createFileRoute("/water-admin")({
 });
 
 function WaterAdminLayout() {
-  const branch = useLive(["water","branch"] as const, fetchBranch, _mock_branch as any);
+  const branch = useLive(["water","branch"] as const, fetchBranch, _mock_branch);
   const navigate = useNavigate();
   const [session, setSessionState] = useState<Session | null>(null);
   const [ready, setReady] = useState(false);

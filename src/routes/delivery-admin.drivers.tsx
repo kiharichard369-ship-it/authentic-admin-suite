@@ -18,7 +18,7 @@ export const Route = createFileRoute("/delivery-admin/drivers")({
 const variant: Record<string, "default"|"secondary"|"outline"> = { on_route: "default", loading: "secondary", off: "outline" };
 
 function DriversPage() {
-  const drivers = useLive(["delivery","drivers"] as const, fetchDrivers, _mock_drivers as any);
+  const drivers = useLive(["delivery","drivers"] as const, fetchDrivers, _mock_drivers);
   return (
     <div>
       <PageHeader title="Drivers" subtitle={`${drivers.length} drivers · ${drivers.filter(d=>d.status!=="off").length} on duty`} actions={<Button>+ Add driver</Button>} />
