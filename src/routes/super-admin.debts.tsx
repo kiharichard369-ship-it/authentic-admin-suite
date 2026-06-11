@@ -119,16 +119,6 @@ function DebtsOverview() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="rb">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2"><Coins className="h-4 w-4" /> R&amp;B is cash & M-Pesa only</CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              The take-away counter does not extend credit. No outstanding debts are tracked for this arm.
-            </CardContent>
-          </Card>
-        </TabsContent>
       </Tabs>
     </div>
   );
