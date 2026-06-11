@@ -105,10 +105,9 @@ function Reports() {
                   <tbody className="divide-y">
                     {[
                       ["2026-05-11", "Water Retail", 132, 48200],
-                      ["2026-05-11", "Restaurant & Butchery", 89, 36750],
                       ["2026-05-11", "Water Delivery", 24, 18300],
                       ["2026-05-10", "Water Retail", 128, 46100],
-                      ["2026-05-10", "Restaurant & Butchery", 94, 39500],
+                      ["2026-05-10", "Water Delivery", 27, 20100],
                     ].map((r, i) => (
                       <tr key={i}>
                         <td className="py-2 tabular-nums">{r[0]}</td>

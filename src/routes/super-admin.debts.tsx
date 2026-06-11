@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeader } from "@/components/super-admin/PageHeader";
-import { AlertCircle, Coins, Truck, Droplets } from "lucide-react";
+import { AlertCircle, Truck, Droplets } from "lucide-react";
 import { debts } from "@/lib/delivery-mock";
 import { customers as waterCustomers } from "@/lib/water-mock";
 
@@ -42,7 +42,7 @@ function DebtsOverview() {
         <TabsList className="mb-6">
           <TabsTrigger value="delivery">Water Delivery</TabsTrigger>
           <TabsTrigger value="retail">Water Retail</TabsTrigger>
-          <TabsTrigger value="rb">R&amp;B</TabsTrigger>
+          
         </TabsList>
 
         <TabsContent value="delivery" className="space-y-4">
@@ -119,16 +119,6 @@ function DebtsOverview() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="rb">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2"><Coins className="h-4 w-4" /> R&amp;B is cash & M-Pesa only</CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              The take-away counter does not extend credit. No outstanding debts are tracked for this arm.
-            </CardContent>
-          </Card>
-        </TabsContent>
       </Tabs>
     </div>
   );
