@@ -5,8 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { PageHeader } from "@/components/super-admin/PageHeader";
 import { Star, Phone } from "lucide-react";
-import { drivers } from "@/lib/delivery-mock";
+import { drivers as _mock_drivers } from "@/lib/delivery-mock";
+import { fetchDrivers } from "@/lib/delivery-data";
 
+
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/delivery-admin/drivers")({
   head: () => ({ meta: [{ title: "Drivers — Water Delivery" }] }),
   component: DriversPage,
@@ -15,6 +18,7 @@ export const Route = createFileRoute("/delivery-admin/drivers")({
 const variant: Record<string, "default"|"secondary"|"outline"> = { on_route: "default", loading: "secondary", off: "outline" };
 
 function DriversPage() {
+  const drivers = useLive(["delivery","drivers"] as const, fetchDrivers, _mock_drivers);
   return (
     <div>
       <PageHeader title="Drivers" subtitle={`${drivers.length} drivers · ${drivers.filter(d=>d.status!=="off").length} on duty`} actions={<Button>+ Add driver</Button>} />
@@ -23,7 +27,7 @@ function DriversPage() {
           <Card key={d.id}>
             <CardContent className="p-5">
               <div className="flex items-center gap-3 mb-4">
-                <Avatar><AvatarFallback className="bg-primary text-primary-foreground">{d.name.split(" ").map(p=>p[0]).slice(0,2).join("")}</AvatarFallback></Avatar>
+                <Avatar><AvatarFallback className="bg-primary text-primary-foreground">{d.name.split(" ").map((p: string)=>p[0]).slice(0,2).join("")}</AvatarFallback></Avatar>
                 <div className="flex-1">
                   <div className="font-medium">{d.name}</div>
                   <div className="text-xs text-muted-foreground flex items-center gap-1"><Phone className="h-3 w-3" />{d.phone}</div>

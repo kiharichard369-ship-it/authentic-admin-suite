@@ -3,9 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/super-admin/PageHeader";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { litresByDay, deliveryKpis } from "@/lib/delivery-mock";
+import { litresByDay as _mock_litresByDay, deliveryKpis as _mock_deliveryKpis } from "@/lib/delivery-mock";
+import { fetchLitresByDay, fetchDeliveryKpis } from "@/lib/delivery-data";
+
 import { FileText, Download } from "lucide-react";
 
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/delivery-admin/reports")({
   head: () => ({ meta: [{ title: "Reports — Water Delivery" }] }),
   component: ReportsPage,
@@ -14,6 +17,8 @@ export const Route = createFileRoute("/delivery-admin/reports")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function ReportsPage() {
+  const litresByDay = useLive(["delivery","litresByDay"] as const, fetchLitresByDay, _mock_litresByDay);
+  const deliveryKpis = useLive(["delivery","deliveryKpis"] as const, fetchDeliveryKpis, _mock_deliveryKpis);
   const reports = [
     { name: "Litres delivered", desc: "Daily / weekly volume per route" },
     { name: "Route P&L", desc: "Revenue minus fuel & driver cost per route" },

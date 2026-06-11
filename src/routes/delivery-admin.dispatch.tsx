@@ -5,14 +5,18 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PageHeader } from "@/components/super-admin/PageHeader";
 import { Plus } from "lucide-react";
-import { dispatches } from "@/lib/delivery-mock";
+import { dispatches as _mock_dispatches } from "@/lib/delivery-mock";
+import { fetchDispatches } from "@/lib/delivery-data";
 
+
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/delivery-admin/dispatch")({
   head: () => ({ meta: [{ title: "Dispatch tracking — Water Delivery" }] }),
   component: DispatchPage,
 });
 
 function DispatchPage() {
+  const dispatches = useLive(["delivery","dispatches"] as const, fetchDispatches, _mock_dispatches);
   return (
     <div>
       <PageHeader

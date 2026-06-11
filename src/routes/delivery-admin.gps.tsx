@@ -3,14 +3,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/super-admin/PageHeader";
 import { MapPin, Wifi } from "lucide-react";
-import { gpsVehicles } from "@/lib/delivery-mock";
+import { gpsVehicles as _mock_gpsVehicles } from "@/lib/delivery-mock";
+import { fetchGpsVehicles } from "@/lib/delivery-data";
 
+
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/delivery-admin/gps")({
   head: () => ({ meta: [{ title: "GPS live map — Water Delivery" }] }),
   component: GpsPage,
 });
 
 function GpsPage() {
+  const gpsVehicles = useLive(["delivery","gpsVehicles"] as const, fetchGpsVehicles, _mock_gpsVehicles);
   return (
     <div>
       <PageHeader

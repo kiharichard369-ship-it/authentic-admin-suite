@@ -4,8 +4,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { refunds } from "@/lib/water-mock";
+import { refunds as _mock_refunds } from "@/lib/water-mock";
+import { fetchRefunds } from "@/lib/water-data";
 
+
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/water-admin/refunds")({
   head: () => ({ meta: [{ title: "Refunds — Water Retail" }] }),
   component: RefundsPage,
@@ -20,6 +23,7 @@ const STATUS: Record<string, string> = {
 };
 
 function RefundsPage() {
+  const refunds = useLive(["water","refunds"] as const, fetchRefunds, _mock_refunds);
   const total = refunds.filter((r) => r.status === "approved").reduce((a, r) => a + r.amount, 0);
   const pending = refunds.filter((r) => r.status === "pending");
 

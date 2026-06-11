@@ -5,8 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/super-admin/PageHeader";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { TrendingUp, Droplet, Truck, Fuel, AlertCircle, MapPin } from "lucide-react";
-import { fleet, deliveryKpis, litresByDay, dispatches, drivers } from "@/lib/delivery-mock";
+import { fleet as _mock_fleet, deliveryKpis as _mock_deliveryKpis, litresByDay as _mock_litresByDay, dispatches as _mock_dispatches, drivers as _mock_drivers } from "@/lib/delivery-mock";
+import { fetchFleet, fetchDeliveryKpis, fetchLitresByDay, fetchDispatches, fetchDrivers } from "@/lib/delivery-data";
 
+
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/delivery-admin/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Water Delivery" }] }),
   component: Dash,
@@ -15,6 +18,11 @@ export const Route = createFileRoute("/delivery-admin/dashboard")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function Dash() {
+  const fleet = useLive(["delivery","fleet"] as const, fetchFleet, _mock_fleet);
+  const deliveryKpis = useLive(["delivery","deliveryKpis"] as const, fetchDeliveryKpis, _mock_deliveryKpis);
+  const litresByDay = useLive(["delivery","litresByDay"] as const, fetchLitresByDay, _mock_litresByDay);
+  const dispatches = useLive(["delivery","dispatches"] as const, fetchDispatches, _mock_dispatches);
+  const drivers = useLive(["delivery","drivers"] as const, fetchDrivers, _mock_drivers);
   const active = dispatches.filter((d) => d.status !== "returned");
   return (
     <div>

@@ -5,12 +5,16 @@ import { DeliveryAdminSidebar } from "@/components/delivery-admin/Sidebar";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { fleet } from "@/lib/delivery-mock";
+import { fleet as _mock_fleet } from "@/lib/delivery-mock";
+import { fetchFleet } from "@/lib/delivery-data";
+
 import { getSession, ROLE_LABEL, type Session } from "@/lib/auth";
 
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/delivery-admin")({ component: DeliveryLayout });
 
 function DeliveryLayout() {
+  const fleet = useLive(["delivery","fleet"] as const, fetchFleet, _mock_fleet);
   const navigate = useNavigate();
   const [session, setS] = useState<Session | null>(null);
   const [ready, setReady] = useState(false);

@@ -5,8 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PageHeader } from "@/components/super-admin/PageHeader";
 import { Plus, AlertCircle } from "lucide-react";
-import { debts } from "@/lib/delivery-mock";
+import { debts as _mock_debts } from "@/lib/delivery-mock";
+import { fetchDebts } from "@/lib/delivery-data";
 
+
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/delivery-admin/debts")({
   head: () => ({ meta: [{ title: "Debt module — Water Delivery" }] }),
   component: DebtsPage,
@@ -15,6 +18,7 @@ export const Route = createFileRoute("/delivery-admin/debts")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function DebtsPage() {
+  const debts = useLive(["delivery","debts"] as const, fetchDebts, _mock_debts);
   const outstanding = debts.filter((d) => d.status !== "paid").reduce((a, b) => a + b.amount, 0);
   const unpaidCount = debts.filter((d) => d.status === "unpaid").length;
   return (

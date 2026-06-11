@@ -3,8 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/super-admin/PageHeader";
 import { Smartphone, Banknote, TrendingUp, Droplet, AlertCircle, Download } from "lucide-react";
-import { dailyRevenue } from "@/lib/delivery-mock";
+import { dailyRevenue as _mock_dailyRevenue } from "@/lib/delivery-mock";
+import { fetchDailyRevenue } from "@/lib/delivery-data";
 
+
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/delivery-admin/revenue")({
   head: () => ({ meta: [{ title: "Daily Revenue — Water Delivery" }] }),
   component: RevenuePage,
@@ -13,6 +16,7 @@ export const Route = createFileRoute("/delivery-admin/revenue")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function RevenuePage() {
+  const dailyRevenue = useLive(["delivery","dailyRevenue"] as const, fetchDailyRevenue, _mock_dailyRevenue);
   return (
     <div>
       <PageHeader

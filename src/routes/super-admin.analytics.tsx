@@ -5,11 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Download, FileText } from "lucide-react";
+import { useLive } from "@/lib/use-live";
 import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid,
   BarChart, Bar, PieChart, Pie, Cell, Legend,
 } from "recharts";
-import { businesses } from "@/lib/mock-data";
+import { businesses as _mock_businesses } from "@/lib/mock-data";
+import { fetchBusinesses } from "@/lib/platform-data";
+
 
 export const Route = createFileRoute("/super-admin/analytics")({
   head: () => ({ meta: [{ title: "Analytics — Super Admin" }] }),
@@ -33,6 +36,7 @@ const topProducts = [
 ];
 
 function Analytics() {
+  const businesses = useLive(["platform","businesses"] as const, fetchBusinesses, _mock_businesses);
   return (
     <div>
       <PageHeader

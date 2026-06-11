@@ -3,13 +3,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/super-admin/PageHeader";
+import { useLive } from "@/lib/use-live";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart,
 } from "recharts";
 import {
   TrendingUp, Droplet, Receipt, AlertCircle, Users as UsersIcon, Plus, ClipboardList,
 } from "lucide-react";
-import { branch, waterKpis, hourlySales, transactions, products, cashiers } from "@/lib/water-mock";
+import { products } from "@/lib/water-mock";
+import { branch as _mock_branch, waterKpis as _mock_waterKpis, hourlySales as _mock_hourlySales, transactions as _mock_transactions, cashiers as _mock_cashiers } from "@/lib/water-mock";
+import { fetchBranch, fetchWaterKpis, fetchHourlySales, fetchTransactions, fetchCashiers } from "@/lib/water-data";
+
 
 export const Route = createFileRoute("/water-admin/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Water Retail" }] }),
@@ -19,6 +23,11 @@ export const Route = createFileRoute("/water-admin/dashboard")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function Dashboard() {
+  const branch = useLive(["water","branch"] as const, fetchBranch, _mock_branch);
+  const waterKpis = useLive(["water","waterKpis"] as const, fetchWaterKpis, _mock_waterKpis);
+  const hourlySales = useLive(["water","hourlySales"] as const, fetchHourlySales, _mock_hourlySales);
+  const transactions = useLive(["water","transactions"] as const, fetchTransactions, _mock_transactions);
+  const cashiers = useLive(["water","cashiers"] as const, fetchCashiers, _mock_cashiers);
   const lowStock = products.filter((p) => p.stock <= p.reorder);
 
   return (

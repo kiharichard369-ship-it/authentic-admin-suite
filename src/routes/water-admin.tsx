@@ -5,14 +5,18 @@ import { WaterAdminSidebar } from "@/components/water-admin/Sidebar";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { branch } from "@/lib/water-mock";
+import { branch as _mock_branch } from "@/lib/water-mock";
+import { fetchBranch } from "@/lib/water-data";
+
 import { getSession, ROLE_LABEL, type Session } from "@/lib/auth";
 
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/water-admin")({
   component: WaterAdminLayout,
 });
 
 function WaterAdminLayout() {
+  const branch = useLive(["water","branch"] as const, fetchBranch, _mock_branch);
   const navigate = useNavigate();
   const [session, setSessionState] = useState<Session | null>(null);
   const [ready, setReady] = useState(false);

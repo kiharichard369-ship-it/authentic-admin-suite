@@ -3,8 +3,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/super-admin/PageHeader";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { fuelLogs } from "@/lib/delivery-mock";
+import { fuelLogs as _mock_fuelLogs } from "@/lib/delivery-mock";
+import { fetchFuelLogs } from "@/lib/delivery-data";
 
+
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/delivery-admin/fuel")({
   head: () => ({ meta: [{ title: "Fuel — Water Delivery" }] }),
   component: FuelPage,
@@ -13,6 +16,7 @@ export const Route = createFileRoute("/delivery-admin/fuel")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function FuelPage() {
+  const fuelLogs = useLive(["delivery","fuelLogs"] as const, fetchFuelLogs, _mock_fuelLogs);
   const total = fuelLogs.reduce((s,f)=>s+f.amount,0);
   const litres = fuelLogs.reduce((s,f)=>s+f.litres,0);
   return (
