@@ -19,6 +19,8 @@ export const Route = createFileRoute("/super-admin/dashboard")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function Dashboard() {
+  const businesses = useLive(["platform","businesses"], fetchBusinesses, mockBusinesses);
+  const recentActivity = useLive(["platform","activity"], fetchRecentActivity, mockActivity);
   const totalRevenue = businesses.reduce((a, b) => a + b.today, 0);
   const totalTxns = businesses.reduce((a, b) => a + b.txns, 0);
 
