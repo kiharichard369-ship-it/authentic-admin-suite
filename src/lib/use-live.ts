@@ -14,10 +14,10 @@ export function useLive<T>(
   fetcher: () => Promise<T>,
   fallback: T,
 ): T {
-  const { data } = useQuery({
+  const { data } = useQuery<T>({
     queryKey: key as unknown[],
     queryFn: fetcher,
-    placeholderData: fallback,
+    placeholderData: fallback as never,
     staleTime: 30_000,
   });
   return (data ?? fallback) as T;
