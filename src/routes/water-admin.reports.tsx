@@ -7,8 +7,11 @@ import { PageHeader } from "@/components/super-admin/PageHeader";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Download, FileText } from "lucide-react";
-import { hourlySales, waterKpis } from "@/lib/water-mock";
+import { hourlySales as _mock_hourlySales, waterKpis as _mock_waterKpis } from "@/lib/water-mock";
+import { fetchHourlySales, fetchWaterKpis } from "@/lib/water-data";
 
+
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/water-admin/reports")({
   head: () => ({ meta: [{ title: "Reports — Water Retail" }] }),
   component: ReportsPage,
@@ -24,6 +27,8 @@ const reports = [
 ];
 
 function ReportsPage() {
+  const hourlySales = useLive(["water","hourlySales"] as const, fetchHourlySales, _mock_hourlySales as any);
+  const waterKpis = useLive(["water","waterKpis"] as const, fetchWaterKpis, _mock_waterKpis as any);
   const [range, setRange] = useState("today");
   const [active, setActive] = useState(reports[0].id);
 

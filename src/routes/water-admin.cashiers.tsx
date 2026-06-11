@@ -5,8 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { PageHeader } from "@/components/super-admin/PageHeader";
 import { UserPlus, Phone } from "lucide-react";
-import { cashiers } from "@/lib/water-mock";
+import { cashiers as _mock_cashiers } from "@/lib/water-mock";
+import { fetchCashiers } from "@/lib/water-data";
 
+
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/water-admin/cashiers")({
   head: () => ({ meta: [{ title: "Cashiers — Water Retail" }] }),
   component: CashiersPage,
@@ -16,6 +19,7 @@ const fmt = (n: number) => "KES " + n.toLocaleString();
 const initials = (n: string) => n.split(" ").map((s) => s[0]).slice(0, 2).join("");
 
 function CashiersPage() {
+  const cashiers = useLive(["water","cashiers"] as const, fetchCashiers, _mock_cashiers as any);
   return (
     <div>
       <PageHeader

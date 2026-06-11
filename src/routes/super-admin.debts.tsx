@@ -6,9 +6,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeader } from "@/components/super-admin/PageHeader";
 import { AlertCircle, Truck, Droplets } from "lucide-react";
-import { debts } from "@/lib/delivery-mock";
+import { debts as _mock_debts } from "@/lib/delivery-mock";
+import { fetchDebts } from "@/lib/delivery-data";
+
 import { customers as waterCustomers } from "@/lib/water-mock";
 
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/super-admin/debts")({
   head: () => ({ meta: [{ title: "Debts & Credits — Super Admin" }] }),
   component: DebtsOverview,
@@ -17,6 +20,7 @@ export const Route = createFileRoute("/super-admin/debts")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function DebtsOverview() {
+  const debts = useLive(["delivery","debts"] as const, fetchDebts, _mock_debts as any);
   const deliveryOutstanding = debts
     .filter((d) => d.status !== "paid")
     .reduce((a, b) => a + b.amount, 0);

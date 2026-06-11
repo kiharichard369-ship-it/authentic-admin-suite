@@ -5,8 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PageHeader } from "@/components/super-admin/PageHeader";
 import { Coins, Plus } from "lucide-react";
-import { credits } from "@/lib/delivery-mock";
+import { credits as _mock_credits } from "@/lib/delivery-mock";
+import { fetchCredits } from "@/lib/delivery-data";
 
+
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/delivery-admin/credits")({
   head: () => ({ meta: [{ title: "Credit / carry-forward — Water Delivery" }] }),
   component: CreditsPage,
@@ -15,6 +18,7 @@ export const Route = createFileRoute("/delivery-admin/credits")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function CreditsPage() {
+  const credits = useLive(["delivery","credits"] as const, fetchCredits, _mock_credits as any);
   const total = credits.reduce((a, b) => a + b.balance, 0);
   return (
     <div>

@@ -5,8 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/super-admin/PageHeader";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus } from "lucide-react";
-import { stockRequests } from "@/lib/water-mock";
+import { stockRequests as _mock_stockRequests } from "@/lib/water-mock";
+import { fetchStockRequests } from "@/lib/water-data";
 
+
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/water-admin/requests")({
   head: () => ({ meta: [{ title: "Stock Requests — Water Retail" }] }),
   component: RequestsPage,
@@ -20,6 +23,7 @@ const tone: Record<string, "default" | "secondary" | "destructive" | "outline"> 
 };
 
 function RequestsPage() {
+  const stockRequests = useLive(["water","stockRequests"] as const, fetchStockRequests, _mock_stockRequests as any);
   return (
     <div>
       <PageHeader

@@ -6,14 +6,18 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Download, FileText } from "lucide-react";
-import { expenses } from "@/lib/mock-data";
+import { expenses as _mock_expenses } from "@/lib/mock-data";
+import { fetchPlatformExpenses } from "@/lib/platform-data";
 
+
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/super-admin/expenses")({
   head: () => ({ meta: [{ title: "Expenses — Super Admin" }] }),
   component: Expenses,
 });
 
 function Expenses() {
+  const expenses = useLive(["platform","expenses"] as const, fetchPlatformExpenses, _mock_expenses as any);
   const total = expenses.filter((e) => e.status !== "rejected").reduce((s, e) => s + e.amount, 0);
   const fuel = expenses.filter((e) => e.category === "Fuel" && e.status !== "rejected").reduce((s, e) => s + e.amount, 0);
   const repairs = expenses.filter((e) => e.category === "Repairs" && e.status !== "rejected").reduce((s, e) => s + e.amount, 0);

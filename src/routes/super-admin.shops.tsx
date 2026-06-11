@@ -9,14 +9,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { shops } from "@/lib/mock-data";
+import { shops as _mock_shops } from "@/lib/mock-data";
+import { fetchShops } from "@/lib/platform-data";
 
+
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/super-admin/shops")({
   head: () => ({ meta: [{ title: "Shop Branches — Super Admin" }] }),
   component: Shops,
 });
 
 function Shops() {
+  const shops = useLive(["platform","shops"] as const, fetchShops, _mock_shops as any);
   return (
     <div>
       <PageHeader

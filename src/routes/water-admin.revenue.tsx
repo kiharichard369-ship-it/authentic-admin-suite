@@ -3,8 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/super-admin/PageHeader";
 import { Smartphone, Banknote, TrendingUp, Droplet, Download } from "lucide-react";
-import { waterKpis, products, branch } from "@/lib/water-mock";
+import { products } from "@/lib/water-mock";
+import { waterKpis as _mock_waterKpis, branch as _mock_branch } from "@/lib/water-mock";
+import { fetchWaterKpis, fetchBranch } from "@/lib/water-data";
 
+
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/water-admin/revenue")({
   head: () => ({ meta: [{ title: "Daily Revenue — Water Retail" }] }),
   component: RevenuePage,
@@ -13,6 +17,8 @@ export const Route = createFileRoute("/water-admin/revenue")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function RevenuePage() {
+  const waterKpis = useLive(["water","waterKpis"] as const, fetchWaterKpis, _mock_waterKpis as any);
+  const branch = useLive(["water","branch"] as const, fetchBranch, _mock_branch as any);
   // Mock split: assume 65% M-Pesa / 35% cash for the day.
   const mpesa = Math.round(waterKpis.todayRevenue * 0.65);
   const cash = waterKpis.todayRevenue - mpesa;

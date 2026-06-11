@@ -5,14 +5,18 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus, ArrowRightLeft } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { assets } from "@/lib/mock-data";
+import { assets as _mock_assets } from "@/lib/mock-data";
+import { fetchAssets } from "@/lib/platform-data";
 
+
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/super-admin/assets")({
   head: () => ({ meta: [{ title: "Assets — Super Admin" }] }),
   component: Assets,
 });
 
 function Assets() {
+  const assets = useLive(["platform","assets"] as const, fetchAssets, _mock_assets as any);
   return (
     <div>
       <PageHeader

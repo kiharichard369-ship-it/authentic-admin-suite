@@ -5,8 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/super-admin/PageHeader";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus } from "lucide-react";
-import { branchExpenses } from "@/lib/water-mock";
+import { branchExpenses as _mock_branchExpenses } from "@/lib/water-mock";
+import { fetchBranchExpenses } from "@/lib/water-data";
 
+
+import { useLive } from "@/lib/use-live";
 export const Route = createFileRoute("/water-admin/expenses")({
   head: () => ({ meta: [{ title: "Expenses — Water Retail" }] }),
   component: ExpensesPage,
@@ -20,6 +23,7 @@ const tone: Record<string, "default" | "secondary" | "destructive" | "outline"> 
 };
 
 function ExpensesPage() {
+  const branchExpenses = useLive(["water","branchExpenses"] as const, fetchBranchExpenses, _mock_branchExpenses as any);
   const total = branchExpenses.filter((e) => e.status !== "rejected").reduce((a, b) => a + b.amount, 0);
 
   return (

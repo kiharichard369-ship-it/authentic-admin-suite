@@ -11,7 +11,10 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Plus, MoreHorizontal } from "lucide-react";
-import { users } from "@/lib/mock-data";
+import { users as _mock_users } from "@/lib/mock-data";
+import { fetchUsers } from "@/lib/platform-data";
+
+import { useLive } from "@/lib/use-live";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
@@ -30,6 +33,7 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 function UsersPage() {
+  const users = useLive(["platform","users"] as const, fetchUsers, _mock_users as any);
   const [q, setQ] = useState("");
   const [bizFilter, setBizFilter] = useState("all");
   const [roleFilter, setRoleFilter] = useState("all");
