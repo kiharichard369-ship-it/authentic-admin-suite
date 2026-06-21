@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ROLE_HOME, ROLE_LABEL, parseDemoEmail, setSession, clearSession } from "@/lib/auth";
 import { getVendorBySlug } from "@/lib/vendors";
+import { hasSupabase } from "@/lib/supabase";
+import { loginWithSupabase } from "@/lib/auth-login";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -38,11 +40,25 @@ function LoginPage() {
     e.preventDefault();
     setError("");
     if (!email || !password) { setError("Email and password are required."); return; }
-    const parsed = parseDemoEmail(email);
-    if (!parsed) { setError("Unknown account. Try one of the demo accounts below."); return; }
 
     setLoading(true);
     try {
+      // 1. Real Supabase auth when configured.
+      if (hasSupabase) {
+        const result = await loginWithSupabase(email, password);
+        if (result.ok) {
+          navigate({ to: ROLE_HOME[result.session.role] });
+          return;
+        }
+        // Fall through to demo prefix only for the seeded demo emails.
+        const parsed = parseDemoEmail(email);
+        if (!parsed) { setError(result.error); return; }
+      }
+
+      // 2. Demo fallback (no Supabase, or demo email + Supabase rejected it).
+      const parsed = parseDemoEmail(email);
+      if (!parsed) { setError("Unknown account. Try one of the demo accounts below."); return; }
+
       let vendorId: string | null = null;
       let vendorName: string | null = null;
       if (parsed.vendorSlug) {
