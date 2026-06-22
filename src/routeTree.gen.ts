@@ -29,6 +29,7 @@ import { Route as SuperAdminUsersRouteImport } from './routes/super-admin.users'
 import { Route as SuperAdminShopsRouteImport } from './routes/super-admin.shops'
 import { Route as SuperAdminReportsRouteImport } from './routes/super-admin.reports'
 import { Route as SuperAdminPaymentsRouteImport } from './routes/super-admin.payments'
+import { Route as SuperAdminOnboardingRouteImport } from './routes/super-admin.onboarding'
 import { Route as SuperAdminExpensesRouteImport } from './routes/super-admin.expenses'
 import { Route as SuperAdminDebtsRouteImport } from './routes/super-admin.debts'
 import { Route as SuperAdminDashboardRouteImport } from './routes/super-admin.dashboard'
@@ -145,6 +146,11 @@ const SuperAdminPaymentsRoute = SuperAdminPaymentsRouteImport.update({
   path: '/payments',
   getParentRoute: () => SuperAdminRoute,
 } as any)
+const SuperAdminOnboardingRoute = SuperAdminOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => SuperAdminRoute,
+} as any)
 const SuperAdminExpensesRoute = SuperAdminExpensesRouteImport.update({
   id: '/expenses',
   path: '/expenses',
@@ -242,6 +248,7 @@ export interface FileRoutesByFullPath {
   '/super-admin/dashboard': typeof SuperAdminDashboardRoute
   '/super-admin/debts': typeof SuperAdminDebtsRoute
   '/super-admin/expenses': typeof SuperAdminExpensesRoute
+  '/super-admin/onboarding': typeof SuperAdminOnboardingRoute
   '/super-admin/payments': typeof SuperAdminPaymentsRoute
   '/super-admin/reports': typeof SuperAdminReportsRoute
   '/super-admin/shops': typeof SuperAdminShopsRoute
@@ -279,6 +286,7 @@ export interface FileRoutesByTo {
   '/super-admin/dashboard': typeof SuperAdminDashboardRoute
   '/super-admin/debts': typeof SuperAdminDebtsRoute
   '/super-admin/expenses': typeof SuperAdminExpensesRoute
+  '/super-admin/onboarding': typeof SuperAdminOnboardingRoute
   '/super-admin/payments': typeof SuperAdminPaymentsRoute
   '/super-admin/reports': typeof SuperAdminReportsRoute
   '/super-admin/shops': typeof SuperAdminShopsRoute
@@ -317,6 +325,7 @@ export interface FileRoutesById {
   '/super-admin/dashboard': typeof SuperAdminDashboardRoute
   '/super-admin/debts': typeof SuperAdminDebtsRoute
   '/super-admin/expenses': typeof SuperAdminExpensesRoute
+  '/super-admin/onboarding': typeof SuperAdminOnboardingRoute
   '/super-admin/payments': typeof SuperAdminPaymentsRoute
   '/super-admin/reports': typeof SuperAdminReportsRoute
   '/super-admin/shops': typeof SuperAdminShopsRoute
@@ -356,6 +365,7 @@ export interface FileRouteTypes {
     | '/super-admin/dashboard'
     | '/super-admin/debts'
     | '/super-admin/expenses'
+    | '/super-admin/onboarding'
     | '/super-admin/payments'
     | '/super-admin/reports'
     | '/super-admin/shops'
@@ -393,6 +403,7 @@ export interface FileRouteTypes {
     | '/super-admin/dashboard'
     | '/super-admin/debts'
     | '/super-admin/expenses'
+    | '/super-admin/onboarding'
     | '/super-admin/payments'
     | '/super-admin/reports'
     | '/super-admin/shops'
@@ -430,6 +441,7 @@ export interface FileRouteTypes {
     | '/super-admin/dashboard'
     | '/super-admin/debts'
     | '/super-admin/expenses'
+    | '/super-admin/onboarding'
     | '/super-admin/payments'
     | '/super-admin/reports'
     | '/super-admin/shops'
@@ -597,6 +609,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuperAdminPaymentsRouteImport
       parentRoute: typeof SuperAdminRoute
     }
+    '/super-admin/onboarding': {
+      id: '/super-admin/onboarding'
+      path: '/onboarding'
+      fullPath: '/super-admin/onboarding'
+      preLoaderRoute: typeof SuperAdminOnboardingRouteImport
+      parentRoute: typeof SuperAdminRoute
+    }
     '/super-admin/expenses': {
       id: '/super-admin/expenses'
       path: '/expenses'
@@ -740,6 +759,7 @@ interface SuperAdminRouteChildren {
   SuperAdminDashboardRoute: typeof SuperAdminDashboardRoute
   SuperAdminDebtsRoute: typeof SuperAdminDebtsRoute
   SuperAdminExpensesRoute: typeof SuperAdminExpensesRoute
+  SuperAdminOnboardingRoute: typeof SuperAdminOnboardingRoute
   SuperAdminPaymentsRoute: typeof SuperAdminPaymentsRoute
   SuperAdminReportsRoute: typeof SuperAdminReportsRoute
   SuperAdminShopsRoute: typeof SuperAdminShopsRoute
@@ -754,6 +774,7 @@ const SuperAdminRouteChildren: SuperAdminRouteChildren = {
   SuperAdminDashboardRoute: SuperAdminDashboardRoute,
   SuperAdminDebtsRoute: SuperAdminDebtsRoute,
   SuperAdminExpensesRoute: SuperAdminExpensesRoute,
+  SuperAdminOnboardingRoute: SuperAdminOnboardingRoute,
   SuperAdminPaymentsRoute: SuperAdminPaymentsRoute,
   SuperAdminReportsRoute: SuperAdminReportsRoute,
   SuperAdminShopsRoute: SuperAdminShopsRoute,

@@ -220,7 +220,7 @@ function OnboardingPage() {
 
           {step !== 4 && (
             <div className="flex items-center justify-between pt-6 mt-6 border-t">
-              <Button variant="ghost" onClick={() => setStep((s) => Math.max(1, (s - 1) as Step))} disabled={step === 1}>
+              <Button variant="ghost" onClick={() => setStep((s) => Math.max(1, s - 1) as Step)} disabled={step === 1}>
                 <ArrowLeft className="h-4 w-4 mr-1" /> Back
               </Button>
               {step < 3 && (
