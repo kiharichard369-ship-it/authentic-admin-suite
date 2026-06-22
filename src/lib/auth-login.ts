@@ -20,14 +20,12 @@ export async function loginWithSupabase(email: string, password: string): Promis
   }
   const uid = data.user.id;
 
-  // 1. Platform admin?
-  const { data: pa } = await supabase
-    .from("platform_admins")
-    .select("user_id")
-    .eq("user_id", uid)
-    .maybeSingle();
+  // 1. Platform admin? Use SECURITY DEFINER RPC to bypass RLS on platform_admins
+  //    (the table intentionally has no policy for `authenticated`).
+  const { data: isAdmin, error: adminErr } = await supabase.rpc("is_platform_admin", { _uid: uid });
+  if (adminErr) console.warn("[auth] is_platform_admin rpc failed:", adminErr.message);
 
-  if (pa) {
+  if (isAdmin === true) {
     const session: Session = {
       role: "super_admin",
       email,
