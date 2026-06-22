@@ -37,23 +37,19 @@ export async function loginWithSupabase(email: string, password: string): Promis
     return { ok: true, session };
   }
 
-  // 2. Vendor member?
-  const { data: vm } = await supabase
-    .from("vendor_members")
-    .select("role, vendor_id, vendors(name)")
-    .eq("user_id", uid)
-    .order("created_at", { ascending: true })
-    .limit(1)
-    .maybeSingle();
+  // 2. Vendor member? Use SECURITY DEFINER RPC for the same reason.
+  const { data: vm, error: vmErr } = await supabase.rpc("my_vendor_membership");
+  if (vmErr) console.warn("[auth] my_vendor_membership rpc failed:", vmErr.message);
 
-  if (vm) {
-    const role = vm.role as Role;
+  const row = Array.isArray(vm) ? vm[0] : vm;
+  if (row && row.role) {
+    const role = row.role as Role;
     const session: Session = {
       role,
       email,
       name: ROLE_LABEL[role] ?? email,
-      vendorId: vm.vendor_id,
-      vendorName: (vm as any).vendors?.name ?? null,
+      vendorId: row.vendor_id ?? null,
+      vendorName: row.vendor_name ?? null,
     };
     setSession(session);
     return { ok: true, session };
