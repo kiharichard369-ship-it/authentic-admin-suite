@@ -31,11 +31,25 @@ function Dashboard() {
         subtitle="Today across every vendor on the platform, in real time."
         actions={
           <>
-            <Button variant="outline"><Plus className="h-4 w-4 mr-1" /> New shop</Button>
-            <Button><Plus className="h-4 w-4 mr-1" /> New user</Button>
+            <Link to="/super-admin/onboarding"><Button><Plus className="h-4 w-4 mr-1" /> Onboard vendor</Button></Link>
           </>
         }
       />
+
+      {businesses.length === 0 && (
+        <Card className="mb-6 border-primary/30 bg-primary/5">
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="h-10 w-10 rounded-md bg-primary text-primary-foreground grid place-items-center">
+              <Plus className="h-5 w-5" />
+            </div>
+            <div className="flex-1">
+              <div className="font-medium">No vendors yet</div>
+              <div className="text-sm text-muted-foreground">Create your first business and assign its vendor admin in a guided 3-step flow.</div>
+            </div>
+            <Link to="/super-admin/onboarding"><Button>Start onboarding</Button></Link>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
         <Stat icon={TrendingUp} label="Revenue today" value={fmt(totalRevenue)} hint="All vendors" />
