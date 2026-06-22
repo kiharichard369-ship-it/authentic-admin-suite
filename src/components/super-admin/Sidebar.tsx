@@ -5,11 +5,12 @@ import {
   CreditCard, Receipt, FileText, Droplets, LogOut,
   ChevronDown, Truck, Package, ClipboardList,
   Wallet, RefreshCcw, Coins, AlertCircle, Route as RouteIcon,
-  MapPin, Fuel, UserCircle, TrendingUp, Building2,
+  MapPin, Fuel, UserCircle, TrendingUp, Building2, Sparkles,
 } from "lucide-react";
 
 const platformItems = [
   { to: "/super-admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/super-admin/onboarding", label: "Onboard vendor", icon: Sparkles },
   { to: "/super-admin/vendors", label: "Vendors", icon: Building2 },
   { to: "/super-admin/users", label: "Users & Roles", icon: Users },
   { to: "/super-admin/shops", label: "Shop Branches", icon: Store },
