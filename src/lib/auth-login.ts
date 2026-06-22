@@ -20,14 +20,12 @@ export async function loginWithSupabase(email: string, password: string): Promis
   }
   const uid = data.user.id;
 
-  // 1. Platform admin?
-  const { data: pa } = await supabase
-    .from("platform_admins")
-    .select("user_id")
-    .eq("user_id", uid)
-    .maybeSingle();
+  // 1. Platform admin? Use SECURITY DEFINER RPC to bypass RLS on platform_admins
+  //    (the table intentionally has no policy for `authenticated`).
+  const { data: isAdmin, error: adminErr } = await supabase.rpc("is_platform_admin", { _uid: uid });
+  if (adminErr) console.warn("[auth] is_platform_admin rpc failed:", adminErr.message);
 
-  if (pa) {
+  if (isAdmin === true) {
     const session: Session = {
       role: "super_admin",
       email,
@@ -39,23 +37,19 @@ export async function loginWithSupabase(email: string, password: string): Promis
     return { ok: true, session };
   }
 
-  // 2. Vendor member?
-  const { data: vm } = await supabase
-    .from("vendor_members")
-    .select("role, vendor_id, vendors(name)")
-    .eq("user_id", uid)
-    .order("created_at", { ascending: true })
-    .limit(1)
-    .maybeSingle();
+  // 2. Vendor member? Use SECURITY DEFINER RPC for the same reason.
+  const { data: vm, error: vmErr } = await supabase.rpc("my_vendor_membership");
+  if (vmErr) console.warn("[auth] my_vendor_membership rpc failed:", vmErr.message);
 
-  if (vm) {
-    const role = vm.role as Role;
+  const row = Array.isArray(vm) ? vm[0] : vm;
+  if (row && row.role) {
+    const role = row.role as Role;
     const session: Session = {
       role,
       email,
       name: ROLE_LABEL[role] ?? email,
-      vendorId: vm.vendor_id,
-      vendorName: (vm as any).vendors?.name ?? null,
+      vendorId: row.vendor_id ?? null,
+      vendorName: row.vendor_name ?? null,
     };
     setSession(session);
     return { ok: true, session };
