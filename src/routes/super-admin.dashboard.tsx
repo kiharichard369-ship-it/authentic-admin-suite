@@ -60,9 +60,9 @@ function Dashboard() {
 
       <div className="grid gap-4 lg:grid-cols-2 mb-8">
         <BusinessTile to="/super-admin/analytics" icon={Droplets} name="Water Retail"
-          revenue={businesses[0].today} sub="Vendor-wide retail sales today" />
+          revenue={businesses[0]?.today ?? 0} sub="Vendor-wide retail sales today" />
         <BusinessTile to="/super-admin/analytics" icon={Truck} name="Water Delivery"
-          revenue={businesses[1].today} sub="Lorries in transit · litres delivered" />
+          revenue={businesses[1]?.today ?? 0} sub="Lorries in transit · litres delivered" />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
