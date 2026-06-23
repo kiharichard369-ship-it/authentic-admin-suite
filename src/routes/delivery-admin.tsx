@@ -22,7 +22,7 @@ function DeliveryLayout() {
   useEffect(() => {
     const s = getSession();
     setS(s); setReady(true);
-    const allowed = s && ["super_admin","driver"].includes(s.role);
+    const allowed = s && ["super_admin", "vendor_admin", "driver"].includes(s.role);
     if (!allowed) navigate({ to: "/login" });
   }, [navigate]);
 
