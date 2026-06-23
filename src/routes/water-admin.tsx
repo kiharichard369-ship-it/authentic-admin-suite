@@ -25,7 +25,7 @@ function WaterAdminLayout() {
     const s = getSession();
     setSessionState(s);
     setReady(true);
-    const allowed = s && (s.role === "super_admin" || s.role === "water_admin" || s.role === "water_cashier");
+    const allowed = s && ["super_admin", "vendor_admin", "water_admin", "water_cashier"].includes(s.role);
     if (s === null || !allowed) navigate({ to: "/login" });
   }, [navigate]);
 
