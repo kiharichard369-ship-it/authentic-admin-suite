@@ -45,6 +45,8 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
   driver: ["delivery.dashboard","delivery.dispatch","delivery.debts","delivery.credits","delivery.fuel"],
 };
 
+export type BusinessType = "water" | "delivery" | "both";
+
 export const ROLE_HOME: Record<Role, string> = {
   super_admin: "/super-admin/dashboard",
   vendor_admin: "/water-admin/dashboard",
@@ -52,6 +54,16 @@ export const ROLE_HOME: Record<Role, string> = {
   water_cashier: "/water-admin/pos",
   driver: "/delivery-admin/dashboard",
 };
+
+/** Where a session should land after login. Vendor admins follow their
+ *  business type; everyone else uses ROLE_HOME. */
+export function sessionHome(s: Pick<Session, "role" | "businessType">): string {
+  if (s.role === "vendor_admin") {
+    if (s.businessType === "delivery") return "/delivery-admin/dashboard";
+    return "/water-admin/dashboard"; // water or both
+  }
+  return ROLE_HOME[s.role];
+}
 
 export const ROLE_LABEL: Record<Role, string> = {
   super_admin: "Super Admin",
@@ -67,6 +79,7 @@ export type Session = {
   email: string;
   vendorId: string | null;     // null for super_admin
   vendorName: string | null;
+  businessType: BusinessType | null; // null for super_admin
 };
 
 const KEY = "maji-session-v2";

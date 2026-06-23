@@ -19,6 +19,7 @@ import {
   createVendorWithAdmin, findAuthUserByEmail, type OnboardVendorInput,
 } from "@/lib/onboarding";
 import type { VendorPlan } from "@/lib/vendors";
+import type { BusinessType } from "@/lib/auth";
 
 export const Route = createFileRoute("/super-admin/onboarding")({
   head: () => ({ meta: [{ title: "Onboard a vendor — Super Admin" }] }),
@@ -39,6 +40,7 @@ function OnboardingPage() {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [plan, setPlan] = useState<VendorPlan>("starter");
+  const [businessType, setBusinessType] = useState<BusinessType>("water");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
 
@@ -95,6 +97,7 @@ function OnboardingPage() {
       name: name.trim(),
       slug,
       plan,
+      businessType,
       contactEmail: contactEmail.trim(),
       contactPhone: contactPhone.trim() || undefined,
       adminEmail: adminEmail.trim(),
@@ -138,6 +141,27 @@ function OnboardingPage() {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Business type</Label>
+                <div className="grid sm:grid-cols-3 gap-2">
+                  {([
+                    { v: "water", label: "Water retail", hint: "POS, stock, cashiers" },
+                    { v: "delivery", label: "Delivery", hint: "Drivers, dispatch, fleet" },
+                    { v: "both", label: "Both", hint: "Water + delivery" },
+                  ] as const).map((opt) => (
+                    <button key={opt.v} type="button" onClick={() => setBusinessType(opt.v)}
+                      className={`text-left rounded-md border px-3 py-2 transition-colors ${
+                        businessType === opt.v ? "border-primary bg-primary/5" : "hover:bg-secondary"
+                      }`}>
+                      <div className="text-sm font-medium">{opt.label}</div>
+                      <div className="text-xs text-muted-foreground">{opt.hint}</div>
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Determines which workspace this vendor's admin lands on after sign-in.
+                </p>
               </div>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -192,6 +216,7 @@ function OnboardingPage() {
               <ReviewRow label="Business name" value={name} />
               <ReviewRow label="Slug" value={slug} mono />
               <ReviewRow label="Plan" value={<Badge variant="outline" className="capitalize">{plan}</Badge>} />
+              <ReviewRow label="Business type" value={<Badge variant="outline" className="capitalize">{businessType}</Badge>} />
               <ReviewRow label="Business contact" value={contactEmail} />
               {contactPhone && <ReviewRow label="Phone" value={contactPhone} />}
               <ReviewRow label="Vendor admin" value={adminEmail} />

@@ -5,7 +5,7 @@ import heroImg from "@/assets/login-hero.jpg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ROLE_HOME, ROLE_LABEL, parseDemoEmail, setSession, clearSession } from "@/lib/auth";
+import { ROLE_LABEL, parseDemoEmail, sessionHome, setSession, clearSession } from "@/lib/auth";
 import { getVendorBySlug } from "@/lib/vendors";
 import { hasSupabase } from "@/lib/supabase";
 import { loginWithSupabase } from "@/lib/auth-login";
@@ -47,7 +47,7 @@ function LoginPage() {
       if (hasSupabase) {
         const result = await loginWithSupabase(email, password);
         if (result.ok) {
-          navigate({ to: ROLE_HOME[result.session.role] });
+          navigate({ to: sessionHome(result.session) });
           return;
         }
         // Fall through to demo prefix only for the seeded demo emails.
@@ -66,15 +66,17 @@ function LoginPage() {
         vendorId = v?.id ?? null;
         vendorName = v?.name ?? parsed.vendorSlug;
       }
-      clearSession();
-      setSession({
+      const session = {
         role: parsed.role,
         email,
         name: ROLE_LABEL[parsed.role],
         vendorId,
         vendorName,
-      });
-      navigate({ to: ROLE_HOME[parsed.role] });
+        businessType: "both" as const,
+      };
+      clearSession();
+      setSession(session);
+      navigate({ to: sessionHome(session) });
     } finally {
       setLoading(false);
     }

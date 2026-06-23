@@ -22,8 +22,9 @@ function DeliveryLayout() {
   useEffect(() => {
     const s = getSession();
     setS(s); setReady(true);
-    const allowed = s && ["super_admin", "vendor_admin", "driver"].includes(s.role);
-    if (!allowed) navigate({ to: "/login" });
+    const roleOk = s && ["super_admin", "vendor_admin", "driver"].includes(s.role);
+    const typeOk = !s || s.role !== "vendor_admin" || s.businessType === "delivery" || s.businessType === "both" || s.businessType === null;
+    if (!roleOk || !typeOk) navigate({ to: "/login" });
   }, [navigate]);
 
   if (!ready || !session) return null;

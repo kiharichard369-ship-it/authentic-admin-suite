@@ -1,13 +1,16 @@
 // Super-admin onboarding helpers. All calls go through SECURITY DEFINER RPCs
-// in db/onboarding.sql which enforce `is_platform_admin(auth.uid())`.
+// in db/onboarding.sql + db/business-type.sql which enforce
+// is_platform_admin(auth.uid()).
 
 import { supabase, hasSupabase } from "./supabase";
+import type { BusinessType } from "./auth";
 import type { VendorPlan } from "./vendors";
 
 export type OnboardVendorInput = {
   name: string;
   slug: string;
   plan: VendorPlan;
+  businessType: BusinessType;
   contactEmail: string;
   contactPhone?: string;
   adminEmail: string;
@@ -36,6 +39,7 @@ export async function createVendorWithAdmin(input: OnboardVendorInput): Promise<
     p_contact_email: input.contactEmail,
     p_contact_phone: input.contactPhone ?? "",
     p_admin_email:   input.adminEmail,
+    p_business_type: input.businessType,
   });
   if (error) throw error;
   const row = Array.isArray(data) ? data[0] : data;
