@@ -25,8 +25,10 @@ function WaterAdminLayout() {
     const s = getSession();
     setSessionState(s);
     setReady(true);
-    const allowed = s && ["super_admin", "vendor_admin", "water_admin", "water_cashier"].includes(s.role);
-    if (s === null || !allowed) navigate({ to: "/login" });
+    const roleOk = s && ["super_admin", "vendor_admin", "water_admin", "water_cashier"].includes(s.role);
+    // Vendor admins can only enter the water workspace if their business is water/both.
+    const typeOk = !s || s.role !== "vendor_admin" || s.businessType === "water" || s.businessType === "both" || s.businessType === null;
+    if (s === null || !roleOk || !typeOk) navigate({ to: "/login" });
   }, [navigate]);
 
   if (!ready || !session) return null;
