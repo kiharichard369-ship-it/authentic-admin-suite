@@ -40,7 +40,10 @@ export async function createVendorWithAdmin(input: OnboardVendorInput): Promise<
   if (error) throw error;
   const row = Array.isArray(data) ? data[0] : data;
   if (!row) throw new Error("Vendor was not created.");
-  return { vendorId: row.vendor_id, adminUserId: row.admin_user_id };
+  return {
+    vendorId: row.out_vendor_id ?? row.vendor_id,
+    adminUserId: row.out_admin_user_id ?? row.admin_user_id,
+  };
 }
 
 export async function platformVendorCount(): Promise<number> {
