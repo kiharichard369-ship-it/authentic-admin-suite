@@ -19,6 +19,7 @@ import {
   createVendorWithAdmin, findAuthUserByEmail, type OnboardVendorInput,
 } from "@/lib/onboarding";
 import type { VendorPlan } from "@/lib/vendors";
+import type { BusinessType } from "@/lib/auth";
 
 export const Route = createFileRoute("/super-admin/onboarding")({
   head: () => ({ meta: [{ title: "Onboard a vendor — Super Admin" }] }),
@@ -39,6 +40,7 @@ function OnboardingPage() {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [plan, setPlan] = useState<VendorPlan>("starter");
+  const [businessType, setBusinessType] = useState<BusinessType>("water");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
 
@@ -95,6 +97,7 @@ function OnboardingPage() {
       name: name.trim(),
       slug,
       plan,
+      businessType,
       contactEmail: contactEmail.trim(),
       contactPhone: contactPhone.trim() || undefined,
       adminEmail: adminEmail.trim(),
