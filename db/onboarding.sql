@@ -5,6 +5,11 @@
 -- (an existing auth user, looked up by email) in a single transaction.
 -- ============================================================================
 
+-- Drop old signature first in case the OUT column names changed.
+drop function if exists public.create_vendor_with_admin(
+  text, text, public.vendor_plan, text, text, text
+);
+
 create or replace function public.create_vendor_with_admin(
   p_name           text,
   p_slug           text,
@@ -13,7 +18,7 @@ create or replace function public.create_vendor_with_admin(
   p_contact_phone  text,
   p_admin_email    text
 )
-returns table (vendor_id uuid, admin_user_id uuid)
+returns table (out_vendor_id uuid, out_admin_user_id uuid)
 language plpgsql
 security definer
 set search_path = public
@@ -31,9 +36,9 @@ begin
   end if;
 
   -- Resolve the admin user by email from auth.users.
-  select id into v_admin_uid
-    from auth.users
-   where lower(email) = lower(p_admin_email)
+  select u.id into v_admin_uid
+    from auth.users u
+   where lower(u.email) = lower(p_admin_email)
    limit 1;
 
   if v_admin_uid is null then
@@ -47,7 +52,7 @@ begin
                p_contact_email, nullif(p_contact_phone, ''), 'active')
     returning id into v_vendor_id;
 
-  insert into public.vendor_members (vendor_id, user_id, role)
+  insert into public.vendor_members as vm (vendor_id, user_id, role)
        values (v_vendor_id, v_admin_uid, 'vendor_admin')
   on conflict (vendor_id, user_id) do update set role = excluded.role;
 
@@ -67,13 +72,12 @@ stable
 security definer
 set search_path = public
 as $$
-  select id from auth.users where lower(email) = lower(p_email) limit 1;
+  select u.id from auth.users u where lower(u.email) = lower(p_email) limit 1;
 $$;
 
 grant execute on function public.find_auth_user_by_email(text) to authenticated;
 
 -- Optional convenience: how many vendors does the platform have?
--- Used by the super-admin dashboard to show a "Get started" CTA on day 1.
 create or replace function public.platform_vendor_count()
 returns integer
 language sql
