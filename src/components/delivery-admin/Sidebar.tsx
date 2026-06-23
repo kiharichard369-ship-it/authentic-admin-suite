@@ -18,7 +18,7 @@ const items: Item[] = [
 
 export function DeliveryAdminSidebar({ role }: { role: Role }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
-  const session = { role, email: "", name: "", vendorId: null, vendorName: null };
+  const session = { role, email: "", name: "", vendorId: null, vendorName: null, businessType: null };
   const visible = items.filter((i) => can(session, i.perm));
   const isSuper = role === "super_admin";
 
