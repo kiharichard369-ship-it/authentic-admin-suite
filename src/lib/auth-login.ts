@@ -3,7 +3,10 @@
 // Supabase is not configured.
 
 import { supabase, hasSupabase } from "./supabase";
-import { ROLE_LABEL, setSession, type Role, type Session } from "./auth";
+import {
+  ROLE_LABEL, setSession,
+  type BusinessType, type Role, type Session,
+} from "./auth";
 
 export type LoginResult =
   | { ok: true; session: Session }
@@ -20,8 +23,7 @@ export async function loginWithSupabase(email: string, password: string): Promis
   }
   const uid = data.user.id;
 
-  // 1. Platform admin? Use SECURITY DEFINER RPC to bypass RLS on platform_admins
-  //    (the table intentionally has no policy for `authenticated`).
+  // 1. Platform admin?
   const { data: isAdmin, error: adminErr } = await supabase.rpc("is_platform_admin", { _uid: uid });
   if (adminErr) console.warn("[auth] is_platform_admin rpc failed:", adminErr.message);
 
@@ -32,12 +34,13 @@ export async function loginWithSupabase(email: string, password: string): Promis
       name: ROLE_LABEL.super_admin,
       vendorId: null,
       vendorName: null,
+      businessType: null,
     };
     setSession(session);
     return { ok: true, session };
   }
 
-  // 2. Vendor member? Use SECURITY DEFINER RPC for the same reason.
+  // 2. Vendor member?
   const { data: vm, error: vmErr } = await supabase.rpc("my_vendor_membership");
   if (vmErr) console.warn("[auth] my_vendor_membership rpc failed:", vmErr.message);
 
@@ -50,6 +53,7 @@ export async function loginWithSupabase(email: string, password: string): Promis
       name: ROLE_LABEL[role] ?? email,
       vendorId: row.vendor_id ?? null,
       vendorName: row.vendor_name ?? null,
+      businessType: (row.business_type as BusinessType | undefined) ?? "both",
     };
     setSession(session);
     return { ok: true, session };
