@@ -5,13 +5,14 @@
 
 grant execute on function public.is_platform_admin(uuid) to authenticated, anon;
 
--- Return the caller's first vendor membership including their display name.
--- display_name: raw_user_meta_data->>'name' if set, else the part before @ in email.
+-- Drop old signature first so we can change the return type safely.
+drop function if exists public.my_vendor_membership();
+
 create or replace function public.my_vendor_membership()
 returns table (
-  vendor_id   uuid,
-  role        public.app_role,
-  vendor_name text,
+  vendor_id     uuid,
+  role          public.app_role,
+  vendor_name   text,
   business_type text,
   display_name  text
 )
@@ -34,8 +35,9 @@ $$;
 
 grant execute on function public.my_vendor_membership() to authenticated;
 
--- Convenience RPC so the header can resolve the current user's display name
--- without re-fetching the full membership (used after password change, etc.)
+-- Convenience: resolve display name without fetching full membership.
+drop function if exists public.my_display_name();
+
 create or replace function public.my_display_name()
 returns text
 language sql stable security definer set search_path = public as $$
