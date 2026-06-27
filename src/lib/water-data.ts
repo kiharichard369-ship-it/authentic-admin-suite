@@ -5,6 +5,14 @@ import { supabase, hasSupabase } from "./supabase";
 import {
   products as mockProducts,
   customers as mockCustomers,
+  branch as mockBranch,
+  waterKpis as mockWaterKpis,
+  hourlySales as mockHourlySales,
+  transactions as mockTransactions,
+  cashiers as mockCashiers,
+  stockRequests as mockStockRequests,
+  branchExpenses as mockBranchExpenses,
+  refunds as mockRefunds,
   type WaterProduct,
   type WaterCategory,
 } from "./water-mock";
@@ -31,14 +39,13 @@ export type SaleInput = {
   discountPct: number;
   discountAmount: number;
   creditApplied: number;
-  total: number;          // amount the customer owes after credit
-  amountPaid: number;     // what they actually paid
+  total: number;
+  amountPaid: number;
   method: "cash" | "mpesa";
 };
 
 // ----------------------------------------------------------------------------
-// In-memory store (mock fallback). Mutates the mock arrays so the demo
-// behaves like a real backend — add customer, edit balance, record sale.
+// In-memory store (mock fallback)
 // ----------------------------------------------------------------------------
 const mem = {
   customers: mockCustomers.map((c) => ({ ...c })) as Customer[],
@@ -120,7 +127,6 @@ export async function recordSale(input: SaleInput): Promise<{ transactionId: str
   const overpayment = Math.max(0, input.amountPaid - input.total);
 
   if (!hasSupabase || !supabase) {
-    // Mock: mutate in-memory customer balance and product stock.
     if (input.customerId) {
       const c = mem.customers.find((x) => x.id === input.customerId);
       if (c) {
@@ -166,7 +172,6 @@ export async function recordSale(input: SaleInput): Promise<{ transactionId: str
   const { error: itemsErr } = await supabase.from("water_transaction_items").insert(items);
   if (itemsErr) throw itemsErr;
 
-  // Update customer balance / aggregates
   if (input.customerId) {
     const { data: c } = await supabase
       .from("water_customers")
@@ -187,7 +192,6 @@ export async function recordSale(input: SaleInput): Promise<{ transactionId: str
     }
   }
 
-  // Decrement stock
   for (const l of input.lines) {
     const { data: p } = await supabase.from("water_products").select("stock").eq("id", l.productId).single();
     if (p) {
@@ -202,60 +206,146 @@ export async function recordSale(input: SaleInput): Promise<{ transactionId: str
 }
 
 // ----------------------------------------------------------------------------
-// Read-only helpers for branch, KPIs, cashiers, transactions, refunds, etc.
-// Mirror water-mock exports so routes can swap their import path 1:1.
+// Read-only helpers — all backed by live views, fall back to mocks
 // ----------------------------------------------------------------------------
-import * as wmock from "./water-mock";
-
-async function fromTable<T>(table: string, mapper: (row: any) => T, fallback: T[]): Promise<T[]> {
-  if (!hasSupabase || !supabase) return fallback;
-  const { data, error } = await supabase.from(table).select("*");
-  if (error) throw error;
-  return (data ?? []).map(mapper);
-}
 
 export const fetchBranch = async () => {
-  if (!hasSupabase || !supabase) return wmock.branch;
-  const { data, error } = await supabase.from("water_branch").select("*").limit(1).maybeSingle();
+  if (!hasSupabase || !supabase) return mockBranch;
+  const { data, error } = await supabase
+    .from("water_branch")
+    .select("*")
+    .limit(1)
+    .maybeSingle();
   if (error) throw error;
-  return data ?? wmock.branch;
+  if (!data) return mockBranch;
+  return {
+    name: data.name,
+    code: data.code ?? "",
+    address: data.address ?? "",
+    manager: data.manager ?? "",
+    paybill: data.paybill ?? "",
+  };
 };
 
 export const fetchWaterKpis = async () => {
-  if (!hasSupabase || !supabase) return wmock.waterKpis;
-  const { data, error } = await supabase.from("water_kpis").select("*").limit(1).maybeSingle();
+  if (!hasSupabase || !supabase) return mockWaterKpis;
+  const { data, error } = await supabase
+    .from("water_kpis")
+    .select("today_revenue,today_litres,txns,pending_requests,low_stock_items,cashiers_on_shift")
+    .maybeSingle();
   if (error) throw error;
-  return data ?? wmock.waterKpis;
+  if (!data) return mockWaterKpis;
+  return {
+    todayRevenue: Number(data.today_revenue),
+    todayLitres: Number(data.today_litres),
+    txns: data.txns,
+    pendingRequests: data.pending_requests,
+    lowStockItems: data.low_stock_items,
+    cashiersOnShift: data.cashiers_on_shift,
+  };
 };
 
-export const fetchHourlySales = async () =>
-  fromTable("water_hourly_sales", (r) => ({ hour: r.hour, litres: Number(r.litres), revenue: Number(r.revenue) }), wmock.hourlySales as any);
+export const fetchHourlySales = async () => {
+  if (!hasSupabase || !supabase) return mockHourlySales as any[];
+  const { data, error } = await supabase
+    .from("water_hourly_sales")
+    .select("hour,litres,revenue");
+  if (error) throw error;
+  return (data ?? []).map((r) => ({
+    hour: r.hour,
+    litres: Number(r.litres),
+    revenue: Number(r.revenue),
+  }));
+};
 
-export const fetchTransactions = async () =>
-  fromTable("water_transactions_view", (r) => ({
-    id: r.id, time: r.time, cashier: r.cashier, items: r.items,
-    amount: Number(r.amount), method: r.method, status: r.status,
-  }), wmock.transactions);
+export const fetchTransactions = async () => {
+  if (!hasSupabase || !supabase) return mockTransactions;
+  const { data, error } = await supabase
+    .from("water_transactions_view")
+    .select("id,time,cashier,items,amount,method,status")
+    .limit(50);
+  if (error) throw error;
+  return (data ?? []).map((r) => ({
+    id: r.id, time: r.time, cashier: r.cashier,
+    items: r.items ?? "", amount: Number(r.amount),
+    method: r.method, status: r.status,
+  }));
+};
 
-export const fetchCashiers = async () =>
-  fromTable("water_cashiers", (r) => ({
-    id: r.id, name: r.name, phone: r.phone, shift: r.shift, status: r.status,
-    todaySales: Number(r.today_sales), txns: r.txns,
-  }), wmock.cashiers);
+export const fetchCashiers = async () => {
+  if (!hasSupabase || !supabase) return mockCashiers;
+  const { data, error } = await supabase
+    .from("water_cashiers_live")
+    .select("id,name,phone,shift,status,today_sales,txns");
+  if (error) throw error;
+  return (data ?? []).map((r) => ({
+    id: r.id, name: r.name, phone: r.phone, shift: r.shift ?? "",
+    status: r.status, todaySales: Number(r.today_sales), txns: r.txns,
+  }));
+};
 
-export const fetchStockRequests = async () =>
-  fromTable("water_stock_requests", (r) => ({
-    id: r.id, date: r.date, items: r.items, status: r.status, note: r.note ?? "",
-  }), wmock.stockRequests);
+export const fetchStockRequests = async () => {
+  if (!hasSupabase || !supabase) return mockStockRequests;
+  const { data, error } = await supabase
+    .from("water_stock_requests")
+    .select("id,date,items,status,note")
+    .order("created_at", { ascending: false })
+    .limit(50);
+  if (error) throw error;
+  return (data ?? []).map((r) => ({
+    id: r.id, date: r.date, items: r.items,
+    status: r.status, note: r.note ?? "",
+  }));
+};
 
-export const fetchBranchExpenses = async () =>
-  fromTable("water_branch_expenses", (r) => ({
+export const fetchBranchExpenses = async () => {
+  if (!hasSupabase || !supabase) return mockBranchExpenses;
+  const { data, error } = await supabase
+    .from("water_branch_expenses")
+    .select("id,date,staff,category,description,amount,status")
+    .order("created_at", { ascending: false })
+    .limit(50);
+  if (error) throw error;
+  return (data ?? []).map((r) => ({
     id: r.id, date: r.date, staff: r.staff, category: r.category,
-    description: r.description, amount: Number(r.amount), status: r.status,
-  }), wmock.branchExpenses);
+    description: r.description ?? "", amount: Number(r.amount), status: r.status,
+  }));
+};
 
-export const fetchRefunds = async () =>
-  fromTable("water_refunds", (r) => ({
-    id: r.id, txn: r.txn, date: r.date, customer: r.customer, cashier: r.cashier,
-    reason: r.reason, amount: Number(r.amount), status: r.status,
-  }), wmock.refunds);
+export const fetchRefunds = async () => {
+  if (!hasSupabase || !supabase) return mockRefunds;
+  const { data, error } = await supabase
+    .from("water_refunds")
+    .select("id,txn,date,customer,cashier,reason,amount,status")
+    .order("created_at", { ascending: false })
+    .limit(50);
+  if (error) throw error;
+  return (data ?? []).map((r) => ({
+    id: r.id,
+    txn: r.txn ?? "",
+    date: r.date,
+    customer: r.customer ?? "Walk-in",
+    cashier: r.cashier ?? "",
+    reason: r.reason ?? "",
+    amount: Number(r.amount),
+    status: r.status,
+  }));
+};
+
+// Revenue summary helpers used by water-admin.revenue.tsx
+export const fetchWaterRevenueSplit = async (): Promise<{ mpesa: number; cash: number; total: number }> => {
+  if (!hasSupabase || !supabase) {
+    const kpis = mockWaterKpis;
+    const mpesa = Math.round(kpis.todayRevenue * 0.65);
+    return { mpesa, cash: kpis.todayRevenue - mpesa, total: kpis.todayRevenue };
+  }
+  const { data, error } = await supabase
+    .from("water_transactions")
+    .select("total,method")
+    .gte("created_at", new Date().toISOString().slice(0, 10));
+  if (error) throw error;
+  const rows = data ?? [];
+  const mpesa = rows.filter((r) => r.method === "mpesa").reduce((a, r) => a + Number(r.total), 0);
+  const cash = rows.filter((r) => r.method === "cash").reduce((a, r) => a + Number(r.total), 0);
+  return { mpesa, cash, total: mpesa + cash };
+};

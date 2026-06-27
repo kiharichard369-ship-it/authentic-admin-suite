@@ -7,7 +7,9 @@ import { PageHeader } from "@/components/super-admin/PageHeader";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, ClipboardList } from "lucide-react";
-import { products, WATER_CATEGORIES, type WaterCategory, type WaterProduct } from "@/lib/water-mock";
+import { products as mockProducts, WATER_CATEGORIES, type WaterCategory, type WaterProduct } from "@/lib/water-mock";
+import { listProducts } from "@/lib/water-data";
+import { useLive } from "@/lib/use-live";
 
 export const Route = createFileRoute("/water-admin/stock")({
   head: () => ({ meta: [{ title: "Stock & Pricing — Water Retail" }] }),
@@ -17,7 +19,9 @@ export const Route = createFileRoute("/water-admin/stock")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function StockPage() {
-  const lowCount = products.filter((p) => p.stock <= p.reorder).length;
+  const products = useLive(["water", "products"] as const, listProducts, mockProducts);
+
+  const lowCount   = products.filter((p) => p.stock <= p.reorder).length;
   const totalValue = products.reduce((a, b) => a + (b.price ?? 0) * b.stock, 0);
 
   return (
@@ -35,8 +39,8 @@ function StockPage() {
 
       <div className="grid gap-4 md:grid-cols-3 mb-6">
         <Stat label="Products tracked" value={String(products.length)} />
-        <Stat label="Low stock" value={String(lowCount)} highlight={lowCount > 0} />
-        <Stat label="Inventory value" value={fmt(totalValue)} />
+        <Stat label="Low stock"        value={String(lowCount)}        highlight={lowCount > 0} />
+        <Stat label="Inventory value"  value={fmt(totalValue)} />
       </div>
 
       <Tabs defaultValue="REFILL">
@@ -79,7 +83,9 @@ function StockTable({ items }: { items: WaterProduct[] }) {
                 <TableRow key={p.id}>
                   <TableCell className="font-mono text-xs text-muted-foreground">{p.sku}</TableCell>
                   <TableCell className="font-medium">{p.name}</TableCell>
-                  <TableCell className="text-right tabular-nums">{p.price == null ? <Badge variant="outline">TBC</Badge> : fmt(p.price)}</TableCell>
+                  <TableCell className="text-right tabular-nums">
+                    {p.price == null ? <Badge variant="outline">TBC</Badge> : fmt(p.price)}
+                  </TableCell>
                   <TableCell className="w-48">
                     <div className="flex items-center gap-2">
                       <Progress value={pct} className="h-2" />

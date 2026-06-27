@@ -11,22 +11,23 @@ import {
   BarChart, Bar, PieChart, Pie, Cell, Legend,
 } from "recharts";
 import { businesses as _mock_businesses } from "@/lib/mock-data";
-import { fetchBusinesses } from "@/lib/platform-data";
-
+import {
+  fetchBusinesses, fetchRevenueSeries, fetchTopProducts,
+  type RevenueSeries, type TopProduct,
+} from "@/lib/platform-data";
 
 export const Route = createFileRoute("/super-admin/analytics")({
   head: () => ({ meta: [{ title: "Analytics — Super Admin" }] }),
   component: Analytics,
 });
 
-const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const revenueSeries = days.map((d, i) => ({
+const mockRevenueSeries: RevenueSeries[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d, i) => ({
   day: d,
   Water: 30000 + i * 2400 + (i % 2) * 4000,
   Delivery: 12000 + i * 900,
 }));
 
-const topProducts = [
+const mockTopProducts: TopProduct[] = [
   { name: "5L Bottled Water", sold: 412, revenue: 82400 },
   { name: "20L Refill", sold: 188, revenue: 28200 },
   { name: "1L Bottled Water", sold: 380, revenue: 22800 },
@@ -36,7 +37,10 @@ const topProducts = [
 ];
 
 function Analytics() {
-  const businesses = useLive(["platform","businesses"] as const, fetchBusinesses, _mock_businesses);
+  const businesses    = useLive(["platform", "businesses"]    as const, fetchBusinesses,    _mock_businesses);
+  const revenueSeries = useLive(["platform", "revenueSeries"] as const, fetchRevenueSeries, mockRevenueSeries);
+  const topProducts   = useLive(["platform", "topProducts"]   as const, fetchTopProducts,   mockTopProducts);
+
   return (
     <div>
       <PageHeader
@@ -80,7 +84,7 @@ function Analytics() {
                     <YAxis stroke="var(--color-muted-foreground)" fontSize={12} />
                     <Tooltip contentStyle={{ background: "var(--color-card)", border: "1px solid var(--color-border)" }} />
                     <Legend />
-                    <Line type="monotone" dataKey="Water" stroke="var(--color-chart-1)" strokeWidth={2} />
+                    <Line type="monotone" dataKey="Water"    stroke="var(--color-chart-1)" strokeWidth={2} />
                     <Line type="monotone" dataKey="Delivery" stroke="var(--color-chart-2)" strokeWidth={2} />
                   </LineChart>
                 </ResponsiveContainer>
@@ -93,7 +97,7 @@ function Analytics() {
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie data={businesses} dataKey="today" nameKey="name" innerRadius={60} outerRadius={100}>
-                      {businesses.map((b, i) => <Cell key={i} fill={`var(--color-chart-${i + 1})`} />)}
+                      {businesses.map((_, i) => <Cell key={i} fill={`var(--color-chart-${i + 1})`} />)}
                     </Pie>
                     <Tooltip contentStyle={{ background: "var(--color-card)", border: "1px solid var(--color-border)" }} />
                     <Legend />
@@ -113,7 +117,7 @@ function Analytics() {
                     <XAxis dataKey="day" stroke="var(--color-muted-foreground)" fontSize={12} />
                     <YAxis stroke="var(--color-muted-foreground)" fontSize={12} />
                     <Tooltip contentStyle={{ background: "var(--color-card)", border: "1px solid var(--color-border)" }} />
-                    <Bar dataKey="Water" stackId="a" fill="var(--color-chart-1)" />
+                    <Bar dataKey="Water"    stackId="a" fill="var(--color-chart-1)" />
                     <Bar dataKey="Delivery" stackId="a" fill="var(--color-chart-2)" />
                   </BarChart>
                 </ResponsiveContainer>

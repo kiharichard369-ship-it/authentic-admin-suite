@@ -7,8 +7,12 @@ import {
   TrendingUp, Receipt, Users as UsersIcon, AlertCircle,
   Droplets, Truck, Plus,
 } from "lucide-react";
-import { businesses as mockBusinesses, recentActivity as mockActivity, pendingApprovals, activeUsers } from "@/lib/mock-data";
-import { fetchBusinesses, fetchRecentActivity } from "@/lib/platform-data";
+import { businesses as mockBusinesses, recentActivity as mockActivity } from "@/lib/mock-data";
+import { pendingApprovals as mockPendingApprovals, activeUsers as mockActiveUsers } from "@/lib/mock-data";
+import {
+  fetchBusinesses, fetchRecentActivity,
+  fetchPendingApprovals, fetchActiveUsers,
+} from "@/lib/platform-data";
 import { useLive } from "@/lib/use-live";
 
 export const Route = createFileRoute("/super-admin/dashboard")({
@@ -19,10 +23,12 @@ export const Route = createFileRoute("/super-admin/dashboard")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function Dashboard() {
-  const businesses = useLive(["platform","businesses"], fetchBusinesses, mockBusinesses);
-  const recentActivity = useLive(["platform","activity"], fetchRecentActivity, mockActivity);
+  const businesses       = useLive(["platform", "businesses"],       fetchBusinesses,       mockBusinesses);
+  const recentActivity   = useLive(["platform", "activity"],         fetchRecentActivity,   mockActivity);
+  const pendingApprovals = useLive(["platform", "pendingApprovals"], fetchPendingApprovals, mockPendingApprovals);
+  const activeUsers      = useLive(["platform", "activeUsers"],      fetchActiveUsers,      mockActiveUsers);
   const totalRevenue = businesses.reduce((a, b) => a + b.today, 0);
-  const totalTxns = businesses.reduce((a, b) => a + b.txns, 0);
+  const totalTxns    = businesses.reduce((a, b) => a + b.txns, 0);
 
   return (
     <div>
@@ -52,10 +58,10 @@ function Dashboard() {
       )}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
-        <Stat icon={TrendingUp} label="Revenue today" value={fmt(totalRevenue)} hint="All vendors" />
-        <Stat icon={Receipt} label="Transactions" value={String(totalTxns)} hint="Across all arms" />
-        <Stat icon={UsersIcon} label="Active now" value={String(activeUsers)} hint="Users online" />
-        <Stat icon={AlertCircle} label="Pending approvals" value={String(pendingApprovals)} hint="Stock & refunds" highlight />
+        <Stat icon={TrendingUp} label="Revenue today"      value={fmt(totalRevenue)}           hint="All vendors" />
+        <Stat icon={Receipt}    label="Transactions"       value={String(totalTxns)}           hint="Across all arms" />
+        <Stat icon={UsersIcon}  label="Active now"         value={String(activeUsers)}         hint="Vendor members" />
+        <Stat icon={AlertCircle} label="Pending approvals" value={String(pendingApprovals)}    hint="Stock & refunds" highlight />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2 mb-8">
@@ -85,8 +91,8 @@ function Dashboard() {
         <Card>
           <CardHeader><CardTitle>Quick actions</CardTitle></CardHeader>
           <CardContent className="space-y-2">
-            <Link to="/super-admin/shops" className="block"><Button variant="outline" className="w-full justify-start">Add new shop branch</Button></Link>
-            <Link to="/super-admin/users" className="block"><Button variant="outline" className="w-full justify-start">Create user account</Button></Link>
+            <Link to="/super-admin/shops"   className="block"><Button variant="outline" className="w-full justify-start">Add new shop branch</Button></Link>
+            <Link to="/super-admin/users"   className="block"><Button variant="outline" className="w-full justify-start">Create user account</Button></Link>
             <Link to="/super-admin/expenses" className="block"><Button variant="outline" className="w-full justify-start">Review pending expenses</Button></Link>
             <Link to="/super-admin/payments" className="block"><Button variant="outline" className="w-full justify-start">Payment configuration</Button></Link>
             <Link to="/super-admin/reports" className="block"><Button className="w-full justify-start">Generate today's report</Button></Link>

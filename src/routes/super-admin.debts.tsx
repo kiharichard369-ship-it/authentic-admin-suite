@@ -7,11 +7,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeader } from "@/components/super-admin/PageHeader";
 import { AlertCircle, Truck, Droplets } from "lucide-react";
 import { debts as _mock_debts } from "@/lib/delivery-mock";
+import { customers as mockWaterCustomers } from "@/lib/water-mock";
 import { fetchDebts } from "@/lib/delivery-data";
-
-import { customers as waterCustomers } from "@/lib/water-mock";
-
+import { listCustomers } from "@/lib/water-data";
 import { useLive } from "@/lib/use-live";
+
 export const Route = createFileRoute("/super-admin/debts")({
   head: () => ({ meta: [{ title: "Debts & Credits — Super Admin" }] }),
   component: DebtsOverview,
@@ -20,12 +20,14 @@ export const Route = createFileRoute("/super-admin/debts")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function DebtsOverview() {
-  const debts = useLive(["delivery","debts"] as const, fetchDebts, _mock_debts);
+  const debts          = useLive(["delivery", "debts"]           as const, fetchDebts,        _mock_debts);
+  const waterCustomers = useLive(["water",    "customers"]       as const, listCustomers,      mockWaterCustomers as any);
+
   const deliveryOutstanding = debts
     .filter((d) => d.status !== "paid")
     .reduce((a, b) => a + b.amount, 0);
-  const retailOutstanding = waterCustomers.reduce((a, b) => a + (b.balance || 0), 0);
-  const totalOutstanding = deliveryOutstanding + retailOutstanding;
+  const retailOutstanding = (waterCustomers as any[]).reduce((a: number, b: any) => a + (b.balance || 0), 0);
+  const totalOutstanding  = deliveryOutstanding + retailOutstanding;
 
   return (
     <div>
@@ -35,18 +37,17 @@ function DebtsOverview() {
       />
 
       <div className="grid gap-4 md:grid-cols-3 mb-8">
-        <Stat label="Total outstanding" value={fmt(totalOutstanding)} icon={AlertCircle} highlight />
-        <Stat label="Delivery debts" value={fmt(deliveryOutstanding)} icon={Truck}
+        <Stat label="Total outstanding"       value={fmt(totalOutstanding)}   icon={AlertCircle} highlight />
+        <Stat label="Delivery debts"          value={fmt(deliveryOutstanding)} icon={Truck}
           hint={`${debts.filter(d => d.status !== "paid").length} open records`} />
-        <Stat label="Retail customer balances" value={fmt(retailOutstanding)} icon={Droplets}
-          hint={`${waterCustomers.filter(c => (c.balance || 0) > 0).length} accounts`} />
+        <Stat label="Retail customer balances" value={fmt(retailOutstanding)}  icon={Droplets}
+          hint={`${(waterCustomers as any[]).filter((c: any) => (c.balance || 0) > 0).length} accounts`} />
       </div>
 
       <Tabs defaultValue="delivery">
         <TabsList className="mb-6">
           <TabsTrigger value="delivery">Water Delivery</TabsTrigger>
           <TabsTrigger value="retail">Water Retail</TabsTrigger>
-          
         </TabsList>
 
         <TabsContent value="delivery" className="space-y-4">
@@ -106,15 +107,15 @@ function DebtsOverview() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {waterCustomers
-                    .filter((c) => (c.balance || 0) > 0)
-                    .map((c) => (
+                  {(waterCustomers as any[])
+                    .filter((c: any) => (c.balance || 0) > 0)
+                    .map((c: any) => (
                       <TableRow key={c.id}>
                         <TableCell className="font-medium">{c.name}</TableCell>
                         <TableCell><Badge variant="outline">{c.type}</Badge></TableCell>
                         <TableCell className="text-muted-foreground">{c.phone}</TableCell>
                         <TableCell className="text-right tabular-nums">{fmt(c.balance)}</TableCell>
-                        <TableCell className="text-muted-foreground">{c.lastVisit}</TableCell>
+                        <TableCell className="text-muted-foreground">{c.lastVisit ?? c.last_visit}</TableCell>
                       </TableRow>
                     ))}
                 </TableBody>
@@ -122,7 +123,6 @@ function DebtsOverview() {
             </CardContent>
           </Card>
         </TabsContent>
-
       </Tabs>
     </div>
   );
