@@ -12,6 +12,15 @@ export type LoginResult =
   | { ok: true; session: Session }
   | { ok: false; error: string };
 
+/** Derive a human-readable display name from Supabase user metadata or email. */
+function resolveDisplayName(user: { email?: string; user_metadata?: Record<string, unknown> }): string {
+  const meta = user.user_metadata ?? {};
+  const fromMeta = typeof meta["name"] === "string" ? meta["name"].trim() : "";
+  if (fromMeta) return fromMeta;
+  // Fall back to the part before @ in their email
+  return (user.email ?? "").split("@")[0] ?? "User";
+}
+
 export async function loginWithSupabase(email: string, password: string): Promise<LoginResult> {
   if (!hasSupabase || !supabase) {
     return { ok: false, error: "Supabase is not configured." };
@@ -21,7 +30,9 @@ export async function loginWithSupabase(email: string, password: string): Promis
   if (error || !data.user) {
     return { ok: false, error: error?.message ?? "Invalid email or password." };
   }
+
   const uid = data.user.id;
+  const displayName = resolveDisplayName(data.user);
 
   // 1. Platform admin?
   const { data: isAdmin, error: adminErr } = await supabase.rpc("is_platform_admin", { _uid: uid });
@@ -31,7 +42,7 @@ export async function loginWithSupabase(email: string, password: string): Promis
     const session: Session = {
       role: "super_admin",
       email,
-      name: ROLE_LABEL.super_admin,
+      name: displayName || ROLE_LABEL.super_admin,
       vendorId: null,
       vendorName: null,
       businessType: null,
@@ -47,10 +58,12 @@ export async function loginWithSupabase(email: string, password: string): Promis
   const row = Array.isArray(vm) ? vm[0] : vm;
   if (row && row.role) {
     const role = row.role as Role;
+    // Prefer name from RPC (reads JWT metadata server-side), then client-side resolution
+    const name = (row.display_name as string | undefined)?.trim() || displayName || email.split("@")[0];
     const session: Session = {
       role,
       email,
-      name: ROLE_LABEL[role] ?? email,
+      name,
       vendorId: row.vendor_id ?? null,
       vendorName: row.vendor_name ?? null,
       businessType: (row.business_type as BusinessType | undefined) ?? "both",
@@ -64,4 +77,11 @@ export async function loginWithSupabase(email: string, password: string): Promis
     ok: false,
     error: "This account has no platform or vendor role assigned. Contact your administrator.",
   };
+}
+
+/** Update the current user's password. Returns null on success or an error message. */
+export async function changePassword(newPassword: string): Promise<string | null> {
+  if (!hasSupabase || !supabase) return "Supabase is not configured.";
+  const { error } = await supabase.auth.updateUser({ password: newPassword });
+  return error ? error.message : null;
 }
