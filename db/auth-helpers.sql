@@ -21,7 +21,7 @@ language sql stable security definer set search_path = public as $$
     vm.vendor_id,
     vm.role,
     v.name as vendor_name,
-    coalesce(vm.business_type, 'both') as business_type,
+    coalesce(v.business_type, 'both') as business_type,
     coalesce(
       nullif(trim((auth.jwt()->'user_metadata'->>'name')::text), ''),
       split_part(auth.jwt()->>'email', '@', 1)
