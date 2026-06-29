@@ -27,97 +27,107 @@ create index if not exists water_customers_vendor_idx    on public.water_custome
 create index if not exists water_products_vendor_idx     on public.water_products     (vendor_id);
 create index if not exists water_transactions_vendor_idx on public.water_transactions (vendor_id);
 create index if not exists water_tx_items_vendor_idx     on public.water_transaction_items (vendor_id);
-
--- Composite index: vendor + created_at for dashboard time queries
 create index if not exists water_tx_vendor_created_idx
   on public.water_transactions (vendor_id, created_at desc);
 
 -- ---------------------------------------------------------------------------
--- 3. Drop the global open-to-all RLS policies, replace with vendor-scoped ones
+-- 3. Replace open RLS policies with vendor-scoped ones
 -- ---------------------------------------------------------------------------
-drop policy if exists water_customers_all           on public.water_customers;
-drop policy if exists water_products_all            on public.water_products;
-drop policy if exists water_transactions_all        on public.water_transactions;
-drop policy if exists water_transaction_items_all   on public.water_transaction_items;
+drop policy if exists water_customers_all          on public.water_customers;
+drop policy if exists water_products_all           on public.water_products;
+drop policy if exists water_transactions_all       on public.water_transactions;
+drop policy if exists water_transaction_items_all  on public.water_transaction_items;
 
--- water_customers: vendor members see only their vendor's customers
 create policy water_customers_vendor on public.water_customers
   for all to authenticated
   using  (vendor_id = public.current_vendor_id() or public.is_platform_admin(auth.uid()))
   with check (vendor_id = public.current_vendor_id() or public.is_platform_admin(auth.uid()));
 
--- water_products: same
 create policy water_products_vendor on public.water_products
   for all to authenticated
   using  (vendor_id = public.current_vendor_id() or public.is_platform_admin(auth.uid()))
   with check (vendor_id = public.current_vendor_id() or public.is_platform_admin(auth.uid()));
 
--- water_transactions: same
 create policy water_transactions_vendor on public.water_transactions
   for all to authenticated
   using  (vendor_id = public.current_vendor_id() or public.is_platform_admin(auth.uid()))
   with check (vendor_id = public.current_vendor_id() or public.is_platform_admin(auth.uid()));
 
--- water_transaction_items: scoped via transaction's vendor
 create policy water_tx_items_vendor on public.water_transaction_items
   for all to authenticated
-  using (
-    vendor_id = public.current_vendor_id()
-    or public.is_platform_admin(auth.uid())
-  )
-  with check (
-    vendor_id = public.current_vendor_id()
-    or public.is_platform_admin(auth.uid())
-  );
+  using  (vendor_id = public.current_vendor_id() or public.is_platform_admin(auth.uid()))
+  with check (vendor_id = public.current_vendor_id() or public.is_platform_admin(auth.uid()));
 
 -- ---------------------------------------------------------------------------
--- 4. Drop the old global seed data (shared products with no vendor_id)
---    These won't be visible under RLS anyway, but clean up to avoid confusion.
+-- 4. Remove global seed products (no vendor_id = unusable under RLS)
 -- ---------------------------------------------------------------------------
+delete from public.water_transaction_items
+  where product_id in (select id::text from public.water_products where vendor_id is null);
+
 delete from public.water_products where vendor_id is null;
 
 -- ---------------------------------------------------------------------------
--- 5. Change water_products primary key from text to uuid so vendors can
---    freely add products without coordinating fixed IDs.
---    We do this safely: create new table, migrate, swap.
---    Skip if column is already uuid.
+-- 5. Convert water_products.id  text → uuid
+--    AND water_transaction_items.product_id  text → uuid
+--    Do both in the correct order: drop FK, cast columns, re-add FK.
 -- ---------------------------------------------------------------------------
 do $$
+declare
+  prod_id_type text;
+  item_pid_type text;
 begin
-  -- Only run if id is still text type
-  if (select data_type from information_schema.columns
-      where table_schema='public' and table_name='water_products' and column_name='id') = 'text' then
+  -- Check current types
+  select data_type into prod_id_type
+    from information_schema.columns
+   where table_schema = 'public' and table_name = 'water_products' and column_name = 'id';
 
-    -- Remove FK from transaction_items temporarily
-    alter table public.water_transaction_items drop constraint if exists water_transaction_items_product_id_fkey;
+  select data_type into item_pid_type
+    from information_schema.columns
+   where table_schema = 'public' and table_name = 'water_transaction_items' and column_name = 'product_id';
 
-    -- Add a new uuid column, populate it, swap
-    alter table public.water_products add column if not exists new_id uuid default gen_random_uuid();
-    update public.water_products set new_id = gen_random_uuid() where new_id is null;
-    alter table public.water_products drop constraint water_products_pkey;
+  -- Only run if products.id is still text
+  if prod_id_type = 'text' then
+
+    -- Step 1: drop the FK from transaction_items → products
+    alter table public.water_transaction_items
+      drop constraint if exists water_transaction_items_product_id_fkey;
+
+    -- Step 2: convert transaction_items.product_id to uuid
+    --   (all existing rows were deleted above so the cast is safe)
+    alter table public.water_transaction_items
+      alter column product_id type uuid using null::uuid;
+
+    -- Step 3: drop old PK on products
+    alter table public.water_products drop constraint if exists water_products_pkey;
+
+    -- Step 4: add new uuid id column, populate, promote to PK
+    alter table public.water_products add column if not exists new_uuid_id uuid default gen_random_uuid();
+    update public.water_products set new_uuid_id = gen_random_uuid() where new_uuid_id is null;
     alter table public.water_products rename column id to old_text_id;
-    alter table public.water_products rename column new_id to id;
+    alter table public.water_products rename column new_uuid_id to id;
     alter table public.water_products add primary key (id);
+    alter table public.water_products drop column if exists old_text_id;
 
-    -- Re-add FK on transaction_items (product_id is uuid from now on)
-    -- Items referencing old text IDs are orphaned and safe to leave (there are none in fresh installs)
+    -- Step 5: now both sides are uuid — safe to add FK back
     alter table public.water_transaction_items
       add constraint water_transaction_items_product_id_fkey
       foreign key (product_id) references public.water_products(id) on delete restrict;
 
-    alter table public.water_products drop column if exists old_text_id;
+  elsif item_pid_type = 'text' then
+    -- products.id already uuid but product_id is still text — cast it alone
+    alter table public.water_transaction_items
+      drop constraint if exists water_transaction_items_product_id_fkey;
+    alter table public.water_transaction_items
+      alter column product_id type uuid using null::uuid;
+    alter table public.water_transaction_items
+      add constraint water_transaction_items_product_id_fkey
+      foreign key (product_id) references public.water_products(id) on delete restrict;
   end if;
 end $$;
 
--- Ensure product_id in transaction_items is uuid
-alter table public.water_transaction_items
-  alter column product_id type uuid using product_id::uuid;
-
 -- ---------------------------------------------------------------------------
--- 6. Add flexible unit column to water_products (already exists as 'unit')
---    Just ensure the check constraint is removed so vendors can set any unit.
+-- 6. Remove any unit check constraint (vendors choose their own units)
 -- ---------------------------------------------------------------------------
--- unit column already exists; drop any check constraint that limits values
 do $$
 declare cname text;
 begin
@@ -133,7 +143,7 @@ begin
 end $$;
 
 -- ---------------------------------------------------------------------------
--- 7. Update water_kpis view to be vendor-scoped (uses vendor_id column now)
+-- 7. Recreate views so they reference vendor_id correctly
 -- ---------------------------------------------------------------------------
 create or replace view public.water_kpis as
 select
@@ -151,14 +161,11 @@ from public.water_transactions wt
 left join public.water_transaction_items wti on wti.transaction_id = wt.id
 group by wt.vendor_id;
 
--- ---------------------------------------------------------------------------
--- 8. Hourly sales view — vendor-scoped
--- ---------------------------------------------------------------------------
 create or replace view public.water_hourly_sales as
 select
   wt.vendor_id,
   lpad(extract(hour from wt.created_at)::text, 2, '0') as hour,
-  coalesce(sum(wti.qty), 0)::int     as litres,
+  coalesce(sum(wti.qty), 0)::int      as litres,
   coalesce(sum(wt.total), 0)::numeric as revenue
 from public.water_transactions wt
 left join public.water_transaction_items wti on wti.transaction_id = wt.id
@@ -166,9 +173,6 @@ where date_trunc('day', wt.created_at) = current_date
 group by wt.vendor_id, extract(hour from wt.created_at)
 order by hour;
 
--- ---------------------------------------------------------------------------
--- 9. Transactions view — vendor-scoped
--- ---------------------------------------------------------------------------
 create or replace view public.water_transactions_view as
 select
   wt.id,
@@ -176,10 +180,10 @@ select
   to_char(wt.created_at at time zone 'Africa/Nairobi', 'HH24:MI') as time,
   wt.cashier_name as cashier,
   (select string_agg(wti2.product_name || ' ×' || wti2.qty::text, ', ')
-   from public.water_transaction_items wti2 where wti2.transaction_id = wt.id) as items,
+   from public.water_transaction_items wti2
+   where wti2.transaction_id = wt.id) as items,
   wt.total  as amount,
   wt.method,
   wt.status
 from public.water_transactions wt
 order by wt.created_at desc;
-
