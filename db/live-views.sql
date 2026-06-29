@@ -318,7 +318,10 @@ grant execute on function public.platform_active_users() to authenticated;
 
 -- ---------------------------------------------------------------------------
 -- Multi-shift support: convert water_cashiers.shift from text to text[]
+-- Drop the dependent view first, alter, then recreate it below.
 -- ---------------------------------------------------------------------------
+drop view if exists public.water_cashiers_live;
+
 do $$
 begin
   if (select data_type from information_schema.columns
@@ -331,3 +334,13 @@ begin
         end;
   end if;
 end $$;
+
+-- Recreate the view after the column type change
+create or replace view public.water_cashiers_live as
+select
+  wc.id, wc.vendor_id, wc.name, wc.phone, wc.shift, wc.status,
+  coalesce(sum(wt.total) filter (where date_trunc('day', wt.created_at) = current_date), 0)::numeric as today_sales,
+  count(wt.id) filter (where date_trunc('day', wt.created_at) = current_date)::int as txns
+from public.water_cashiers wc
+left join public.water_transactions wt on wt.cashier_name = wc.name and wt.vendor_id = wc.vendor_id
+group by wc.id, wc.vendor_id, wc.name, wc.phone, wc.shift, wc.status;
