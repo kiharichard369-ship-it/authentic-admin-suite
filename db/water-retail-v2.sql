@@ -149,7 +149,13 @@ begin
 end $$;
 
 -- ---------------------------------------------------------------------------
--- 7. Recreate views so they reference vendor_id correctly
+-- 7. Drop the hardcoded category check constraint so vendors can use any value
+-- ---------------------------------------------------------------------------
+alter table public.water_products
+  drop constraint if exists water_products_category_check;
+
+-- ---------------------------------------------------------------------------
+-- 8. Recreate views so they reference vendor_id correctly
 -- ---------------------------------------------------------------------------
 create or replace view public.water_kpis as
 select
