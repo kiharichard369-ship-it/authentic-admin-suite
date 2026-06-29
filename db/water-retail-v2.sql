@@ -131,11 +131,17 @@ end $$;
 do $$
 declare cname text;
 begin
-  select constraint_name into cname
+  -- Find only CHECK constraints (not not-null or pk) that mention unit values
+  select tc.constraint_name into cname
     from information_schema.table_constraints tc
-    join information_schema.check_constraints cc using (constraint_name, constraint_schema)
-   where tc.table_name = 'water_products'
+    join information_schema.check_constraints cc
+      on cc.constraint_name = tc.constraint_name
+     and cc.constraint_schema = tc.constraint_schema
+   where tc.table_schema = 'public'
+     and tc.table_name   = 'water_products'
+     and tc.constraint_type = 'CHECK'
      and cc.check_clause ilike '%unit%'
+     and cc.check_clause not ilike '%not null%'
    limit 1;
   if cname is not null then
     execute 'alter table public.water_products drop constraint ' || quote_ident(cname);
