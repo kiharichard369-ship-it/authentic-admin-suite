@@ -67,7 +67,7 @@ create policy water_tx_items_vendor on public.water_transaction_items
 -- 4. Remove global seed products (no vendor_id = unusable under RLS)
 -- ---------------------------------------------------------------------------
 delete from public.water_transaction_items
-  where product_id in (select id::text from public.water_products where vendor_id is null);
+  where product_id in (select id from public.water_products where vendor_id is null);
 
 delete from public.water_products where vendor_id is null;
 
