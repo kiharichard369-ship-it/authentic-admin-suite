@@ -306,7 +306,9 @@ export const fetchCashiers = async () => {
   const { data, error } = await q;
   if (error) throw error;
   return (data ?? []).map((r) => ({
-    id: r.id, name: r.name, phone: r.phone, shift: r.shift ?? "",
+    id: r.id, name: r.name, phone: r.phone ?? "",
+    // shift is text[] — normalise to array regardless of legacy data
+    shift: Array.isArray(r.shift) ? r.shift : (r.shift ? [r.shift] : []),
     status: r.status, todaySales: Number(r.today_sales), txns: r.txns,
   }));
 };

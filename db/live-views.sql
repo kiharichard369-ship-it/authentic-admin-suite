@@ -315,3 +315,19 @@ returns integer language sql stable security definer set search_path = public as
   select count(*)::int from public.vendor_members
 $$;
 grant execute on function public.platform_active_users() to authenticated;
+
+-- ---------------------------------------------------------------------------
+-- Multi-shift support: convert water_cashiers.shift from text to text[]
+-- ---------------------------------------------------------------------------
+do $$
+begin
+  if (select data_type from information_schema.columns
+      where table_schema = 'public' and table_name = 'water_cashiers'
+        and column_name = 'shift') = 'text' then
+    alter table public.water_cashiers
+      alter column shift type text[] using
+        case when shift is null or shift = '' then '{}'::text[]
+             else array[shift]
+        end;
+  end if;
+end $$;
