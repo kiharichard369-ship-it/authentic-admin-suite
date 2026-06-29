@@ -38,6 +38,11 @@ drop policy if exists water_products_all           on public.water_products;
 drop policy if exists water_transactions_all       on public.water_transactions;
 drop policy if exists water_transaction_items_all  on public.water_transaction_items;
 
+drop policy if exists water_customers_vendor   on public.water_customers;
+drop policy if exists water_products_vendor    on public.water_products;
+drop policy if exists water_transactions_vendor on public.water_transactions;
+drop policy if exists water_tx_items_vendor    on public.water_transaction_items;
+
 create policy water_customers_vendor on public.water_customers
   for all to authenticated
   using  (vendor_id = public.current_vendor_id() or public.is_platform_admin(auth.uid()))
