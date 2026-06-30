@@ -258,6 +258,7 @@ export async function recordSale(
 
   const items = input.lines.map((l) => ({
     transaction_id: tx.id,
+    vendor_id:      vid,
     product_id:     l.productId,
     product_name:   l.name,
     unit_price:     l.unitPrice,
