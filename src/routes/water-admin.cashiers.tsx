@@ -10,12 +10,13 @@ import { PageHeader } from "@/components/super-admin/PageHeader";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from "@/components/ui/sheet";
-import { UserPlus, Phone, Loader2, Trash2, Pencil } from "lucide-react";
+import { UserPlus, Phone, Mail, Loader2, Trash2, Pencil, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { supabase, hasSupabase } from "@/lib/supabase";
 import { getSession } from "@/lib/auth";
 import { fetchCashiers } from "@/lib/water-data";
 import { cashiers as _mock_cashiers } from "@/lib/water-mock";
+import { createVendorUser } from "@/lib/create-vendor-user";
 
 export const Route = createFileRoute("/water-admin/cashiers")({
   head: () => ({ meta: [{ title: "Cashiers — Water Retail" }] }),
@@ -29,30 +30,43 @@ const ALL_SHIFTS = ["Morning", "Afternoon", "Evening", "Night"];
 
 // ── mutations ────────────────────────────────────────────────────────────────
 
-async function upsertCashier(input: {
-  id?: string; name: string; phone: string; shifts: string[];
+async function updateCashier(input: {
+  id: string; name: string; phone: string; shifts: string[];
+}) {
+  if (!hasSupabase || !supabase) throw new Error("No Supabase connection");
+  const { error } = await supabase.from("water_cashiers")
+    .update({ name: input.name, phone: input.phone || null, shift: input.shifts })
+    .eq("id", input.id);
+  if (error) throw error;
+}
+
+// Creates a real login account (auth + vendor_members role) AND the
+// operational water_cashiers row used for shift tracking & sales attribution.
+async function createCashierWithLogin(input: {
+  name: string; phone: string; shifts: string[]; email: string; password: string;
 }) {
   if (!hasSupabase || !supabase) throw new Error("No Supabase connection");
   const vendorId = getSession()?.vendorId;
   if (!vendorId) throw new Error("No vendor session");
 
-  const payload = {
-    vendor_id: vendorId,
-    name:      input.name,
-    phone:     input.phone || null,
-    shift:     input.shifts,   // text[] column
-  };
+  // 1. Create the login account with water_cashier role
+  await createVendorUser({
+    name: input.name,
+    email: input.email,
+    password: input.password,
+    role: "water_cashier",
+    vendorId,
+  });
 
-  if (input.id) {
-    const { error } = await supabase.from("water_cashiers")
-      .update({ name: payload.name, phone: payload.phone, shift: payload.shift })
-      .eq("id", input.id);
-    if (error) throw error;
-  } else {
-    const { error } = await supabase.from("water_cashiers")
-      .insert({ ...payload, status: "off" });
-    if (error) throw error;
-  }
+  // 2. Create the operational cashier row (shifts, status, sales tracking)
+  const { error } = await supabase.from("water_cashiers").insert({
+    vendor_id: vendorId,
+    name: input.name,
+    phone: input.phone || null,
+    shift: input.shifts,
+    status: "off",
+  });
+  if (error) throw error;
 }
 
 async function toggleShift(id: string, current: string) {
@@ -203,30 +217,46 @@ function CashierSheet({
 }) {
   const isEdit = !!cashier;
 
-  const [open,   setOpen]   = useState(false);
-  const [name,   setName]   = useState(cashier?.name   ?? "");
-  const [phone,  setPhone]  = useState(cashier?.phone  ?? "");
-  const [shifts, setShifts] = useState<string[]>(cashier?.shifts ?? []);
+  const [open,     setOpen]     = useState(false);
+  const [name,     setName]     = useState(cashier?.name  ?? "");
+  const [phone,    setPhone]    = useState(cashier?.phone ?? "");
+  const [shifts,   setShifts]   = useState<string[]>(cashier?.shifts ?? []);
+  const [email,    setEmail]    = useState("");
+  const [password, setPassword] = useState("");
+  const [showPwd,  setShowPwd]  = useState(false);
 
   const resetForm = () => {
     setName(cashier?.name   ?? "");
     setPhone(cashier?.phone ?? "");
     setShifts(cashier?.shifts ?? []);
+    setEmail(""); setPassword(""); setShowPwd(false);
   };
 
   const toggleShiftSelection = (s: string) =>
     setShifts(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]);
 
   const m = useMutation({
-    mutationFn: () => upsertCashier({ id: cashier?.id, name, phone, shifts }),
+    mutationFn: () =>
+      isEdit
+        ? updateCashier({ id: cashier!.id, name, phone, shifts })
+        : createCashierWithLogin({ name, phone, shifts, email, password }),
     onSuccess: () => {
-      toast.success(isEdit ? `${name} updated` : `${name} added`);
+      toast.success(
+        isEdit
+          ? `${name} updated`
+          : `${name} added — they can log in with ${email}`
+      );
       setOpen(false);
       resetForm();
       onSaved();
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
+  const validBase = name.trim() && shifts.length > 0;
+  const valid = isEdit
+    ? validBase
+    : validBase && email.trim() && password.length >= 8;
 
   return (
     <Sheet open={open} onOpenChange={v => { setOpen(v); if (!v) resetForm(); }}>
@@ -235,7 +265,7 @@ function CashierSheet({
           ? <Button size="sm" variant="ghost" className="px-2"><Pencil className="h-4 w-4" /></Button>
           : <Button><UserPlus className="h-4 w-4 mr-1" /> Add cashier</Button>}
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-md p-6">
+      <SheetContent className="w-full sm:max-w-md p-6 overflow-y-auto">
         <SheetHeader className="mb-6 px-0">
           <SheetTitle>{isEdit ? `Edit — ${cashier!.name}` : "Add cashier"}</SheetTitle>
         </SheetHeader>
@@ -250,6 +280,43 @@ function CashierSheet({
             <Label>Phone</Label>
             <Input value={phone} onChange={e => setPhone(e.target.value)} placeholder="+254 700 000 000" />
           </div>
+
+          {!isEdit && (
+            <>
+              <div className="space-y-2">
+                <Label className="flex items-center gap-1.5"><Mail className="h-3.5 w-3.5" /> Login email *</Label>
+                <Input
+                  type="email" value={email} onChange={e => setEmail(e.target.value)}
+                  placeholder="cashier@example.com"
+                />
+                <p className="text-[11px] text-muted-foreground">
+                  This becomes their login. They'll sign in at the same portal under the Cashier role.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Set initial password *</Label>
+                <div className="relative">
+                  <Input
+                    type={showPwd ? "text" : "password"}
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder="At least 8 characters"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPwd(!showPwd)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
+                  >
+                    {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+                <p className="text-[11px] text-muted-foreground">
+                  Share this with them directly — they can change it after first login.
+                </p>
+              </div>
+            </>
+          )}
 
           <div className="space-y-3">
             <Label>Assigned shifts</Label>
@@ -281,10 +348,10 @@ function CashierSheet({
           <Button
             className="w-full"
             onClick={() => m.mutate()}
-            disabled={m.isPending || !name.trim() || shifts.length === 0}
+            disabled={m.isPending || !valid}
           >
             {m.isPending && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
-            {isEdit ? "Save changes" : "Add cashier"}
+            {isEdit ? "Save changes" : "Create login & add cashier"}
           </Button>
         </SheetFooter>
       </SheetContent>
