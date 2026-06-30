@@ -22,6 +22,7 @@ import {
   fetchBranch, fetchWaterKpis, fetchHourlySales,
   fetchTransactions, fetchCashiers, listProducts,
 } from "@/lib/water-data";
+import { getSession } from "@/lib/auth";
 
 export const Route = createFileRoute("/water-admin/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Water Retail" }] }),
@@ -31,6 +32,8 @@ export const Route = createFileRoute("/water-admin/dashboard")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function Dashboard() {
+  const session       = getSession();
+  const firstName     = (session?.name ?? "there").trim().split(" ")[0];
   const branch       = useLive(["water", "branch"]        as const, fetchBranch,        _mock_branch);
   const waterKpis    = useLive(["water", "waterKpis"]     as const, fetchWaterKpis,     _mock_waterKpis);
   const hourlySales  = useLive(["water", "hourlySales"]   as const, fetchHourlySales,   _mock_hourlySales as any);
@@ -43,7 +46,7 @@ function Dashboard() {
   return (
     <div>
       <PageHeader
-        title={`Habari, ${branch.manager.split(" ")[0]}`}
+        title={`Hello, ${firstName}`}
         subtitle={`${branch.name} · ${branch.address}`}
         actions={
           <>

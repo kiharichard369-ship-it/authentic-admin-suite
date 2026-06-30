@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { getSession, clearSession, ROLE_HOME, ROLE_LABEL, type Session } from "@/lib/auth";
 import { ChangePasswordDialog } from "@/components/ChangePasswordDialog";
+import { EditNameDialog } from "@/components/EditNameDialog";
 
 export const Route = createFileRoute("/super-admin")({
   component: SuperAdminLayout,
@@ -74,6 +75,9 @@ function SuperAdminLayout() {
                   <div className="text-xs text-muted-foreground truncate">{session.email}</div>
                 </div>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
+                  <EditNameDialog />
+                </DropdownMenuItem>
                 <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
                   <ChangePasswordDialog />
                 </DropdownMenuItem>

@@ -14,6 +14,7 @@ import {
   fetchPendingApprovals, fetchActiveUsers,
 } from "@/lib/platform-data";
 import { useLive } from "@/lib/use-live";
+import { getSession } from "@/lib/auth";
 
 export const Route = createFileRoute("/super-admin/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Super Admin" }] }),
@@ -23,6 +24,8 @@ export const Route = createFileRoute("/super-admin/dashboard")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function Dashboard() {
+  const session = getSession();
+  const firstName = (session?.name ?? "there").trim().split(" ")[0];
   const businesses       = useLive(["platform", "businesses"],       fetchBusinesses,       mockBusinesses);
   const recentActivity   = useLive(["platform", "activity"],         fetchRecentActivity,   mockActivity);
   const pendingApprovals = useLive(["platform", "pendingApprovals"], fetchPendingApprovals, mockPendingApprovals);
@@ -33,7 +36,7 @@ function Dashboard() {
   return (
     <div>
       <PageHeader
-        title="Good morning, Super Admin"
+        title={`Hello, ${firstName}`}
         subtitle="Today across every vendor on the platform, in real time."
         actions={
           <>

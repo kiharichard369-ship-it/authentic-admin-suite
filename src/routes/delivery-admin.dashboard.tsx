@@ -7,6 +7,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { TrendingUp, Droplet, Truck, Fuel, AlertCircle, MapPin } from "lucide-react";
 import { fleet as _mock_fleet, deliveryKpis as _mock_deliveryKpis, litresByDay as _mock_litresByDay, dispatches as _mock_dispatches, drivers as _mock_drivers } from "@/lib/delivery-mock";
 import { fetchFleet, fetchDeliveryKpis, fetchLitresByDay, fetchDispatches, fetchDrivers } from "@/lib/delivery-data";
+import { getSession } from "@/lib/auth";
 
 
 import { useLive } from "@/lib/use-live";
@@ -18,6 +19,8 @@ export const Route = createFileRoute("/delivery-admin/dashboard")({
 const fmt = (n: number) => "KES " + n.toLocaleString();
 
 function Dash() {
+  const session = getSession();
+  const firstName = (session?.name ?? "there").trim().split(" ")[0];
   const fleet = useLive(["delivery","fleet"] as const, fetchFleet, _mock_fleet);
   const deliveryKpis = useLive(["delivery","deliveryKpis"] as const, fetchDeliveryKpis, _mock_deliveryKpis);
   const litresByDay = useLive(["delivery","litresByDay"] as const, fetchLitresByDay, _mock_litresByDay);
@@ -26,7 +29,7 @@ function Dash() {
   const active = dispatches.filter((d) => d.status !== "returned");
   return (
     <div>
-      <PageHeader title={`Habari, ${fleet.manager.split(" ")[0]}`} subtitle={`${fleet.name} · ${fleet.base}`}
+      <PageHeader title={`Hello, ${firstName}`} subtitle={`${fleet.name} · ${fleet.base}`}
         actions={<>
           <Link to="/delivery-admin/dispatch"><Button variant="outline"><Truck className="h-4 w-4 mr-1"/> Dispatch tracking</Button></Link>
           <Link to="/delivery-admin/gps"><Button><MapPin className="h-4 w-4 mr-1"/> GPS map</Button></Link>

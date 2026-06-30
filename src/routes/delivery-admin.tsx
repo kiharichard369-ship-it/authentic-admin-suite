@@ -11,6 +11,7 @@ import { fetchFleet } from "@/lib/delivery-data";
 import { getSession, clearSession, ROLE_LABEL, type Session } from "@/lib/auth";
 import { TenantProvider } from "@/lib/tenant-context";
 import { ChangePasswordDialog } from "@/components/ChangePasswordDialog";
+import { EditNameDialog } from "@/components/EditNameDialog";
 import { useLive } from "@/lib/use-live";
 
 export const Route = createFileRoute("/delivery-admin")({ component: DeliveryLayout });
@@ -95,6 +96,9 @@ function DeliveryLayout() {
                     )}
                   </div>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
+                    <EditNameDialog />
+                  </DropdownMenuItem>
                   <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
                     <ChangePasswordDialog />
                   </DropdownMenuItem>
