@@ -48,7 +48,11 @@ async function fetchBranches(): Promise<Branch[]> {
     .eq("vendor_id", vendorId)
     .order("created_at", { ascending: true });
 
-  if (error) throw error;
+  if (error) {
+    // Table likely hasn't been created yet — return empty so page renders cleanly
+    console.warn("[fetchBranches]", error.message);
+    return [];
+  }
 
   return (data ?? []).map((r: any) => ({
     id:              r.id,

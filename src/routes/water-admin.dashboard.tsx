@@ -47,7 +47,7 @@ function Dashboard() {
     <div>
       <PageHeader
         title={`Hello, ${firstName}`}
-        subtitle={`${branch.name} · ${branch.address}`}
+        subtitle={`${session?.branchName ?? branch.name}${branch.address ? " · " + branch.address : ""}`}
         actions={
           <>
             <Link to="/water-admin/requests"><Button variant="outline"><ClipboardList className="h-4 w-4 mr-1" /> New stock request</Button></Link>

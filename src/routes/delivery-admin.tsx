@@ -69,7 +69,7 @@ function DeliveryLayout() {
               </Link>
               {/* Fleet base badge — scoped to this vendor */}
               <Badge variant="secondary" className="hidden sm:inline-flex">
-                {fleet.base}
+                {session.vendorName ?? fleet.name}
               </Badge>
               {/* User avatar + dropdown */}
               <DropdownMenu>

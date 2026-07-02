@@ -79,16 +79,47 @@ function uid(prefix: string) {
 export const fetchBranch = async () => {
   if (!hasSupabase || !supabase) return mockBranch;
   const vid = vendorId();
-  let q = supabase.from("water_branch").select("*");
-  if (vid) q = q.eq("vendor_id", vid);
-  const { data, error } = await q.limit(1).maybeSingle();
-  if (error) throw error;
-  if (!data) return mockBranch;
+  const bid = branchId();
+  if (!vid) return mockBranch;
+
+  // Branch manager — read their specific branch from water_branches
+  if (bid) {
+    const { data, error } = await supabase
+      .from("water_branches")
+      .select("name,code,address,paybill")
+      .eq("id", bid)
+      .maybeSingle();
+    if (error) { console.warn("[fetchBranch]", error.message); return mockBranch; }
+    if (!data) return mockBranch;
+    return {
+      name:    data.name,
+      code:    data.code    ?? "",
+      address: data.address ?? "",
+      manager: "",
+      paybill: data.paybill ?? "",
+    };
+  }
+
+  // Vendor-wide admin — read first branch (or just the vendor name as fallback)
+  const { data, error } = await supabase
+    .from("water_branches")
+    .select("name,code,address,paybill")
+    .eq("vendor_id", vid)
+    .order("created_at", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+  if (error) { console.warn("[fetchBranch]", error.message); return mockBranch; }
+  if (!data) {
+    // No branches set up yet — use vendor name from session
+    const { getSession } = await import("./auth");
+    const s = getSession();
+    return { name: s?.vendorName ?? mockBranch.name, code: "", address: "", manager: "", paybill: "" };
+  }
   return {
     name:    data.name,
     code:    data.code    ?? "",
     address: data.address ?? "",
-    manager: data.manager ?? "",
+    manager: "",
     paybill: data.paybill ?? "",
   };
 };

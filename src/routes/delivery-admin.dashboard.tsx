@@ -29,7 +29,7 @@ function Dash() {
   const active = dispatches.filter((d) => d.status !== "returned");
   return (
     <div>
-      <PageHeader title={`Hello, ${firstName}`} subtitle={`${fleet.name} · ${fleet.base}`}
+      <PageHeader title={`Hello, ${firstName}`} subtitle={`${fleet.name}${fleet.base ? " · " + fleet.base : ""}`}
         actions={<>
           <Link to="/delivery-admin/dispatch"><Button variant="outline"><Truck className="h-4 w-4 mr-1"/> Dispatch tracking</Button></Link>
           <Link to="/delivery-admin/gps"><Button><MapPin className="h-4 w-4 mr-1"/> GPS map</Button></Link>
