@@ -1,23 +1,20 @@
-// Provides the current session's vendorId to all child routes via context.
-// Avoids prop-drilling vendorId into every useLive call.
-
 import { createContext, useContext, type ReactNode } from "react";
 
 interface TenantCtx {
-  vendorId: string | null;
+  vendorId:   string | null;
   vendorName: string | null;
+  branchId:   string | null;
+  branchName: string | null;
 }
 
-const Ctx = createContext<TenantCtx>({ vendorId: null, vendorName: null });
+const Ctx = createContext<TenantCtx>({
+  vendorId: null, vendorName: null, branchId: null, branchName: null,
+});
 
 export function TenantProvider({
-  vendorId,
-  vendorName,
-  children,
+  vendorId, vendorName, branchId, branchName, children,
 }: TenantCtx & { children: ReactNode }) {
-  return <Ctx.Provider value={{ vendorId, vendorName }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ vendorId, vendorName, branchId, branchName }}>{children}</Ctx.Provider>;
 }
 
-export function useTenant(): TenantCtx {
-  return useContext(Ctx);
-}
+export function useTenant(): TenantCtx { return useContext(Ctx); }

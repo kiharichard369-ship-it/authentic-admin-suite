@@ -36,7 +36,7 @@ async function createRefund(input: {
   const vendorId = getSession()?.vendorId;
   if (!vendorId) throw new Error("No vendor session");
   const { error } = await supabase.from("water_refunds").insert({
-    vendor_id: vendorId,
+    vendor_id: vendorId, branch_id: getSession()?.branchId ?? null,
     customer: input.customer || "Walk-in",
     cashier: input.cashier,
     reason: input.reason,

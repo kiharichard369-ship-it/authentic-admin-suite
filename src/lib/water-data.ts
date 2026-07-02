@@ -51,8 +51,17 @@ function vendorId(): string | null {
   return getSession()?.vendorId ?? null;
 }
 
-function withVendor<T extends Record<string, unknown>>(q: any, vid = vendorId()): any {
-  return vid ? q.eq("vendor_id", vid) : q;
+function branchId(): string | null {
+  return getSession()?.branchId ?? null;
+}
+
+function withVendor(q: any, vid = vendorId()): any {
+  if (!vid) return q;
+  q = q.eq("vendor_id", vid);
+  const bid = branchId();
+  // Branch managers are scoped to their branch; admins (bid=null) see all
+  if (bid) q = q.eq("branch_id", bid);
+  return q;
 }
 
 const mem = {
@@ -237,10 +246,12 @@ export async function recordSale(
   }
 
   const vid = vendorId();
+  const bid = branchId();
   const { data: tx, error: txErr } = await supabase
     .from("water_transactions")
     .insert({
       vendor_id:       vid,
+      branch_id:       bid,
       customer_id:     input.customerId,
       cashier_name:    input.cashierName,
       subtotal,
@@ -259,6 +270,7 @@ export async function recordSale(
   const items = input.lines.map((l) => ({
     transaction_id: tx.id,
     vendor_id:      vid,
+    branch_id:      bid,
     product_id:     l.productId,
     product_name:   l.name,
     unit_price:     l.unitPrice,

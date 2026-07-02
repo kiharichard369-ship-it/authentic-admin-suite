@@ -27,7 +27,7 @@ function WaterAdminLayout() {
     const s = getSession();
     setSessionState(s);
     setReady(true);
-    const roleOk = s && ["super_admin", "vendor_admin", "water_admin", "water_cashier"].includes(s.role);
+    const roleOk = s && ["super_admin", "vendor_admin", "water_admin", "water_branch_manager", "water_cashier"].includes(s.role);
     const typeOk = !s || s.role !== "vendor_admin" ||
       s.businessType === "water" || s.businessType === "both" || s.businessType === null;
     if (!s || !roleOk || !typeOk) navigate({ to: "/login" });
@@ -35,7 +35,9 @@ function WaterAdminLayout() {
 
   // Scope branch fetch by this vendor — include vendorId in query key so
   // different tenants never share each other's cached branch row.
-  const vendorId = session?.vendorId ?? null;
+  const vendorId  = session?.vendorId  ?? null;
+  const branchId  = session?.branchId  ?? null;
+  const branchName = session?.branchName ?? null;
   const branch   = useLive(
     ["water", "branch", vendorId] as const,
     fetchBranch,
@@ -53,7 +55,7 @@ function WaterAdminLayout() {
   };
 
   return (
-    <TenantProvider vendorId={vendorId} vendorName={session.vendorName}>
+    <TenantProvider vendorId={vendorId} vendorName={session.vendorName} branchId={branchId} branchName={branchName}>
       <div className="min-h-screen flex bg-background">
         <WaterAdminSidebar role={session.role} />
         <div className="flex-1 flex flex-col min-w-0">
@@ -74,7 +76,7 @@ function WaterAdminLayout() {
               </Link>
               {/* Branch name badge — scoped to this vendor */}
               <Badge variant="secondary" className="hidden sm:inline-flex">
-                {branch.name}
+                {branchName ?? branch.name}
               </Badge>
               {/* User avatar + dropdown */}
               <DropdownMenu>

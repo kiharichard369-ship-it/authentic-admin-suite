@@ -40,6 +40,7 @@ async function upsertProduct(input: {
   if (!hasSupabase || !supabase) throw new Error("No Supabase connection");
   const vendorId = getSession()?.vendorId;
   if (!vendorId) throw new Error("No vendor session");
+  const branchId = getSession()?.branchId ?? null;
 
   if (input.id) {
     // Update existing
@@ -52,6 +53,7 @@ async function upsertProduct(input: {
     // Create new
     const { error } = await supabase.from("water_products").insert({
       vendor_id: vendorId,
+      branch_id: branchId,
       sku: input.sku, name: input.name, category: input.category,
       price: input.price, stock: input.stock, reorder: input.reorder, unit: input.unit,
     });

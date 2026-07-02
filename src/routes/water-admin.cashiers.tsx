@@ -61,6 +61,7 @@ async function createCashierWithLogin(input: {
   // 2. Create the operational cashier row (shifts, status, sales tracking)
   const { error } = await supabase.from("water_cashiers").insert({
     vendor_id: vendorId,
+    branch_id: getSession()?.branchId ?? null,
     name: input.name,
     phone: input.phone || null,
     shift: input.shifts,

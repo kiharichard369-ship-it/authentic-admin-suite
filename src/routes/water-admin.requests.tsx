@@ -31,7 +31,8 @@ async function createRequest(items: string, note: string) {
   const vendorId = getSession()?.vendorId;
   if (!vendorId) throw new Error("No vendor session");
   const { error } = await supabase.from("water_stock_requests").insert({
-    vendor_id: vendorId, items, note: note || null, status: "pending",
+    vendor_id: vendorId, branch_id: getSession()?.branchId ?? null,
+    items, note: note || null, status: "pending",
   });
   if (error) throw error;
 }

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { ShoppingCart, Search, Plus, Minus, Trash2, Printer, RotateCcw, Loader2, User } from "lucide-react";
 import { toast } from "sonner";
 import { getSession } from "@/lib/auth";
+import { fetchPaymentConfig, PAYMENT_DEFAULTS, type PaymentConfig } from "@/lib/payment-config";
 import { listProducts, listCustomers, recordSale, type CartLine, type Customer } from "@/lib/water-data";
 import { products as mockProducts, customers as mockCustomers, WATER_CATEGORIES } from "@/lib/water-mock";
 
@@ -37,6 +38,11 @@ function POSPage() {
     queryKey: ["water", "products"],
     queryFn: listProducts,
   });
+  const { data: payConfig = PAYMENT_DEFAULTS } = useQuery({
+    queryKey: ["water", "paymentConfig"],
+    queryFn:  fetchPaymentConfig,
+    staleTime: 1000 * 60 * 10, // cache 10 min — rarely changes mid-shift
+  });
   const { data: customers = mockCustomers as any[] } = useQuery({
     queryKey: ["water", "customers"],
     queryFn: listCustomers,
@@ -49,7 +55,18 @@ function POSPage() {
   const [selectedCustomer, setCustomer] = useState<Customer | null>(null);
   const [discountPct, setDiscountPct] = useState(0);
   const [amountPaid, setAmountPaid]   = useState("");
-  const [method, setMethod]           = useState<"cash" | "mpesa">("cash");
+  const availableMethods = [
+    payConfig.cash_enabled  && "cash",
+    payConfig.mpesa_enabled && "mpesa",
+  ].filter(Boolean) as Array<"cash" | "mpesa">;
+  const [method, setMethod] = useState<"cash" | "mpesa">("cash");
+
+  // Auto-select first available method when config loads
+  useEffect(() => {
+    if (availableMethods.length > 0 && !availableMethods.includes(method)) {
+      setMethod(availableMethods[0]);
+    }
+  }, [payConfig]);
   const [creditApplied, setCreditApplied] = useState(0);
   const [receiptOpen, setReceiptOpen] = useState(false);
   const [lastSale, setLastSale]       = useState<{ id: string; total: number; change: number } | null>(null);
@@ -295,17 +312,31 @@ function POSPage() {
             <Separator />
             <Row label="Total" value={fmt(total)} bold />
 
-            {/* Payment method */}
-            <div className="grid grid-cols-2 gap-1 pt-1">
-              <button onClick={() => setMethod("cash")}
-                className={`text-xs py-1.5 rounded border transition-colors ${method === "cash" ? "bg-primary text-primary-foreground border-primary" : "hover:bg-secondary"}`}>
-                Cash
-              </button>
-              <button onClick={() => setMethod("mpesa")}
-                className={`text-xs py-1.5 rounded border transition-colors ${method === "mpesa" ? "bg-primary text-primary-foreground border-primary" : "hover:bg-secondary"}`}>
-                M-Pesa
-              </button>
-            </div>
+            {/* Payment method — driven by water_payment_config */}
+            {availableMethods.length > 1 && (
+              <div className={`grid gap-1 pt-1`} style={{ gridTemplateColumns: `repeat(${availableMethods.length}, 1fr)` }}>
+                {availableMethods.map(m => (
+                  <button key={m} onClick={() => setMethod(m)}
+                    className={`text-xs py-1.5 rounded border capitalize transition-colors ${
+                      method === m ? "bg-primary text-primary-foreground border-primary" : "hover:bg-secondary"
+                    }`}>
+                    {m === "mpesa" ? "M-Pesa" : "Cash"}
+                  </button>
+                ))}
+              </div>
+            )}
+            {availableMethods.length === 1 && (
+              <div className="text-xs text-muted-foreground pt-1 px-1">
+                Payment: <span className="font-medium capitalize">{availableMethods[0] === "mpesa" ? "M-Pesa" : "Cash"}</span>
+                <span className="text-[10px] ml-1">(only method enabled)</span>
+              </div>
+            )}
+            {method === "mpesa" && (payConfig.paybill_display || payConfig.account_display) && (
+              <div className="rounded-md bg-secondary/60 p-2 text-xs space-y-0.5">
+                {payConfig.paybill_display  && <div className="font-medium">{payConfig.paybill_display}</div>}
+                {payConfig.account_display && <div className="text-muted-foreground">{payConfig.account_display}</div>}
+              </div>
+            )}
 
             <div className="space-y-1">
               <Label className="text-xs">Amount paid (KES)</Label>

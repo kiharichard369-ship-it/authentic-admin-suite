@@ -36,7 +36,7 @@ async function logExpense(input: {
   const vendorId = getSession()?.vendorId;
   if (!vendorId) throw new Error("No vendor session");
   const { error } = await supabase.from("water_branch_expenses").insert({
-    vendor_id: vendorId,
+    vendor_id: vendorId, branch_id: getSession()?.branchId ?? null,
     staff: input.staff, category: input.category,
     description: input.description || null, amount: input.amount, status: "logged",
   });
